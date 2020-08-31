@@ -88,55 +88,8 @@ def main():
     term_mortgage_dict = {i[2]: (i[0],i[1]) for j,i in mortgage_ledger.items()} # Dict comprehension
     print('New dict with term as key and (amount, rate) as values:')
     pprint.pprint(term_mortgage_dict)
-'''
-    # Dict comprehension to filter
 
-    # Mini mortgages have value <200
-    miniMortgages = {address: value for (address, value) in mortgage_ledger.items() if value < 200}
-    print('Mini mortgages (0,200):')
-    pprint.pprint(miniMortgages)
 
-    # Standard mortgages have value between 200 and 467
-    standardMortgages = {address: value for (address, value) in mortgage_ledger.items()
-                         if ((value >= 200) and(value <= 467))}
-    print('Standard mortgages [200,467]:')
-    pprint.pprint(standardMortgages)
-
-    # Jumbo mortgages have value >467
-    jumboMortgages = {address: value for (address, value) in mortgage_ledger.items() if value > 467}
-    print('Jumbo mortgages (467,1000]:')
-    pprint.pprint(jumboMortgages)
-
-    # Modify one key value in the jumboMortgages dict and check against the original's
-    jumboMortgages['X29TBZ'] = 100
-    print('The value of mortgage X29TBZ in jumboMortgage is: ', jumboMortgages['X29TBZ'])
-    print('The value of mortgage X29TBZ in original ledger is: ', mortgage_ledger['X29TBZ'])
-    print('Modifying the sub-dictionaries value does not modify the value in the original dictionary'
-          'because they are different dictionaries')
-
-    # c. Extract the lists of amounts from each separate dict.
-    # Modify one value in the miniMortgages list.
-    # Does the miniMortgages dict change? How about the original dict? Why?
-    # Extract values from each sub dicts
-
-    miniMortgages_val = list(miniMortgages.values())
-    print('List of mini mortgage values without address:\n', miniMortgages_val)
-
-    standardMortgages_val = list(standardMortgages.values())
-    print('List of standard mortgage values without address:\n', standardMortgages_val)
-
-    jumboMortgages_val = list(jumboMortgages.values())
-    print('List of mini mortgage values without address:\n', jumboMortgages_val)
-
-    # Modify 1 value in the mini mortgages list:
-    miniMortgages_val[0] -= 1
-    print('Subtract 1 from the 6E8LVM address of miniMortgages list. Value is now: ',miniMortgages_val[0])
-    print('Double check the miniMortgage dictionary value of 6E8LVM: ', miniMortgages['6E8LVM'])
-    print('Double check the original dictionary value of 6E8LVM: ', mortgage_ledger['6E8LVM'])
-    print('Changes in the pulled list has no effect on both the subdict and the original dict'
-          'because they are separated objects.')
-
-'''
 #######################
 if __name__ == '__main__':
     main()
