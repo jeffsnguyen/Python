@@ -15,11 +15,13 @@ def main():
 
     # Initialize list
     nested_list = [[1,2,3,4,5], [3,4,6], [7,4,3,2], [1,12,13]]
+    print('Original nested list:\n', nested_list)
+    print()
 
     # Double list comprehension to flatten the list
     flattened_list = [item for sublist in nested_list for item in sublist]
 
-    print(flattened_list)
+    print('Flatted list:\n',flattened_list)
 
 
 

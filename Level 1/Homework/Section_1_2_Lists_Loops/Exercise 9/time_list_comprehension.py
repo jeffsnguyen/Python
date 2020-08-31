@@ -13,6 +13,7 @@ Description: Write a list comprehension that results in a list of all numbers 0 
 '''
 
 import time
+import pprint
 
 def main():
 
@@ -31,12 +32,16 @@ def main():
     start_time = time.time()
     all_numbers_end_zero = [num for num in range(0,10000000) if num % 10 == 0]
     print("%.3f" % (time.time()-start_time))
+    print()
 
     # List comprehension is slower than loop in this instance because the for loop
     # did not have to look up the range(1, 10000000) and only look up in the
-    # already establish list all_numbers. The for loop would have been slower otherwise as the
+    # already established list all_numbers. The for loop would have been slower otherwise as the
     # list comprehension method does not need to look up the list and its append method ever iteration
-
+    pprint.pprint('List comprehension is slower than loop in this instance because the for loop '
+          'did not have to look up the range(1, 10000000) and only look up in the'
+          'already established list all_numbers. The for loop would have been slower otherwise as the'
+          'list comprehension method does not need to look up the list and its append method ever iteration.')
 
 #######################
 if __name__ == '__main__':

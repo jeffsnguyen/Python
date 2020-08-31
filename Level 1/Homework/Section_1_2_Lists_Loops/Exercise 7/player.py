@@ -18,10 +18,15 @@ def main():
     players = ['Captain America', 'Winter Soldier', 'Black Widow', 'Iron Man', 'The Hulk', 'Dr. Strange',
                 'Spiderman', 'Thor', 'Loki', 'Black Panther', 'Odin']
     injured_players = ['Winter Soldier', 'Thor', 'Iron Man']
+    print('List of players:\n', players)
+    print()
+
+    print('List of injured players:\n', injured_players)
+    print()
 
     # Filter active players, i.e. non-injured players
     active_players = [item for item in players if item not in injured_players]
-
+    print('List of active players:\n', active_players)
 
 #######################
 if __name__ == '__main__':
