@@ -1,11 +1,12 @@
 '''Demonstrate shell input/output'''
 
-def main():
-    name = input('Name:')
-    print(name)
 
-    age = int(input('Age:'))
-    print(age +2)
+def MyFunction():
+    return [(5, 4)]
+
+def main():
+    hello = {1,1,1}
+    print(hello)
 
 #########################
 if __name__ == '__main__':
