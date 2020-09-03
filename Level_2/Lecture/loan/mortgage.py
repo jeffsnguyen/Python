@@ -1,6 +1,9 @@
 # mortgages class
 
-from loan.loans import VariableRateLoan, FixedRateloan
+#from loan.loans import VariableRateLoan, FixedRateloan
+
+from Level_2.Lecture.loan.loans import FixedRateLoan
+from Level_2.Lecture.loan.loans import VariableRateLoan
 
 
 class MortgageMixin(object):  # does not derive from loan, only define certain things related to the mortgage

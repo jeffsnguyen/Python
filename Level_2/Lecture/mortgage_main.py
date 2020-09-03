@@ -1,6 +1,6 @@
 # mortgage main
 
-from loan.mortgage import VariableMortgage, FixedMortgage
+import loan.mortgage
 
 def main():
     vm = VariableMortgage(100000, {0: .025, 50: .065}, 360)
