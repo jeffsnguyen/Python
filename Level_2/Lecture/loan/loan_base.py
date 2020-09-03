@@ -1,6 +1,5 @@
-'''
- loan base class 2.2.3 lecture
-'''
+# loan base class 2.2.3 lecture
+
 
 class Loan(object):
     def __init__(self, asset, face, rate, term):
@@ -12,7 +11,7 @@ class Loan(object):
     # Add getter/setter property functions
 
     def rate(self, period):
-        # Should be overiden by derived class
+        # Should be overridden by derived class
         raise NotImplementedError
 
     def monthlyPmt(self):
@@ -27,11 +26,3 @@ class Loan(object):
 
 
 
-
-
-def main():
-    pass
-
-#######################
-if __name__ == '__main__':
-    main()
