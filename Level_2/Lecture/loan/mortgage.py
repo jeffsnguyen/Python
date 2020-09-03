@@ -1,15 +1,13 @@
 # mortgages class
 
-#from loan.loans import VariableRateLoan, FixedRateloan
+from loan.loans import VariableRateLoan, FixedRateLoan
 
-from Level_2.Lecture.loan.loans import FixedRateLoan
-from Level_2.Lecture.loan.loans import VariableRateLoan
 
 
 class MortgageMixin(object):  # does not derive from loan, only define certain things related to the mortgage
     def __init__(self, notional, rate, term):
         # MortgageMixin.__init__(self)
-        super(MortgageMixin, self).__init__()  # invoke init function if there is a base class
+        super(MortgageMixin, self).__init__(notional, rate, term)  # invoke init function if there is a base class
 
     # Mortgage-specific functionality goes here
     # Private Mortgage Insurance:
@@ -19,9 +17,9 @@ class MortgageMixin(object):  # does not derive from loan, only define certain t
         return 200
 
 
-class VariableMortgage(MortgageMixin, VariableRateLoan):
+class VariableMortgage(MortgageMixin,VariableRateLoan):
     pass
 
 
-class FixedMortgage(MortgageMixin, FixedRateLoan):
+class FixedMortgage(MortgageMixin,FixedRateLoan):
     pass
