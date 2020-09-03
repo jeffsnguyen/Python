@@ -17,9 +17,9 @@ class MortgageMixin(object):  # does not derive from loan, only define certain t
         return 200
 
 
-class VariableMortgage(MortgageMixin,VariableRateLoan):
+class VariableMortgage(MortgageMixin, VariableRateLoan):
     pass
 
 
-class FixedMortgage(MortgageMixin,FixedRateLoan):
+class FixedMortgage(MortgageMixin, FixedRateLoan):
     pass
