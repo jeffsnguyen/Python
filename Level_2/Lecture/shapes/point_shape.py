@@ -1,41 +1,23 @@
 
-#class lecture
+#class lecture, using derived Shape class
 
 import math
+from shapes.base import Shape
+
+# Shape lecture
+#class Point(Shape):
 
 
-#Point class
-
-#class Point(object): # Point is a class "derived" from object
-#    def __init__(self, x, y): # standard initialization function  x, y coordinate
-#        self._x = float(x) # create var inside the class call _x and save x value to ._x
-#        self._y = float(y) # _x is a protected variable, should not be access outside
-
-    # Variables can be accessed from outside using custom function set and get
-
-#    def setX(self, x):
-#        self._x = x #every function the class has to have self
-
-#    def setY(self, y):
-#        self._y = y
-
-#    def getX(self):
-#        return self._x
-
-#    def getY(self):
-#        return self._y
-
-class Point(object): # Point is a class "derived" from object
-
-    #_dx = 0
-    #_dy = 0
+class Point(Shape): # Point is a class "derived" from object
 
     def __init__(self, x=None, y=None): # standard initialization function  x, y coordinate
-        # Use x,y value if it's not empty, otherwise use Point._dx, Point._dy
-        #self._x = float(x) if x is not None else float(Point._dx) #not self._dx because we want to access the class lvl
-        #self._y = float(y) if y is not None else float(Point._dy)
+        # Shape.__init__(self, x=None, y=None) directly invoke the init function on the base Shape class
+        # and pass in self. Downside: if base class name change, then every instance of shape needs t be change
 
-        ## Alternative
+        # Better alternative: determine the base class of Point class and call __init__
+        # then self is passed to super.
+        super(Point, self).__init__()
+
         self._x = float(x) if x is not None else float(Point._dx) if hasattr(Point, '_dx') else 0
         self._y = float(y) if y is not None else float(Point._dy) if hasattr(Point, '_dy') else 0
 
@@ -90,3 +72,12 @@ class Point(object): # Point is a class "derived" from object
     def distanceOrigin(self):
         return self.distance(Point(0,0))
 
+    def toString(self):
+        # This overrides the base class <- comment is necessary
+        return 'Point(' + str(self._x) + ', ' + str(self._y) + ')'
+
+    def printShape(self):
+        # Print the string representation of the Shape object
+
+        # Call the toString function and print it to the screen
+        print(self.toString())
