@@ -6,7 +6,6 @@
 
 # Importing necessary packages
 from utils.timer import Timer
-from pprint import pprint
 
 
 #######################
