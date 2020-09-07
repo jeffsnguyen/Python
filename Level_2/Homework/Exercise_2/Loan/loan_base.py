@@ -66,7 +66,9 @@ class Loan(object):
     ##########################################################
     # Add instance method functionalities to Loan class
     # Instance method to calculate monthly payments
-    def monthlyPayment(self, period):
+    # Add dummy period argument to handle exceptions where some loan type
+    # can have monthly payment dependent on the period
+    def monthlyPayment(self, period = None):
         # Calculate payment using the formula pmt  = (r * P * (1 + r)**N) / ((1 + r)**N - 1)
         # r = monthly rate, P = notional value, N = term in months
         self.monthly_payment = (self._rate * self._notional * (1 + self._rate)**self._term) / \

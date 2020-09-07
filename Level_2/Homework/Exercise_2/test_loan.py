@@ -30,7 +30,7 @@ def main():
 
     #######################
     # 2.a Demo monthlyPayment function
-    print('The monthly payment of this loan is: ', loan1.monthlyPayment(0))
+    print('The monthly payment of this loan is: ', loan1.monthlyPayment())
     #######################
 
     #######################
