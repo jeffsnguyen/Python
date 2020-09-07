@@ -47,9 +47,10 @@ class Timer(object):
     timer_check = False
 
     # Initialize objects to format elapsed time in seconds, minutes or hours
-    timer_config = 1 # Initialize timer_config variable to format the displayed elapsed time, default is 1
-    timer_dict = {1: 'seconds', 60: 'minutes', 3600: 'hours'} # Initialize dictionary to lookup proper string
-                                                            # to display 'seconds', 'minutes' or 'hours'
+    timer_config = 1  # Initialize timer_config variable to format the displayed elapsed time, default is 1
+    timer_dict = {1: 'seconds', 60: 'minutes', 3600: 'hours'}  # Initialize dictionary to lookup proper string
+
+    # to display 'seconds', 'minutes' or 'hours'
 
     # Default time function to set default time
     @classmethod
@@ -93,7 +94,6 @@ class Timer(object):
 
         # Class method to configure format of timer
 
-
     # Class method functions to perform some actions
     # Class method to start time counter
     @classmethod
@@ -117,10 +117,16 @@ class Timer(object):
             print('End timer.')  # Inform user that timer has ended.
 
             # Calculate time elapsed in given configuration
+            cls.time_elapsed_default = cls.counter_end - cls.counter_start
             cls.time_elapsed = (cls.counter_end - cls.counter_start) / cls.timer_config
 
             # Display result in correct timer configuration format
-            print('Function took ' + str(cls.time_elapsed) + ' ' + cls.timer_dict[cls.timer_config] + ' to run.')
+            # try except to handle exception of time configuration not existing in timer_dict dictionary
+            # Only valid keys: 1: seconds, 60: minutes, 3600: hours
+            try:
+                print('Function took ' + str(cls.time_elapsed) + ' ' + cls.timer_dict[cls.timer_config] + ' to run.')
+            except:
+                print('Function took ' + str(cls.time_elapsed_default) + ' seconds to run.')
 
             cls.timer_check = False  # Reset the check variable
 
@@ -128,13 +134,26 @@ class Timer(object):
     # Last timer configuration is used
     @classmethod
     def retrieveLastResult(cls):
-        cls.last_result = (cls.counter_end - cls.counter_start) / cls.timer_config
-        print('The last timer is: ' + str(cls.last_result) + ' ' + cls.timer_dict[cls.timer_config])
+        cls.last_result = cls.time_elapsed
+        # try except to handle exception of time configuration not existing in timer_dict dictionary
+        # Only valid keys: 1: seconds, 60: minutes, 3600: hours
+        try:
+            print('The last timer is: ' + str(cls.last_result) + ' ' + cls.timer_dict[cls.timer_config])
+        except:
+            print('Function took ' + str(cls.time_elapsed_default) + ' seconds to run.')
+
         return cls.last_result
 
     # Class method to accept time display configuration
     @classmethod
     def timerConfig(cls, itimer_config):
         cls.timer_config = itimer_config
-        print('Time is currently configured to display in ' + str(cls.timer_dict[cls.timer_config]) + '.')
+        # try except to handle exception of time configuration not existing in timer_dict dictionary
+        # Only valid keys: 1: seconds, 60: minutes, 3600: hours
+        try:
+            print('Time is currently configured to display in ' + str(cls.timer_dict[cls.timer_config]) + '.')
+        except:
+            print('Time configuration, ' + str(cls.timer_config) +
+                  ', is not implemented, only: 1: seconds, 60: minutes, 3600: hours.')
+            print('Timer will be displayed in seconds by default...')
         return cls.timer_config

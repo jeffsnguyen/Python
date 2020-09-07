@@ -49,35 +49,70 @@ def main():
     # Initialize t with Timer class
     t = Timer(12, 45, 476)
 
+    # Testing block
+    ###############################################
+    # Scenario: This test tests the basic base case scenario of timing a loop running 10,000,000
+    #   and increment a number by 1 each time.
+    # Desired Result: Timer will be displayed in seconds, i.e. timer_config = 1
+    # Note: In this test, it is not possible to change the timer config.
     t.start()  # Start the counter
     # Run the testing loop to test Timer functionalities
     # Alternative, paste in your own code to test your own function
-    #####
+    #### Your test function goes here - Start ####
     testing_loop(10000000)
-    #####
+    #### Your test function goes here -  ####
     t.end()  # Stop counter and print result
+    ###############################################
 
-    t.timerConfig(3600)  # Set timer display configuration
-    t.start()  # Start the counter
-    # Run the testing loop to test Timer functionalities
-    # Alternative, paste in your own code to test your own function
-    #####
-    testing_loop(20000000)
-    #####
-    t.end()  # Stop counter and print result
 
+    # Testing block
+    ###############################################
+    # Scenario: This test tests the timing of a loop running 20,000,000 timesand increment a number by 1 each time.
+    # Desired Result: Timer will be displayed in seconds, i.e. timer_config = 1
+    # Note: In this test, user can change the timer config.
     t.timerConfig(60)  # Set timer display configuration
     t.start()  # Start the counter
     # Run the testing loop to test Timer functionalities
     # Alternative, paste in your own code to test your own function
-    testing_loop(30000000)
-    #####
+    #### Your test function goes here - Start ####
+    testing_loop(20000000)
+    #### Your test function goes here -  ####
     t.end()  # Stop counter and print result
-    #####
+    ###############################################
 
-    t.timerConfig(1)  # Set timer display configuration
+
+    # Testing block
+    ###############################################
+    # Scenario: This test test an exception when the timer configuration is not set in neither hours (3600),
+    #   minutes(60) or seconds(1). User is able to configure display time in this test. The testing task is
+    #   timing a loop running 30,000,000 times and increment a number by 1 each time.
+    # Desired Result:
+    #   1. Display a warning message to user that said timer configuration is not implemented and result
+    #       will be calculated using default time config, which 1.
+    #   2. Timer will be displayed in default time config, which is = 1.
+    t.timerConfig(360)  # Set timer display configuration
+    t.start()  # Start the counter
+    # Run the testing loop to test Timer functionalities
+    # Alternative, paste in your own code to test your own function
+    #### Your test function goes here - Start ####
+    testing_loop(30000000)
+    #### Your test function goes here -  ####
+    t.end()  # Stop counter and print result
+    ###############################################
+
+
+    # Testing block
+    # Scenario: This test demonstrates the functionality that enables user to change time config and retrive
+    #   the last timer result
+    # Desired Result:
+    #   1. User can call timerConfig with different argument value to set the time config. The only available value
+    #       is: hours (3600), minutes(60) or seconds(1). If the timer config value is not in this selection,
+    #       display a warning message and display the result by default in seconds.
+    #   2. Display the last timer result.
+    ###############################################
+    t.timerConfig(3600)  # Set timer display configuration
     t.retrieveLastResult()  # Retrieve and print last timer result
-
+    ###############################################
 
 #######################
 if __name__ == '__main__':
