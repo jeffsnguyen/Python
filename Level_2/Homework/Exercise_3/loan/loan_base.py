@@ -2,21 +2,21 @@
 # Level: 1
 # Section: 2.1: Classes
 # Exercise: 2
-# Description: This contains the Loan class and its functionalities as outlined in Exercise 2
-#   Create a basic Loan class exactly as demonstrated in the lecture (including the setter/getter property
+# Description: This contains the loan class and its functionalities as outlined in Exercise 2
+#   Create a basic loan class exactly as demonstrated in the lecture (including the setter/getter property
 #   methods). Then, extend it with methods that return the following (refer to the slides for any
 #   necessary formulas):
-#       a. The monthly payment amount of the Loan (monthlyPayment). Even though
+#       a. The monthly payment amount of the loan (monthlyPayment). Even though
 #           monthlyPayment is likely to be equal for all months, you should still define this with a
 #           dummy ‘period’ parameter, since it’s possible some loan types will have a monthly payment
 #           dependent on the period.
-#       b. The total payments over the entire Loan (totalPayments). This is principal plus interest.
-#       c. The total interest over the entire Loan (totalInterest).
+#       b. The total payments over the entire loan (totalPayments). This is principal plus interest.
+#       c. The total interest over the entire loan (totalInterest).
 
 # Importing packages
 
 
-# Loan class
+# loan class
 # This class object takes on the arguments asset, face, rate, term
 class Loan(object):
 
@@ -65,7 +65,7 @@ class Loan(object):
     ##########################################################
 
     ##########################################################
-    # Add instance method functionalities to Loan class
+    # Add instance method functionalities to loan class
     # Instance method to calculate monthly payments
     # Add dummy period argument to handle exceptions where some loan type
     # can have monthly payment dependent on the period
