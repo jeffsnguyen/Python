@@ -94,14 +94,15 @@ def main():
     t.start()  # Start the counter
     # Run the testing loop to test Timer functionalities
     # Alternative, paste in your own code to test your own function
-    #### Your test function goes here - Start ####
+    #### Your test function goes here - START ####
     testing_loop(30000000)
-    #### Your test function goes here -  ####
+    #### Your test function goes here - END ####
     t.end()  # Stop counter and print result
     ###############################################
 
 
     # Testing block
+    ###############################################
     # Scenario: This test demonstrates the functionality that enables user to change time config and retrive
     #   the last timer result
     # Desired Result:
@@ -109,9 +110,10 @@ def main():
     #       is: hours (3600), minutes(60) or seconds(1). If the timer config value is not in this selection,
     #       display a warning message and display the result by default in seconds.
     #   2. Display the last timer result.
-    ###############################################
+    #### Your test function goes here - START ####
     t.timerConfig(3600)  # Set timer display configuration
     t.retrieveLastResult()  # Retrieve and print last timer result
+    #### Your test function goes here - END ####
     ###############################################
 
 #######################
