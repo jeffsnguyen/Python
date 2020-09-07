@@ -34,7 +34,7 @@ class Timer(object):
 
     # Initialization function with hours, minutes and seconds arguments
     # Also included in this function is ability to set the arguments to 0 if they don't already exists
-    def __init__(self, hours=None, minutes=None, seconds=None, is_live=None):
+    def __init__(self, hours=None, minutes=None, seconds=None):
         self._hours = float(hours) if hours is not None \
             else float(Timer._dhours) if hasattr(Timer, '_dhours') else 0
         self._minutes = float(minutes) if minutes is not None \
@@ -98,7 +98,7 @@ class Timer(object):
     # Class method to start time counter
     @classmethod
     def start(cls):
-        if cls.timer_check == True:
+        if cls.timer_check:
             print('Error: Timer already running. Please wait...')
         else:
             print('Starting timer, wait for process to complete...')
@@ -110,7 +110,7 @@ class Timer(object):
     # If the timer is running, print the time taken and return this value to the function
     @classmethod
     def end(cls):
-        if cls.timer_check == False:  # If timer is not running, print error message
+        if not cls.timer_check:  # If timer is not running, print error message
             print('Error: Timer is not running. Use start to start timer.')
         else:  # If timer is not running:
             cls.counter_end = time()  # Take the time stamp of the timer with time()

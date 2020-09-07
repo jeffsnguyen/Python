@@ -64,10 +64,9 @@ def main():
     t.end()  # Stop counter and print result
     ###############################################
 
-
     # Testing block
     ###############################################
-    # Scenario: This test tests the timing of a loop running 20,000,000 timesand increment a number by 1 each time.
+    # Scenario: This test tests the timing of a loop running 20,000,000 times and increment a number by 1 each time.
     # Desired Result: Timer will be displayed in seconds, i.e. timer_config = 1
     # Note: In this test, user can change the timer config.
     t.timerConfig(60)  # Set timer display configuration
@@ -79,7 +78,6 @@ def main():
     #### Your test function goes here -  ####
     t.end()  # Stop counter and print result
     ###############################################
-
 
     # Testing block
     ###############################################
@@ -100,10 +98,9 @@ def main():
     t.end()  # Stop counter and print result
     ###############################################
 
-
     # Testing block
     ###############################################
-    # Scenario: This test demonstrates the functionality that enables user to change time config and retrive
+    # Scenario: This test demonstrates the functionality that enables user to change time config and retrieve
     #   the last timer result
     # Desired Result:
     #   1. User can call timerConfig with different argument value to set the time config. The only available value
@@ -115,6 +112,7 @@ def main():
     t.retrieveLastResult()  # Retrieve and print last timer result
     #### Your test function goes here - END ####
     ###############################################
+
 
 #######################
 if __name__ == '__main__':
