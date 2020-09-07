@@ -73,23 +73,28 @@ class Loan(object):
         # r = monthly rate, P = notional value, N = term in months
         # DIV/0 exception handling: print and warning message and return value of None
         try:
-            self.monthly_payment = (self._rate * self._notional * (1 + self._rate)**self._term) / \
-                                ((1 + self._rate) ** self._term - 1)
-            return self.monthly_payment
+            return ((self._rate / 12) * self._notional * (1 + (self._rate / 12)) ** (self._term * 12)) \
+                   / (((1 + (self._rate / 12)) ** (self._term * 12)) - 1)
         except ZeroDivisionError:
             print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
             return None
 
     # Instance method to calculate total payments
     def totalPayments(self):
-        # Calculate payment using the formula total = P(1 + r)**N
+        # Calculate total payment using the formula total = monthlyPayment * term * 12
         # r = monthly rate, P = notional value, N = term in months
-        self.total_payment = self._notional * (1 + self._rate)**self._term
-        return self.total_payment
+        try:
+            return self.monthlyPayment() * self._term * 12
+        except:
+            print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
+            return None
 
     # Instance method to calculate total interest over the entire loan
     def totalInterest(self):
         # Calculate payment using the formula total_interest = totalpayment = notional value
-        self.total_interest = self.total_payment - self._notional
-        return self.total_interest
+        try:
+            return self.totalPayments() - self._notional
+        except:
+            print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
+            return None
     ##########################################################

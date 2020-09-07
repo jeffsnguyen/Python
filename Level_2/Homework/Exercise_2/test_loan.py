@@ -27,10 +27,10 @@ def main():
     # Initialize a loan
     #### Your test code goes here - START ####
     # Note: user can change the parameters' value inside Loan() but not the loan1 variable name.
-    loan1 = Loan(100000, .045, 30)
+    loan1 = Loan(100000, .050, 30)
     #### Your test code goes here - END ####
-    print('Loan info: ' + str(loan1.notional) + ' loan, at monthly rate of ' + str(loan1.rate) + ' over '
-          + str(loan1.term) + ' months.')
+    print('Loan info: ' + str(loan1._notional) + ' loan, at an annual rate of ' + str(loan1._rate) + ' over '
+          + str(loan1._term) + ' years.')
 
     # Scenario: This test demonstrate how to calculate the given loan's monthly payment using
     #   the monthlyPayment function
@@ -59,8 +59,8 @@ def main():
     # Note: user can change the parameters' value inside Loan() but not the loan1 variable name.
     loan2 = Loan(200000, -.045, 0)
     #### Your test code goes here - END ####
-    print('Loan info: ' + str(loan2.notional) + ' loan, at monthly rate of ' + str(loan2.rate) + ' over '
-          + str(loan2.term) + ' months.')
+    print('Loan info: ' + str(loan2._notional) + ' loan, at an annual rate of ' + str(loan2._rate) + ' over '
+          + str(loan2._term) + ' years.')
 
     # Scenario: This test demonstrate how to calculate the given loan's monthly payment using
     #   the monthlyPayment function
