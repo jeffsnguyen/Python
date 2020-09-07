@@ -68,12 +68,17 @@ class Loan(object):
     # Instance method to calculate monthly payments
     # Add dummy period argument to handle exceptions where some loan type
     # can have monthly payment dependent on the period
-    def monthlyPayment(self, period = None):
+    def monthlyPayment(self, period=None):
         # Calculate payment using the formula pmt  = (r * P * (1 + r)**N) / ((1 + r)**N - 1)
         # r = monthly rate, P = notional value, N = term in months
-        self.monthly_payment = (self._rate * self._notional * (1 + self._rate)**self._term) / \
+        # DIV/0 exception handling: print and warning message and return value of None
+        try:
+            self.monthly_payment = (self._rate * self._notional * (1 + self._rate)**self._term) / \
                                 ((1 + self._rate) ** self._term - 1)
-        return self.monthly_payment
+            return self.monthly_payment
+        except ZeroDivisionError:
+            print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
+            return None
 
     # Instance method to calculate total payments
     def totalPayments(self):
@@ -88,5 +93,3 @@ class Loan(object):
         self.total_interest = self.total_payment - self._notional
         return self.total_interest
     ##########################################################
-
-

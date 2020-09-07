@@ -58,9 +58,9 @@ def main():
     t.start()  # Start the counter
     # Run the testing loop to test Timer functionalities
     # Alternative, paste in your own code to test your own function
-    #### Your test function goes here - Start ####
+    #### Your test function goes here - START ####
     testing_loop(10000000)
-    #### Your test function goes here -  ####
+    #### Your test function goes here - END ####
     t.end()  # Stop counter and print result
     ###############################################
 
@@ -73,9 +73,9 @@ def main():
     t.start()  # Start the counter
     # Run the testing loop to test Timer functionalities
     # Alternative, paste in your own code to test your own function
-    #### Your test function goes here - Start ####
+    #### Your test function goes here - START ####
     testing_loop(20000000)
-    #### Your test function goes here -  ####
+    #### Your test function goes here - END ####
     t.end()  # Stop counter and print result
     ###############################################
 
