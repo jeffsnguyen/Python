@@ -1,8 +1,27 @@
-## Type: Homework
-## Level: 1
-## Section: 2.1: Classes
-## Exercise: 1
-## Description: This contains the test function for the class Timer
+# Type: Homework
+# Level: 1
+# Section: 2.1: Classes
+# Exercise: 1
+# Description: This contains the test function for the class Timer
+#   We’ve been using time.time before and after code blocks to report the difference as the ‘time taken’.
+#   This exercise is to generalize and encapsulate this into a class, to make things cleaner and reusable.
+#   The steps are as follows:
+#       a. Create a class called Timer.
+#       b. Add a start method and end method. They should work as follows:
+#               t = Timer()
+#               t.start()
+#               # Lots of code here
+#               t.end() # This should stop the timer and print the time taken
+#       c. Note that start should give an error if the Timer is already started and end should give an error
+#           if the Timer is not currently running.
+#       d. Add a method to retrieve the last timer result.
+#       e. Add the ability to configure the Timer to display either seconds, minutes, or hours.
+#           The timer result (i.e. from end and retrieveLastResult) should use whatever the current configuration is.
+#       f. Test your class thoroughly.
+#   This is obviously cleaner than the previous approach of subtracting times everywhere.
+#   The remaining downside to this class is that one must still explicitly invoke t.start() and t.end()
+#   around the code one wishes to time. We will remedy this when we extend this class using
+#   context managers and decorators (see Levels 3 and 5) to make things even cleaner syntactically.
 
 # Importing necessary packages
 from utils.timer import Timer
