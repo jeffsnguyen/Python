@@ -2,7 +2,7 @@
 # Level: 2
 # Section: 2.1: Classes
 # Exercise: 4
-# Description: This contains the loan class and its functionalities as outlined in Exercise 4
+# Description: This contains the Loan class and its methods as outlined in Exercise 4
 #   To demonstrate understanding of class-level methods, do the following:
 #       a. Implement a class-level method called calcMonthlyPmt, in the Loan base class. This should
 #           calculate a monthly payment based on three parameters: face, rate, and term.
@@ -35,7 +35,7 @@ class Loan(object):
     def notional(self):
         return self._notional
 
-    # Decorator to set minutes
+    # Decorator to set notional value
     @notional.setter
     def notional(self, inotional):
         self._notional = inotional  # Set instance variable notional from input
@@ -45,7 +45,7 @@ class Loan(object):
     def rate(self):
         return self._rate
 
-    # Decorator to set seconds
+    # Decorator to set interest rate
     @rate.setter
     def rate(self, irate):
         self._rate = irate  # Set instance variable rate from input
@@ -55,7 +55,7 @@ class Loan(object):
     def term(self):
         return self._term
 
-    # Decorator to set seconds
+    # Decorator to set loan term
     @term.setter
     def term(self, iterm):
         self._term = iterm  # Set instance variable rate from input
@@ -66,14 +66,12 @@ class Loan(object):
 
     # Instance method to calculate monthly payments
     # Now modified to delegate to calcMonthlyPmt() which is a class method
-    # Add dummy period argument to handle exceptions where some loan type
-    # can have monthly payment dependent on the period
-    def monthlyPayment(self):
+    def monthlyPayment(self, period = None):
         # Calculate payment using the formula pmt  = (r * P * (1 + r)**N) / ((1 + r)**N - 1)
         # r = monthly rate, P = notional value, N = term in months
         # DIV/0 exception handling: print and warning message and return value of None
         try:
-            return self.calcMonthlyPmt(self)
+            return self.calcMonthlyPmt(self._notional, self._rate, self._term)
         except ZeroDivisionError:
             print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
             return None
@@ -113,10 +111,12 @@ class Loan(object):
 
     # Instance method to calculate remaining loan balance due at time t
     # This method use the given formula
+    # Modified to delegate to calcBalance(face, rate, term, period)
+    # Notional is equivalent to face
     def balance(self, t):
         # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
         # r = monthly rate, P = notional value, N = term in months
-        return self.calcBalance(self, t)
+        return self.calcBalance(self._notional, self._rate, self._term, t)
 
     # Instance method to calculate interest due at time t
     # This method use the recursive function
@@ -150,10 +150,10 @@ class Loan(object):
     # Calculate payment using the formula pmt  = (r * P * (1 + r)**N) / ((1 + r)**N - 1)
     # r = monthly rate, P = notional value, N = term in months
     @classmethod
-    def calcMonthlyPmt(cls, cloan):
+    def calcMonthlyPmt(cls, face, rate, term):
         try:
-            return ((cloan.rate / 12) * cloan.notional * (1 + (cloan.rate / 12)) ** (cloan.term * 12)) / \
-                   (((1 + (cloan.rate / 12)) ** (cloan.term * 12)) - 1)
+            return ((rate / 12) * face * (1 + (rate / 12)) ** (term * 12)) / \
+                   (((1 + (rate / 12)) ** (term * 12)) - 1)
         except ZeroDivisionError:
             print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
             return None
@@ -162,6 +162,7 @@ class Loan(object):
     # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
     # r = monthly rate, P = notional value, N = term in months
     @classmethod
-    def calcBalance(cls, cloan, t):
-        return cloan.notional * ((1 + cloan.rate / 12) ** t) - \
-               (Loan.calcMonthlyPmt(cloan) * (((1 + (cloan.rate / 12)) ** t - 1) / (cloan.rate / 12)))
+    def calcBalance(cls, face, rate, term, period):
+        return face * ((1 + rate / 12) ** period) - \
+               (Loan.calcMonthlyPmt(face, rate, term) * (((1 + (rate / 12)) ** period - 1) / (rate / 12)))
+    ##########################################################

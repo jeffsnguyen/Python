@@ -2,7 +2,7 @@
 # Level: 2
 # Section: 2.1: Classes
 # Exercise: 2
-# Description: This contains the loan class and its functionalities as outlined in Exercise 2
+# Description: This contains the Loan classes and its methods
 #   Create a basic loan class exactly as demonstrated in the lecture (including the setter/getter property
 #   methods). Then, extend it with methods that return the following (refer to the slides for any
 #   necessary formulas):
@@ -34,7 +34,7 @@ class Loan(object):
     def notional(self):
         return self._notional
 
-    # Decorator to set minutes
+    # Decorator to set notional value
     @notional.setter
     def notional(self, inotional):
         self._notional = inotional  # Set instance variable notional from input
@@ -44,7 +44,7 @@ class Loan(object):
     def rate(self):
         return self._rate
 
-    # Decorator to set seconds
+    # Decorator to set interest rate
     @rate.setter
     def rate(self, irate):
         self._rate = irate  # Set instance variable rate from input
@@ -54,7 +54,7 @@ class Loan(object):
     def term(self):
         return self._term
 
-    # Decorator to set seconds
+    # Decorator to set loan term
     @term.setter
     def term(self, iterm):
         self._term = iterm  # Set instance variable rate from input

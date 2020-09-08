@@ -159,3 +159,4 @@ class Timer(object):
             print('Timer will be displayed in seconds by default...')
         return cls.timer_config
     ##########################################################
+

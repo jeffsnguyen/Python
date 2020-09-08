@@ -2,7 +2,7 @@
 # Level: 2
 # Section: 2.1: Classes
 # Exercise: 1
-# Description: This contains the test function for the class Timer
+# Description: This contains the tests the class Timer and its methods
 #   We’ve been using time.time before and after code blocks to report the difference as the ‘time taken’.
 #   This exercise is to generalize and encapsulate this into a class, to make things cleaner and reusable.
 #   The steps are as follows:

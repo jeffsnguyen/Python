@@ -2,7 +2,7 @@
 # Level: 2
 # Section: 2.1: Classes
 # Exercise: 3
-# Description: This contains the test function for the Exercise 3, loan class
+# Description: This contains the test functions for the Exercise 3, Loan class
 #   Interest due at time T on a loan depends on the outstanding balance. Principal due is the monthly
 #   payment less the interest due. Conceptually, these are recursive calculations as one can determine
 #   the interest/principal due at time T if one knows the balance at time T-1 (which, in turn, can be

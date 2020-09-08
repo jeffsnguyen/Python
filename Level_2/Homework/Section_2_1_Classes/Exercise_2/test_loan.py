@@ -2,7 +2,7 @@
 # Level: 2
 # Section: 2.1: Classes
 # Exercise: 2
-# Description: This contains the test function for the Exercise 2, loan class
+# Description: This contains the test functions for the Exercise 2, Loan class
 #   Create a basic loan class exactly as demonstrated in the lecture (including the setter/getter property
 #   methods). Then, extend it with methods that return the following (refer to the slides for any
 #   necessary formulas):
