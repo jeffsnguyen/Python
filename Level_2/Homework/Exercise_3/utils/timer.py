@@ -1,5 +1,5 @@
 # Type: Homework
-# Level: 1
+# Level: 2
 # Section: 2.1: Classes
 # Exercise: 1
 # Description: This contains the class Timer
@@ -61,6 +61,7 @@ class Timer(object):
         cls._dminutes = minutes
         cls._dseconds = seconds
 
+    ##########################################################
     # Decorators to define and set values for instance variables
     # Decorator to create a property function to define the argument hours
     @property
@@ -91,9 +92,9 @@ class Timer(object):
     @seconds.setter
     def seconds(self, iseconds):
         self._seconds = iseconds  # Set instance variable seconds from input
+    ##########################################################
 
-        # Class method to configure format of timer
-
+    ##########################################################
     # Class method functions to perform some actions
     # Class method to start time counter
     @classmethod
@@ -157,3 +158,4 @@ class Timer(object):
                   ', is not implemented, only: 1: seconds, 60: minutes, 3600: hours.')
             print('Timer will be displayed in seconds by default...')
         return cls.timer_config
+    ##########################################################

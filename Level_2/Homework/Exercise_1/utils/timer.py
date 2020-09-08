@@ -1,5 +1,5 @@
 # Type: Homework
-# Level: 1
+# Level: 2
 # Section: 2.1: Classes
 # Exercise: 1
 # Description: This contains the class Timer
@@ -47,11 +47,12 @@ class Timer(object):
     timer_check = False
 
     # Initialize objects to format elapsed time in seconds, minutes or hours
-    timer_config = 1  # Initialize timer_config variable to format the displayed elapsed time, default is 1
-    timer_dict = {1: 'seconds', 60: 'minutes', 3600: 'hours'}  # Initialize dictionary to lookup proper string
+    # Initialize timer_config variable to format the displayed elapsed time, default is 1
+    timer_config = 1
+    # Initialize dictionary to lookup proper string to display 'seconds', 'minutes' or 'hours'
+    timer_dict = {1: 'seconds', 60: 'minutes', 3600: 'hours'}
 
-    # to display 'seconds', 'minutes' or 'hours'
-
+    ##########################################################
     # Default time function to set default time
     @classmethod
     # Set at the class level the value of hours, minutes, seconds as default if not speicified
@@ -92,8 +93,7 @@ class Timer(object):
     def seconds(self, iseconds):
         self._seconds = iseconds  # Set instance variable seconds from input
 
-        # Class method to configure format of timer
-
+    ##########################################################
     # Class method functions to perform some actions
     # Class method to start time counter
     @classmethod

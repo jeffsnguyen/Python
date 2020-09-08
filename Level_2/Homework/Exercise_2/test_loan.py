@@ -1,5 +1,5 @@
 # Type: Homework
-# Level: 1
+# Level: 2
 # Section: 2.1: Classes
 # Exercise: 2
 # Description: This contains the test function for the Exercise 2, loan class

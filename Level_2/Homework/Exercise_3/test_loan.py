@@ -1,17 +1,20 @@
 # Type: Homework
-# Level: 1
+# Level: 2
 # Section: 2.1: Classes
-# Exercise: 2
-# Description: This contains the test function for the Exercise 2, loan class
-#   Create a basic loan class exactly as demonstrated in the lecture (including the setter/getter property
-#   methods). Then, extend it with methods that return the following (refer to the slides for any
-#   necessary formulas):
-#       a. The monthly payment amount of the loan (monthlyPayment). Even though
-#           monthlyPayment is likely to be equal for all months, you should still define this with a
-#           dummy ‘period’ parameter, since it’s possible some loan types will have a monthly payment
-#           dependent on the period.
-#       b. The total payments over the entire loan (totalPayments). This is principal plus interest.
-#       c. The total interest over the entire loan (totalInterest).
+# Exercise: 3
+# Description: This contains the test function for the Exercise 3, loan class
+#   Interest due at time T on a loan depends on the outstanding balance. Principal due is the monthly
+#   payment less the interest due. Conceptually, these are recursive calculations as one can determine
+#   the interest/principal due at time T if one knows the balance at time T-1 (which, in turn, can be
+#   determined if one knows the balance at time T-2).
+#
+#   For each of the below functions, implement two versions: A recursive version (per the above
+#   statement) and a version that uses the formulas provided in the slides:
+#       a. The interest amount due at a given period (interestDue).
+#       b. The principal amount due at a given period (principalDue).
+#       c. The balance of the loan at a given period (balance).
+# Use your Timer class to time each version of each function; what do you observe? What happens as
+# the time period increases?
 
 # Importing necessary packages
 
@@ -60,7 +63,7 @@ def main():
     # Desired Result: Print out correct remaining balance at time t value.
     # 3.c Demo balance function
     run_time.start()
-    print('The remaining balance of this loan is: ', str(loan1.balance(t)))
+    print('The remaining balance of this loan is: ', loan1.balance(t))
     run_time.end()
     print()
     ###############################################

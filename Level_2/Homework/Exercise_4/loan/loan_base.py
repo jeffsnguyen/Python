@@ -1,20 +1,17 @@
 # Type: Homework
 # Level: 2
 # Section: 2.1: Classes
-# Exercise: 3
-# Description: This contains the loan class and its functionalities as outlined in Exercise 2
-#   Interest due at time T on a loan depends on the outstanding balance. Principal due is the monthly
-#   payment less the interest due. Conceptually, these are recursive calculations as one can determine
-#   the interest/principal due at time T if one knows the balance at time T-1 (which, in turn, can be
-#   determined if one knows the balance at time T-2).
-#
-#   For each of the below functions, implement two versions: A recursive version (per the above
-#   statement) and a version that uses the formulas provided in the slides:
-#       a. The interest amount due at a given period (interestDue).
-#       b. The principal amount due at a given period (principalDue).
-#       c. The balance of the loan at a given period (balance).
-# Use your Timer class to time each version of each function; what do you observe? What happens as
-# the time period increases?
+# Exercise: 4
+# Description: This contains the loan class and its functionalities as outlined in Exercise 4
+#   To demonstrate understanding of class-level methods, do the following:
+#       a. Implement a class-level method called calcMonthlyPmt, in the Loan base class. This should
+#           calculate a monthly payment based on three parameters: face, rate, and term.
+#       b. Create a class-level function, in the Loan base class, which calculates the balance
+#           (calcBalance). Input parameters should be face, rate, term, period.
+#       c. Test the class-level methods in main.
+#       d. Modify the object-level methods for monthlyPayment and balance to delegate to the class-level methods.
+#       e. Test the object-level methods to ensure they still work correctly.
+#       f. What are the benefits of class-level methods? When are they useful?
 
 # Importing packages
 
@@ -62,21 +59,21 @@ class Loan(object):
     @term.setter
     def term(self, iterm):
         self._term = iterm  # Set instance variable rate from input
-
     ##########################################################
 
     ##########################################################
     # Add instance method functionalities to loan class
+
     # Instance method to calculate monthly payments
+    # Now modified to delegate to calcMonthlyPmt() which is a class method
     # Add dummy period argument to handle exceptions where some loan type
     # can have monthly payment dependent on the period
-    def monthlyPayment(self, period=None):
+    def monthlyPayment(self):
         # Calculate payment using the formula pmt  = (r * P * (1 + r)**N) / ((1 + r)**N - 1)
         # r = monthly rate, P = notional value, N = term in months
         # DIV/0 exception handling: print and warning message and return value of None
         try:
-            return ((self._rate/12) * self._notional * (1 + (self._rate/12))**(self._term*12)) \
-                   / (((1 + (self._rate/12))**(self._term*12)) - 1)
+            return self.calcMonthlyPmt(self)
         except ZeroDivisionError:
             print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
             return None
@@ -105,7 +102,7 @@ class Loan(object):
     def interestDue(self, t):
         # Calculate payment using the formula interestDue = r * loan balance bal
         # r = monthly rate, P = notional value, N = term in months
-        return (self._rate/12) * self.balance(t-1)
+        return (self._rate / 12) * self.balance(t - 1)
 
     # Instance method to calculate principal due at time t
     # This method use the given formula
@@ -119,8 +116,7 @@ class Loan(object):
     def balance(self, t):
         # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
         # r = monthly rate, P = notional value, N = term in months
-        return self._notional * ((1+self._rate/12)**t) - \
-               (self.monthlyPayment() * (((1 + (self._rate/12))**t - 1)/(self._rate/12)))
+        return self.calcBalance(self, t)
 
     # Instance method to calculate interest due at time t
     # This method use the recursive function
@@ -144,5 +140,28 @@ class Loan(object):
         if t == 1:
             return self._notional - self.principalDueRecursive(t)
         else:
-            return self.balanceRecursive(t-1) - self.principalDueRecursive(t)
+            return self.balanceRecursive(t - 1) - self.principalDueRecursive(t)
     ##########################################################
+
+    ##########################################################
+    # Add class method functionalities to loan class
+
+    # Class method to calculate the monthly payment of the given loan
+    # Calculate payment using the formula pmt  = (r * P * (1 + r)**N) / ((1 + r)**N - 1)
+    # r = monthly rate, P = notional value, N = term in months
+    @classmethod
+    def calcMonthlyPmt(cls, cloan):
+        try:
+            return ((cloan.rate / 12) * cloan.notional * (1 + (cloan.rate / 12)) ** (cloan.term * 12)) / \
+                   (((1 + (cloan.rate / 12)) ** (cloan.term * 12)) - 1)
+        except ZeroDivisionError:
+            print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
+            return None
+
+    # Class method to calculate outstanding balance of the given loan at given period
+    # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
+    # r = monthly rate, P = notional value, N = term in months
+    @classmethod
+    def calcBalance(cls, cloan, t):
+        return cloan.notional * ((1 + cloan.rate / 12) ** t) - \
+               (Loan.calcMonthlyPmt(cloan) * (((1 + (cloan.rate / 12)) ** t - 1) / (cloan.rate / 12)))

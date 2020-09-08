@@ -1,5 +1,5 @@
 # Type: Homework
-# Level: 1
+# Level: 2
 # Section: 2.1: Classes
 # Exercise: 1
 # Description: This contains the test function for the class Timer

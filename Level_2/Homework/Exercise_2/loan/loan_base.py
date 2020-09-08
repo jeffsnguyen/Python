@@ -1,5 +1,5 @@
 # Type: Homework
-# Level: 1
+# Level: 2
 # Section: 2.1: Classes
 # Exercise: 2
 # Description: This contains the loan class and its functionalities as outlined in Exercise 2
@@ -58,8 +58,6 @@ class Loan(object):
     @term.setter
     def term(self, iterm):
         self._term = iterm  # Set instance variable rate from input
-
-        # Class method to configure format of timer
 
     ##########################################################
 
