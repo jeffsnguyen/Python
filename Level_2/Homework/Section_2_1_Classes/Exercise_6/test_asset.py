@@ -26,29 +26,40 @@ def main():
     #       3. Test annualDepr() method
     #       4. Test value(t) method
     ###############################################
+    # Test 1
     # Testing Asset
     # Scenario: Initiate an asset value and print result.
     # Desire result: Print correct result as assigned
+    print('Test 1')
     asset1 = Asset(1000000)
     print('The asset value entry is:', asset1.__repr__())
+    print()
 
+    # Test 2
     # Testing annualDepr()
     # Scenario: Print the annualDepr rate
     # Desire result: Print correct result, i.e. .10
+    print('Test 2')
     print('The annual depreciation rate is:', asset1.annualDepr())
+    print()
 
+    # Test 3
     # Testing monthlyDepr()
     # Scenario: Calculate and print the monthlyDepr rate form annualRate()
     # Desire result: Print correct result, i.e. .01
+    print('Test 3')
     print('The monthly depreciation rate is:', asset1.monthlyDepr())
+    print()
 
+    # Test 4
     # Testing value(t)
     # Scenario: Calculate and print the current value if the asset for given period t using value(t)
     #   Formula: current value = initial value * [(1-monthlyDeprRate)**t]
     # Desire result: Print correct result
+    print('Test 4')
     t = 10
     print('The current value of the asset at time t=' + str(t) + ' is: ' + str(asset1.value(t)))
-
+    print()
     ###############################################
 
 

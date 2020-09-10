@@ -2,7 +2,7 @@
 # Level: 2
 # Section: 2.2: Intermediate Classes
 # Exercise: 1
-# Description: This contains the Asset class, its objects and methods
+# Description: This contains Loan class methods: FixedRateLoan, VariableRateLoan, getRate
 #   As shown in the lecture, create derived classes as follows:
 #       a. A FixedRateLoan class which derives from Loan.
 #       b. A VariableRateLoan class which derives from Loan. This will differ from a FixedRateLoan in
@@ -30,52 +30,53 @@
 #           exercises and case study are on fixed rate loans only).
 
 # Importing packages
+from loan.loan_base import Loan
 
+# Derived classes from Loan:
+# FixedRateLoan class
+class FixedRateLoan(Loan):
+    def rate(self, period = None):
+        # Overrides the base class
+        return self._rate
 
-# Asset class
-# This class object takes on the value of the asset
-class Asset(object):
+# VariableRateLoan class
+class VariableRateLoan(Loan):
 
-    # Initialization function with value
-    # Also included in this function is ability to set the arguments to 0 if they don't already exists
-    def __init__(self, initialValue):
-        # Main attributes
-        self._initialValue = initialValue
+    # Initialize function
+    def __init__(self, notional, rateDict, term):  # overide the init function in the base class
+        # Check if rateDict is actually a dict vis isinstance()
+        self._rateDict = rateDict if isinstance(rateDict, dict) else print('Rate is not a dictionary')
+        super(VariableRateLoan, self).__init__(notional, None, term)  # invoke initialization the base class
 
-    ##########################################################
-    # Decorators to define and set values for instance variables
-    # Decorator to create a property function to define the argument value
-    @property
-    def value(self):
-        return self._initialValue
+    # Derived instance method to find the rate of a given period
+    # rateDict contains startPeriod as key and rate as value for each rate
+    # Methodology:
+    #   1. Create a new temporary dict that sort the key (period) by values
+    #   2. Of this new temp dict:
+    #       a. Find the key that is closest to the passed-in period
+    #       b. Compare this key with the passed-in period, if the passed-in value is smaller,
+    #           remove the key from the temp dict
+    #       c. Find the new closest key based on the new dict.
+    #       d. Continue loop until said key is found.
+    #   3. Return the corresponded key value (interest rate) of the newly founded closest key. This is the interest
+    #       rate we are looking for.
+    def getRate(self, startPeriod):
+        self.sorted_key = dict(sorted(self._rateDict.items(), key = lambda k:k[1], reverse = False))
+        self.closest_key = min(self.sorted_key.keys(), key = lambda k: abs(k - startPeriod))
+        while self.closest_key > startPeriod:
+            self.sorted_key.pop(self.closest_key, None)
+            self.closest_key = min(self.sorted_key.keys(), key=lambda k: abs(k - startPeriod))
+        return self._rateDict[self.closest_key]
 
-    # Decorator to set value
-    @value.setter
-    def value(self, ivalue):
-        self._initialValue = ivalue  # Set instance variable notional from input
-    ##########################################################
-
-    ##########################################################
-    # Add instance method functionalities to asset class
-
-    # Return the repr value of the Asset object
+    # Return the repr value of the whole rateDict
     def __repr__(self):
-        return str(self._initialValue)
+        return str(self._rateDict)
+    # Interest rate stored in a dict {0: .025, 15: .045, 20: 015}
+    # 0 is the original rate and is required
+    ##########################################################
 
-    # Return a yearly depreciation rate
-    # For the purpose of this exercise, simply return 10% or 0.10
-    def annualDepr(self):
-        return .10
-
-    # Calculate and return a monthly depreciation rate based on the annual depreciation rate
-    # Formula monthly = annual / 12
-    def monthlyDepr(self):
-        return self.annualDepr() / 12
-
-    # Calculate and return current value of asset at a given time t
-    # Formula: current value = initial value * [(1-monthlyDeprRate)**t]
-    def value(self, t):
-        return self._initialValue * ((1 - self.monthlyDepr())**t)
+    ##########################################################
+    # Add instance method functionalities to loan class
 
     ##########################################################
 

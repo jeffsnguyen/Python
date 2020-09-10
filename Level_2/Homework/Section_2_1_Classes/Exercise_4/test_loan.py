@@ -21,7 +21,7 @@ from loan.loan_base import Loan
 
 
 def main():
-    # Testing block
+    # Testing block 1
     # Scenario:
     #   This block will, using class methods:
     #       1. Calculate monthly payment (calcMonthlyPmt)
@@ -44,28 +44,38 @@ def main():
     # Scenario: This test demonstrate how to calculate the given loan's monthly payment using class methods
     # Desired Result: Print out correct monthly payment value.
     # 4.a Demo calcMonthlyPmt function
+    print('Test 1')
     print('The monthly payment of this loan is: ', Loan.calcMonthlyPmt(face, rate, term))
+    print()
     ###############################################
 
+    # Test 2
     # Scenario: This test demonstrate how to calculate the outstanding balance of the loan at a given period.
     # Desired Result: Print out correct outstanding balance due value.
     # 4.b Demo calcBalance function
+    print('Test 2')
     print('The outstanding balance of this loan at period ' + str(period) + ' months is: ' +
           str(Loan.calcBalance(face, rate, term, period)))
+    print()
 
+    # Test 3
     # Scenario: This test demonstrate how to calculate the given loan's monthly payment using class methods using
     # the revised monthlyPmt function that delegates to class-level methods
     # Desired Result: Print out correct monthly payment value.
     # 4.d Demo calcBalance function
+    print('Test 3')
     print('The monthly payment of this loan is: ', loan1.monthlyPayment())
+    print()
 
+    # Test 4
     # Scenario: This test demonstrate how to calculate the outstanding balance of the loan at a given period using
     # the revised balance  function that delegates to the class-level methods.
     # Desired Result: Print out correct outstanding balance due value.
     # 4.e Demo calcBalance function
+    print('Test 4')
     print('The outstanding balance of this loan at period ' + str(period) + ' months is: ' +
           str(loan1.balance(period)))
-
+    print()
     ###############################################
     # Benefits of class methods:
     # 1. Useful for methods that are related to the class but not meant to perform on an instantiated object.

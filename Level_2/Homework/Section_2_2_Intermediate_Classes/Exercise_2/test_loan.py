@@ -1,33 +1,17 @@
 # Type: Homework
 # Level: 2
 # Section: 2.2: Intermediate Classes
-# Exercise: 1
-# Description: This contains the test function for the Exercise 1: FixedRateLoan, VariableRateLoan, getRate
-#   As shown in the lecture, create derived classes as follows:
-#       a. A FixedRateLoan class which derives from Loan.
-#       b. A VariableRateLoan class which derives from Loan. This will differ from a FixedRateLoan in
-#           that it has a rate dict instead of a single rate value. This dict will contain startPeriod as key
-#           and rate as value. This should have its own __init__ function that does the following:
-#               i. Validates that the rate parameter is indeed a dict (if not, print an error).
-#               ii. Invokes the super-class’ __init__ function with all the parameters.
-#
-#           The result of the above is that a VariableRateLoan's _rate attribute, as well as its rate
-#           property getters/setters will be a dict instead of a value. However, the functions that use
-#           the rate (i.e. balance) does not yet know how to handle a dict of rates. To handle this, do the
-#           following:
-#               i. Create a getRate function in the base Loan class. This should take a period
-#                   parameter. and return the result of the rate property.
-#               ii. Override the getRate function in VariableRateLoan. This version will calculate the
-#                   rate from the dict based on the period argument. Tip: Keep in mind that the dict
-#                   only contains startPeriod for each rate -- the code will need to infer the rate for any
-#                   period in between.
-#
-#           Then, modify the Loan class functions (i.e. balance) to use the getRate function to get the
-#           rate for the current period.
-#
-#           Note that the monthly payment and balance formulas are technically different in this
-#           Variable case, but we will avoid changing it for simplicity (the focus of the remaining
-#           exercises and case study are on fixed rate loans only).
+# Exercise: 2
+# Description: This contains Loan class methods: FixedRateLoan, VariableRateLoan, getRate
+#   Create a MortgageMixin class which will contain mortgage-specific methods. In particular, we’d like
+#       to implement the concept of Private Mortgage Insurance (PMI). For those unaware, PMI is an extra
+#       monthly payment that one must make to compensate for the added risk of having a Loan-to-Value
+#       (LTV) ratio of less than 80% (in other words, the loan covers >= 80% of the value of the asset).
+#   To this end, implement a function called PMI that returns 0.0075% of the loan face value, but only if
+#       the LTV is < 80%. For now, assume that the initial loan amount is for 100% of the asset value.
+#   Additionally, override the base class monthlyPayment and principalDue functions to account for
+#       PMI (Hint: use super to avoid duplicating the formulas, and note that the other methods
+#       (interestDue, balance, etc.) should not require any changes).
 
 # Importing necessary packages
 from loan.loans import FixedRateLoan, VariableRateLoan
@@ -55,7 +39,7 @@ def main():
     # Scenario: Assign a child VariableRateLoan (child of Loan) variable.
     #   In this case, the rate is a dict.
     # Desire result: Print correct result as assigned
-    loan2 = VariableRateLoan(100000, {0: .1, 5: .08, 9: .07, 15: .05, 28: .015, 30: .01}, 30)
+    loan2 = VariableRateLoan(100000, {0: .1, 30: .01, 5: .08, 9: .07, 15: .05, 28: .015}, 30)
     print('Test 2')
     print('The Variable Rate is:', loan2.__repr__())
     print()

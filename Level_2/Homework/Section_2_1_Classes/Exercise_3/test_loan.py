@@ -25,7 +25,7 @@ from utils.timer import Timer
 
 
 def main():
-    # Testing block
+    # Testing block 1
     ###############################################
     # Scenario:
     #   This block will:
@@ -34,6 +34,7 @@ def main():
     # Initialize a loan
     #### Your test code goes here - START ####
     # Note: user can change the parameters' value inside loan() but not the loan1 variable name.
+    print('Test 1')
     loan1 = Loan(100000, 0.050, 30)
     t = 20
     run_time = Timer(0, 0, 0)
@@ -41,7 +42,6 @@ def main():
     print('Calculation using formulas:')
     print('Loan info: ' + str(loan1.notional) + ' loan, at monthly rate of ' + str(loan1.rate) + ' over '
           + str(loan1.term) + ' months.')
-
     # Scenario: This test demonstrate how to calculate the given loan's monthly interest due at time t using
     #   the interestDue function (calculating using given formula and not recursive function).
     # Desired Result: Print out correct monthly interest due value.
@@ -49,26 +49,32 @@ def main():
     run_time.start()
     print('The interest due of this loan is: ', loan1.interestDue(t))
     run_time.end()
+    print()
 
+    # Test 2
     # Scenario: This test demonstrate how to calculate the given loan's monthly principal due at time t using
     #   the principalDue function (calculating using given formula and not recursive function).
     # Desired Result: Print out correct monthly principal due value.
     # 3.b Demo principalDue function
+    print('Test 2')
     run_time.start()
     print('The principal due of this loan is: ', loan1.principalDue(t))
     run_time.end()
+    print()
 
+    # Test 3
     # Scenario: This test demonstrate how to calculate the given loan's remaining balance due at time t using
     #   the balance function (calculating using given formula and not recursive function).
     # Desired Result: Print out correct remaining balance at time t value.
     # 3.c Demo balance function
+    print('Test 3')
     run_time.start()
     print('The remaining balance of this loan is: ', loan1.balance(t))
     run_time.end()
     print()
     ###############################################
 
-    # Testing block
+    # Testing block 4
     # Scenario:
     #   This block will:
     #       1. Calculate interest due, principal due and balance of a loan using recursive function.
@@ -87,25 +93,33 @@ def main():
     #   the interestDueRecursive function.
     # Desired Result: Print out correct monthly interest due value.
     # 3.a Demo interestDue function
+    print('Test 4')
     run_time.start()
     print('The interest due of this loan is: ', loan1.interestDueRecursive(t))
     run_time.end()
+    print()
 
+    # Test 5
     # Scenario: This test demonstrate how to calculate the given loan's monthly principal due at time t using
     #   the principalDueRecursive function.
     # Desired Result: Print out correct monthly principal due value.
     # 3.b Demo principalDue function
+    print('Test 5')
     run_time.start()
     print('The principal due of this loan is: ', loan1.principalDueRecursive(t))
     run_time.end()
+    print()
 
+    # Test 6
     # Scenario: This test demonstrate how to calculate the given loan's remaining balance due at time t using
     #   the balanceRecursive function.
     # Desired Result: Print out correct remaining balance at time t value.
     # 3.c Demo balanceRecursive function
+    print('Test 6')
     run_time.start()
     print('The remaining balance of this loan is: ', loan1.balanceRecursive(t))
     run_time.end()
+    print()
     ###############################################
 
     # Comments on run time: Calculations using direct formula takes no time to run at all (0.0 seconds).
