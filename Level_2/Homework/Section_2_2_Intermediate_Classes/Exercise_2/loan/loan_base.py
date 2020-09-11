@@ -2,7 +2,7 @@
 # Level: 2
 # Section: 2.2: Intermediate Classes
 # Exercise: 2
-# Description: This contains Loan class methods: FixedRateLoan, VariableRateLoan, getRate
+# Description: This contains base Loan class methods
 #   Create a MortgageMixin class which will contain mortgage-specific methods. In particular, we’d like
 #       to implement the concept of Private Mortgage Insurance (PMI). For those unaware, PMI is an extra
 #       monthly payment that one must make to compensate for the added risk of having a Loan-to-Value
@@ -146,7 +146,7 @@ class Loan(object):
 
     # Instance method to get interest rate from Loan object.
     def getRate(self, period=None):
-        raise NotImplementedError
+        return self._rate
     ##########################################################
 
     ##########################################################

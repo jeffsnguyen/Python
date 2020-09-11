@@ -1,17 +1,9 @@
 # Type: Homework
 # Level: 2
 # Section: 2.2: Intermediate Classes
-# Exercise: 2
-# Description: This contains MortgageMixin class methods.
-#   Create a MortgageMixin class which will contain mortgage-specific methods. In particular, we’d like
-#       to implement the concept of Private Mortgage Insurance (PMI). For those unaware, PMI is an extra
-#       monthly payment that one must make to compensate for the added risk of having a Loan-to-Value
-#       (LTV) ratio of less than 80% (in other words, the loan covers >= 80% of the value of the asset).
-#   To this end, implement a function called PMI that returns 0.0075% of the loan face value, but only if
-#       the LTV is < 80%. For now, assume that the initial loan amount is for 100% of the asset value.
-#   Additionally, override the base class monthlyPayment and principalDue functions to account for
-#       PMI (Hint: use super to avoid duplicating the formulas, and note that the other methods
-#       (interestDue, balance, etc.) should not require any changes).
+# Exercise: 3
+# Description: This contains the MortgageMixin class methods
+#   Create a VariableMortgage and FixedMortgage class. These should each derive-from the appropriate base class(es)
 
 # Importing packages
 from loan.loan_base import Loan
@@ -19,9 +11,9 @@ from loan.loan_base import Loan
 # Derived classes from Loan:
 # MortgageMixin
 # Does not derive from loan, only define certain things related to the mortgage
-class MortgageMixin(object):
+class MortgageMixin(Loan):
     def __init__(self, notional, rate, term, home):
-        super(MortgageMixin, self).__init__(notional, rate, term)  # invoke init function if there is a base class
+        super().__init__(notional, rate, term)  # invoke init function if there is a base class
         self._home = home
 
     ##########################################################
@@ -41,6 +33,11 @@ class MortgageMixin(object):
     ##########################################################
     # Add instance method functionalities to MortgageMixin class
 
+    # Return the repr value of the object
+    def __repr__(self):
+        return '$' + str(self._notional) + ' at ' + str(self._rate) + ' per year, for ' + str(self._term) + \
+               ' years and home value is $' + str(self._home)
+
     # Instance method to calculate PMI based on LTV
     # Private Mortgage Insurance:
     # PMI is an extra monthly payment that one must make to compensate for the added risk of having a Loan-to-Value
@@ -48,7 +45,7 @@ class MortgageMixin(object):
     #   For example, for 100k home, mortgage > 100k -> have to pay PMI
     # This function returns .000075 of the loan notional value if LTV < .8
     # NOTE: For the purpose of this exercise, return 0 as the assumption is LTV ratio = 1 > .8
-    def PMI(self, asset_val = None):
+    def PMI(self, period=None):
         return 0
 
     # Instance method to calculate monthly payment.

@@ -1,17 +1,9 @@
 # Type: Homework
 # Level: 2
 # Section: 2.2: Intermediate Classes
-# Exercise: 2
+# Exercise: 3
 # Description: This contains Loan class methods: FixedRateLoan, VariableRateLoan, getRate
-#   Create a MortgageMixin class which will contain mortgage-specific methods. In particular, we’d like
-#       to implement the concept of Private Mortgage Insurance (PMI). For those unaware, PMI is an extra
-#       monthly payment that one must make to compensate for the added risk of having a Loan-to-Value
-#       (LTV) ratio of less than 80% (in other words, the loan covers >= 80% of the value of the asset).
-#   To this end, implement a function called PMI that returns 0.0075% of the loan face value, but only if
-#       the LTV is < 80%. For now, assume that the initial loan amount is for 100% of the asset value.
-#   Additionally, override the base class monthlyPayment and principalDue functions to account for
-#       PMI (Hint: use super to avoid duplicating the formulas, and note that the other methods
-#       (interestDue, balance, etc.) should not require any changes).
+#   Create a VariableMortgage and FixedMortgage class. These should each derive-from the appropriate base class(es)
 
 # Importing packages
 from loan.loan_base import Loan

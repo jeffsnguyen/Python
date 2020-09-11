@@ -63,9 +63,9 @@ class Asset(object):
     ##########################################################
 
     ##########################################################
-    # Add class method functionalities to loan class
+    # Add class method functionalities
 
     ##########################################################
-    # Add static method functionalities to loan class
+    # Add static method functionalities
 
     ##########################################################
