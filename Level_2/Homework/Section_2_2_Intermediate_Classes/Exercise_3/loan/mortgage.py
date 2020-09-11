@@ -70,6 +70,7 @@ class MortgageMixin(object):
 class FixedMortgage(MortgageMixin, FixedRateLoan):
     pass
 
+# VariableMortgage
 # Derived from MortgageMixin and VariableRateLoan
 class VariableMortgage(MortgageMixin, VariableRateLoan):
     pass

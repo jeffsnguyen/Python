@@ -12,6 +12,8 @@
 #   Additionally, override the base class monthlyPayment and principalDue functions to account for
 #       PMI (Hint: use super to avoid duplicating the formulas, and note that the other methods
 #       (interestDue, balance, etc.) should not require any changes).
+#   Create a VariableMortgage and FixedMortgage class. These should each derive-from the
+#       appropriate base class(es) (TBD by student).
 
 # Importing necessary packages
 from loan.mortgage import MortgageMixin, FixedMortgage, VariableMortgage
