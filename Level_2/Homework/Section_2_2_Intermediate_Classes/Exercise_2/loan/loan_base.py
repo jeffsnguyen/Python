@@ -1,17 +1,33 @@
 # Type: Homework
 # Level: 2
 # Section: 2.2: Intermediate Classes
-# Exercise: 2
-# Description: This contains base Loan class methods
-#   Create a MortgageMixin class which will contain mortgage-specific methods. In particular, we’d like
-#       to implement the concept of Private Mortgage Insurance (PMI). For those unaware, PMI is an extra
-#       monthly payment that one must make to compensate for the added risk of having a Loan-to-Value
-#       (LTV) ratio of less than 80% (in other words, the loan covers >= 80% of the value of the asset).
-#   To this end, implement a function called PMI that returns 0.0075% of the loan face value, but only if
-#       the LTV is < 80%. For now, assume that the initial loan amount is for 100% of the asset value.
-#   Additionally, override the base class monthlyPayment and principalDue functions to account for
-#       PMI (Hint: use super to avoid duplicating the formulas, and note that the other methods
-#       (interestDue, balance, etc.) should not require any changes).
+# Exercise: 1
+# Description: This contains Loan class methods: FixedRateLoan, VariableRateLoan, getRate
+#   As shown in the lecture, create derived classes as follows:
+#       a. A FixedRateLoan class which derives from Loan.
+#       b. A VariableRateLoan class which derives from Loan. This will differ from a FixedRateLoan in
+#           that it has a rate dict instead of a single rate value. This dict will contain startPeriod as key
+#           and rate as value. This should have its own __init__ function that does the following:
+#               i. Validates that the rate parameter is indeed a dict (if not, print an error).
+#               ii. Invokes the super-class’ __init__ function with all the parameters.
+#
+#           The result of the above is that a VariableRateLoan's _rate attribute, as well as its rate
+#           property getters/setters will be a dict instead of a value. However, the functions that use
+#           the rate (i.e. balance) does not yet know how to handle a dict of rates. To handle this, do the
+#           following:
+#               i. Create a getRate function in the base Loan class. This should take a period
+#                   parameter. and return the result of the rate property.
+#               ii. Override the getRate function in VariableRateLoan. This version will calculate the
+#                   rate from the dict based on the period argument. Tip: Keep in mind that the dict
+#                   only contains startPeriod for each rate -- the code will need to infer the rate for any
+#                   period in between.
+#
+#           Then, modify the Loan class functions (i.e. balance) to use the getRate function to get the
+#           rate for the current period.
+#
+#           Note that the monthly payment and balance formulas are technically different in this
+#           Variable case, but we will avoid changing it for simplicity (the focus of the remaining
+#           exercises and case study are on fixed rate loans only).
 
 # Importing packages
 
@@ -73,7 +89,7 @@ class Loan(object):
         # r = monthly rate, P = notional value, N = term in months
         # DIV/0 exception handling: print and warning message and return value of None
         try:
-            return self.calcMonthlyPmt(self._notional, self.getRate(None), self._term)
+            return self.calcMonthlyPmt(self._notional, self.getRate(period), self._term)
         except ZeroDivisionError:
             print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
             return None
@@ -102,14 +118,14 @@ class Loan(object):
     def interestDue(self, t):
         # Calculate payment using the formula interestDue = r * loan balance bal
         # r = monthly rate, P = notional value, N = term in months
-        return Loan.monthlyRate(self.getRate()) * self.balance(t - 1)
+        return Loan.monthlyRate(self.getRate(t)) * self.balance(t - 1)
 
     # Instance method to calculate principal due at time t
     # This method use the given formula
     def principalDue(self, t):
         # Calculate payment using the formula principalDue = monthlyPayment - interestDue
         # r = monthly rate, P = notional value, N = term in months
-        return Loan.monthlyPayment() - self.interestDue(t)
+        return Loan.monthlyPayment(t) - self.interestDue(t)
 
     # Instance method to calculate remaining loan balance due at time t
     # This method use the given formula
@@ -118,16 +134,16 @@ class Loan(object):
     def balance(self, t):
         # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
         # r = monthly rate, P = notional value, N = term in months
-        return self.calcBalance(self._notional, self.getRate(), self._term, t)
+        return self.calcBalance(self._notional, self.getRate(t), self._term, t)
 
     # Instance method to calculate interest due at time t
     # This method use the recursive function
     def interestDueRecursive(self, t):
         # Calculate payment using recursive functions
         if t == 1:
-            return self._notional * Loan.monthlyRate(self.getRate())
+            return self._notional * Loan.monthlyRate(self.getRate(t))
         else:
-            return self.balanceRecursive(t - 1) * Loan.monthlyRate(self.getRate())
+            return self.balanceRecursive(t - 1) * Loan.monthlyRate(self.getRate(t))
 
     # Instance method to calculate principal due at time t
     # This method use the recursive function

@@ -78,7 +78,7 @@ def main():
     #   correct interest rate to be used for {0: .1, 5: .08, 9: .07, 15: .05, 28: .015, 30: .01} is 15, not 28.
     print('Test 4')
     loan2 = VariableRateLoan(100000, {0: .1, 5: .08, 9: .07, 15: .05, 28: .015, 30: .01}, 30)
-    print('The Variable Rate of is: ', loan2.getRate(26))
+    print('The Variable Rate is: ', loan2.getRate(26))
     ###############################################
 #######################
 if __name__ == '__main__':

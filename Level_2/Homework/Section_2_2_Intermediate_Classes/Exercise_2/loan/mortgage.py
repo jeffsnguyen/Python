@@ -16,6 +16,7 @@
 # Importing packages
 from loan.loan_base import Loan
 
+
 # Derived classes from Loan:
 # MortgageMixin
 # Does not derive from loan, only define certain things related to the mortgage
@@ -46,16 +47,15 @@ class MortgageMixin(object):
     # PMI is an extra monthly payment that one must make to compensate for the added risk of having a Loan-to-Value
     #   (LTV) ratio of less than 80% (in other words, the loan covers >= 80% of the value of the asset).
     #   For example, for 100k home, mortgage > 100k -> have to pay PMI
-    # This function returns .000075 of the loan notional value if LTV < .8
-    # NOTE: For the purpose of this exercise, return 0 as the assumption is LTV ratio = 1 > .8
-    def PMI(self, asset_val = None):
-        return 0
+    # This function returns .000075 of the loan notional value if LTV > .8
+    def PMI(self):
+        return .000075 * self._notional if (self._notional / self._home) > .8 else 0
 
     # Instance method to calculate monthly payment.
     # This add PMI on top of the monthly payment value in Loan.monthlyPayment()
     # NOTE: This overrides Loan.monthlyPayment
     def monthlyPayment(self, period=None):
-        return super(MortgageMixin, self).monthlyPayment(period) + self.PMI(period)
+        return super(MortgageMixin, self).monthlyPayment(period) + self.PMI()
 
     # Instance method to calculate principal due.
     # This add PMI on top of the monthly payment value in Loan.monthlyPayment()

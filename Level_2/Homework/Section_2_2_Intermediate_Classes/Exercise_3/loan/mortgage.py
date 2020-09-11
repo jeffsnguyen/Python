@@ -7,11 +7,12 @@
 
 # Importing packages
 from loan.loan_base import Loan
+from loan.loans import FixedRateLoan, VariableRateLoan
 
 # Derived classes from Loan:
 # MortgageMixin
 # Does not derive from loan, only define certain things related to the mortgage
-class MortgageMixin(Loan):
+class MortgageMixin(object):
     def __init__(self, notional, rate, term, home):
         super().__init__(notional, rate, term)  # invoke init function if there is a base class
         self._home = home
@@ -39,14 +40,15 @@ class MortgageMixin(Loan):
                ' years and home value is $' + str(self._home)
 
     # Instance method to calculate PMI based on LTV
+
+    # Instance method to calculate PMI based on LTV
     # Private Mortgage Insurance:
     # PMI is an extra monthly payment that one must make to compensate for the added risk of having a Loan-to-Value
     #   (LTV) ratio of less than 80% (in other words, the loan covers >= 80% of the value of the asset).
     #   For example, for 100k home, mortgage > 100k -> have to pay PMI
-    # This function returns .000075 of the loan notional value if LTV < .8
-    # NOTE: For the purpose of this exercise, return 0 as the assumption is LTV ratio = 1 > .8
-    def PMI(self, period=None):
-        return 0
+    # This function returns .000075 of the loan notional value if LTV > .8
+    def PMI(self, period = None):
+        return .000075 * self._notional if (self._notional / self._home) > .8 else 0
 
     # Instance method to calculate monthly payment.
     # This add PMI on top of the monthly payment value in Loan.monthlyPayment()
@@ -57,10 +59,20 @@ class MortgageMixin(Loan):
     # Instance method to calculate principal due.
     # This add PMI on top of the monthly payment value in Loan.monthlyPayment()
     # NOTE: This overrides Loan.monthlyPayment
-    def principalDue(self, t):
-        return self.monthlyPayment() - super(MortgageMixin, self).interestDue(t)
+    def principalDue(self, period):
+        return self.monthlyPayment(period) - super(MortgageMixin, self).interestDue(period)
     ##########################################################
 
+
+# Derived classes from MortgageMixin:
+# FixedMortgage
+# Derived from MortgageMixin and FixedRateLoan
+class FixedMortgage(MortgageMixin, FixedRateLoan):
+    pass
+
+# Derived from MortgageMixin and VariableRateLoan
+class VariableMortgage(MortgageMixin, VariableRateLoan):
+    pass
     ##########################################################
 
     ##########################################################

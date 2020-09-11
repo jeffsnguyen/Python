@@ -89,7 +89,7 @@ class Loan(object):
         # r = monthly rate, P = notional value, N = term in months
         # DIV/0 exception handling: print and warning message and return value of None
         try:
-            return self.calcMonthlyPmt(self._notional, self.getRate(None), self._term)
+            return self.calcMonthlyPmt(self._notional, self.getRate(period), self._term)
         except ZeroDivisionError:
             print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
             return None
@@ -118,14 +118,14 @@ class Loan(object):
     def interestDue(self, t):
         # Calculate payment using the formula interestDue = r * loan balance bal
         # r = monthly rate, P = notional value, N = term in months
-        return Loan.monthlyRate(self.getRate()) * self.balance(t - 1)
+        return Loan.monthlyRate(self.getRate(t)) * self.balance(t - 1)
 
     # Instance method to calculate principal due at time t
     # This method use the given formula
     def principalDue(self, t):
         # Calculate payment using the formula principalDue = monthlyPayment - interestDue
         # r = monthly rate, P = notional value, N = term in months
-        return Loan.monthlyPayment() - self.interestDue(t)
+        return Loan.monthlyPayment(t) - self.interestDue(t)
 
     # Instance method to calculate remaining loan balance due at time t
     # This method use the given formula
@@ -134,16 +134,16 @@ class Loan(object):
     def balance(self, t):
         # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
         # r = monthly rate, P = notional value, N = term in months
-        return self.calcBalance(self._notional, self.getRate(), self._term, t)
+        return self.calcBalance(self._notional, self.getRate(t), self._term, t)
 
     # Instance method to calculate interest due at time t
     # This method use the recursive function
     def interestDueRecursive(self, t):
         # Calculate payment using recursive functions
         if t == 1:
-            return self._notional * Loan.monthlyRate(self.getRate())
+            return self._notional * Loan.monthlyRate(self.getRate(t))
         else:
-            return self.balanceRecursive(t - 1) * Loan.monthlyRate(self.getRate())
+            return self.balanceRecursive(t - 1) * Loan.monthlyRate(self.getRate(t))
 
     # Instance method to calculate principal due at time t
     # This method use the recursive function

@@ -43,7 +43,7 @@ class FixedRateLoan(Loan):
 class VariableRateLoan(Loan):
 
     # Initialize function
-    def __init__(self, notional, rateDict, term):  # overide the init function in the base class
+    def __init__(self, notional, rateDict, term):  # override the init function in the base class
         # Check if rateDict is actually a dict vis isinstance()
         self._rateDict = rateDict if isinstance(rateDict, dict) else print('Rate is not a dictionary')
         super(VariableRateLoan, self).__init__(notional, None, term)  # invoke initialization the base class

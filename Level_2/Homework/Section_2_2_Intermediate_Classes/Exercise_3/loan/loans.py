@@ -23,10 +23,16 @@ class VariableRateLoan(Loan):
     # Derived instance method to find the rate of a given period
     # rateDict contains startPeriod as key and rate as value for each rate
     # Methodology:
-    #   1. Look up the passed-in startPeriod attribute as the key in rateDict, return key value if exact match is found
-    #   2. If exact match is not found, find the closest
-    #       a. T
-    def getRate(self, startPeriod):
+    #   1. Create a new temporary dict that sort the key (period) by values
+    #   2. Of this new temp dict:
+    #       a. Find the key that is closest to the passed-in period
+    #       b. Compare this key with the passed-in period, if the passed-in value is smaller,
+    #           remove the key from the temp dict
+    #       c. Find the new closest key based on the new dict.
+    #       d. Continue loop until said key is found.
+    #   3. Return the corresponded key value (interest rate) of the newly founded closest key. This is the interest
+    #       rate we are looking for.
+    def getRate(self, startPeriod = None):
         self.sorted_key = dict(sorted(self._rateDict.items(), key = lambda k:k[1], reverse = False))
         self.closest_key = min(self.sorted_key.keys(), key = lambda k: abs(k - startPeriod))
         while self.closest_key > startPeriod:
