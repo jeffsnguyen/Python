@@ -14,7 +14,7 @@ from loan.loans import FixedRateLoan, VariableRateLoan
 # Does not derive from loan, only define certain things related to the mortgage
 class MortgageMixin(object):
     def __init__(self, notional, rate, term, home):
-        super().__init__(notional, rate, term)  # invoke init function if there is a base class
+        super(MortgageMixin, self).__init__(notional, rate, term)  # invoke init function if there is a base class
         self._home = home
 
     ##########################################################

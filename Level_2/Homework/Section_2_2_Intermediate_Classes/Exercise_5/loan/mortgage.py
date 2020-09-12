@@ -1,9 +1,9 @@
 # Type: Homework
 # Level: 2
 # Section: 2.2: Intermediate Classes
-# Exercise: 4
+# Exercise: 3
 # Description: This contains the MortgageMixin class methods
-#   Create a fixed AutoLoan class. This should derive-from the appropriate base class(es).
+#   Create a VariableMortgage and FixedMortgage class. These should each derive-from the appropriate base class(es)
 
 # Importing packages
 from loan.loan_base import Loan
@@ -14,7 +14,7 @@ from loan.loans import FixedRateLoan, VariableRateLoan
 # Does not derive from loan, only define certain things related to the mortgage
 class MortgageMixin(object):
     def __init__(self, notional, rate, term, home):
-        super(MortgageMixin, self).__init__(notional, rate, term)  # invoke init function if there is a base class
+        super().__init__(notional, rate, term)  # invoke init function if there is a base class
         self._home = home
 
     ##########################################################

@@ -17,8 +17,8 @@ def main():
     #       1. Test the init function of AutoLoan
     #       2. Test the rate() method via FixedRateLoan
     ###############################################
-    # 1. Testing MortgageMixin class
-    # Scenario: Assign a MortgageMixin class variable
+    # 1. Testing AutoLoan class
+    # Scenario: Assign an AutoLoan class variable
     # Desire result: Print correct result as assigned
     autoloan1 = AutoLoan(100000, .050, 30, 100000)
     print('Test block 1: AutoLoan')
