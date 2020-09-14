@@ -22,7 +22,7 @@ class Loan(object):
 
     ##########################################################
     # Decorators to define and set values for instance variables
-    # Decorator to create a property function to define the argument notional
+    # Decorator to create a property function to define the attribute notional
     @property
     def notional(self):
         return self._notional
@@ -32,7 +32,7 @@ class Loan(object):
     def notional(self, inotional):
         self._notional = inotional  # Set instance variable notional from input
 
-    # Decorator to create a property function to define the argument rate
+    # Decorator to create a property function to define the attribute rate
     @property
     def rate(self):
         return self._rate
@@ -42,7 +42,7 @@ class Loan(object):
     def rate(self, irate):
         self._rate = irate  # Set instance variable rate from input
 
-    # Decorator to create a property function to define the argument term
+    # Decorator to create a property function to define the attribute term
     @property
     def term(self):
         return self._term
@@ -50,7 +50,7 @@ class Loan(object):
     # Decorator to set loan term
     @term.setter
     def term(self, iterm):
-        self._term = iterm  # Set instance variable rate from input
+        self._term = iterm  # Set instance variable term from input
     ##########################################################
 
     ##########################################################

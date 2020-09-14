@@ -57,7 +57,7 @@ class Loan(object):
     # Decorator to set loan term
     @term.setter
     def term(self, iterm):
-        self._term = iterm  # Set instance variable rate from input
+        self._term = iterm  # Set instance variable term from input
     ##########################################################
 
     ##########################################################

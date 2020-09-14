@@ -27,15 +27,15 @@ class Asset(object):
 
     ##########################################################
     # Decorators to define and set values for instance variables
-    # Decorator to create a property function to define the argument value
+    # Decorator to create a property function to define the attribute initialValue
     @property
-    def value(self):
+    def initialValue(self):
         return self._initialValue
 
     # Decorator to set value
-    @value.setter
-    def value(self, ivalue):
-        self._initialValue = ivalue  # Set instance variable notional from input
+    @initialValue.setter
+    def initialValue(self, dinitialValue):
+        self._initialValue = dinitialValue  # Set instance attribute initialValue from input
     ##########################################################
 
     ##########################################################

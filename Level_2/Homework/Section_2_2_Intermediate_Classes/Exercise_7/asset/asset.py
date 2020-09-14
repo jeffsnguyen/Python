@@ -1,16 +1,31 @@
 # Type: Homework
 # Level: 2
 # Section: 2.2: Intermediate
-# Exercise: 6
+# Exercise: 7
 # Description: This contains the Asset class and its methods
-#   This exercise focuses on creating the individual Asset derived classes. Do the following:
-#       a. Modify the annualDeprRate method of the Asset class to trigger a not-implemented error.
-#           This ensures that no one can directly instantiate an Asset object (makes it abstract).
-#       b. Create a Car class, derived from Asset. Derive multiple car types from Car (i.e. Civic, Lexus,
-#           Lamborghini, etc.). Give each one a different depreciation rate.
-#       c. Create a HouseBase class, derived from Asset. Derive PrimaryHome and VacationHome
-#           from House. Give each one a different depreciation rate (note, a vacation home will
-#           depreciate slower than a primary home since it is often vacant).
+#   Now that we have our Loan and Asset classes, let’s incorporate the asset into the loan. As a loan is
+#       ‘on an’ asset, which is similar to ‘has a’, we use composition instead of derivation. To this end:
+#
+#   a. Add an asset parameter to the base loan __init__ function, which saves it down into an
+#       object-level attribute. The one caveat here is that we must to ensure that the asset
+#       parameter indeed contains an Asset object (or any of its derived classes). If it’s not an Asset
+#       type, you should print an error message to the user, and leave the function.
+#   b. Modify MortgageMixin to initialize with a home parameter. In this case, we need to ensure
+#       that the value of home is indeed a primary home, vacation home, or any other derived
+#       HouseBase type. Modify the PMI function to calculate LTV based on the asset initial value
+#       (instead of the loan’s face value).
+#   c. Do the same for the AutoLoan class.
+#   d. Create a method called recoveryValue in the Loan base class. This method should return the
+#       current asset value for the given period, times a recovery multiplier of 0.6.
+#   e. Create a method called equity in the Loan base class. This should return the available equity
+#       (the asset value less the loan balance).
+#   f. In main, instantiate different Loan types with different assets and test the new functionality.
+#
+#   Note that the ‘recovery value’ of an asset, in terms of a loan, is the amount of money the lender
+#       can recover if the borrower defaults (forecloses). The lender will usually auction off the
+#       property. The ‘multiplier’ is necessary, as the lender is not likely to receive full market value of
+#       the property in an auction. The above is an overly simplistic model, as the recovery rates vary
+#       across asset classes and markets (the subject of a different course).
 
 # Importing packages
 
@@ -43,18 +58,18 @@ class Asset(object):
 
     # Return a yearly depreciation rate
     # Raise NotImplementedError to make Asset object abstract and prevent direct instantiation
-    def annualDeprRate(self, period=None):
+    def annualDeprRate(self, period = None):
         raise NotImplementedError
 
     # Calculate and return a monthly depreciation rate based on the annual depreciation rate
     # Formula monthly = annual / 12
-    def monthlyDeprRate(self, period=None):
+    def monthlyDeprRate(self, period = None):
         return self.annualDeprRate(period) / 12
 
     # Calculate and return current value of asset at a given time t
     # Formula: current value = initial value * [(1-monthlyDeprRate)**t]
     def value(self, t):
-        return self._initialValue * ((1 - self.monthlyDeprRate(t)) ** t)
+        return self._initialValue * ((1 - self.monthlyDeprRate(t))**t)
 
     ##########################################################
 
