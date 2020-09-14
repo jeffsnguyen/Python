@@ -1,7 +1,7 @@
 # Type: Homework
 # Level: 2
 # Section: 2.2: Intermediate Classes
-# Exercise: 3
+# Exercise: 7
 # Description: This contains the MortgageMixin class methods
 #   Now that we have our Loan and Asset classes, let’s incorporate the asset into the loan. As a loan is
 #       ‘on an’ asset, which is similar to ‘has a’, we use composition instead of derivation. To this end:
