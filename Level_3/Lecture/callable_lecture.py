@@ -23,7 +23,7 @@ def main():
 
     # zip the list, start from the amount in the 3rd parameters, total = 00 in this case
     #
-    reduce(lambda totak, face_rate: total + (face_rate[0]*face_rate[1]), zip(loanAmounts, rates), 0)
+    reduce(lambda total, face_rate: total + (face_rate[0]*face_rate[1]), zip(loanAmounts, rates), 0)
 
 
 #######################

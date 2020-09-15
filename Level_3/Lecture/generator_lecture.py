@@ -30,6 +30,9 @@ def main():
     # use generator similar to list comprehension but without a bracket
     print((i**4 for i in range(5)))
 
+    a = 'p'
+    print(int(p))
+
 #######################
 if __name__ == '__main__':
     main()
