@@ -7,6 +7,9 @@
 #   breakRelative,
 #   breakAbsRelative,
 #   reconcileLists
+#   reconcileListsBreakAbsolute
+#   reconcileListsBreakRelative
+#   reconcileListsBreakAbsRelative
 # The previous exercise presents a good use-case for functools.partial:
 #   a. Create a partial called reconcileListsBreakAbsolute (which uses the breakAbsolute
 #       function). Test this comprehensively.
