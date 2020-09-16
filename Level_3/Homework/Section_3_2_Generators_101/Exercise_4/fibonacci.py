@@ -2,7 +2,7 @@
 # Level: 3
 # Section: 3.2: Generators 101
 # Exercise: 4
-# Description: Contains the tests to modified LoanPool class
+# Description: Contains the tests to modified fn() method to generate Fibonacci sequence
 #   Modify the Fibonacci function from Exercise 1.3.2 to be a generator function. Note that the function
 #       should no longer have any input parameter since making it a generator allows it to return the
 #       infinite sequence. Do the following:
@@ -16,40 +16,53 @@
 #######################
 
 ###############################################
-import sys
 
-# Return fibonacci list from 0 -> n
-def fn(n):
-    # Initialize list with f_n0 = 0
-    fibo = [0]
+# Fibonacci generator
+def fn():
+    fibo = [] # Initialize empty list
+    num = -1 # Set count value
 
-    if n == 0: # Check for 0 input
-        return fibo
-    else:
-        fibo.append(1)
-        for num in range(2,n):
-            check = fibo[num-2] + fibo[num-1]
-            # if the sum is less than or equal to n, add to list, else break the loop
-            if check <= n:
-                fibo.append(check)
-            else:
-                break
-        return fibo
+    # For the first 2 values, yield specific constants and append to empty list
+    # For subsequent values, yield using fibonacci formula and append to list
+    while True:
+        num += 1
+        if num == 0:
+            yield 0
+            fibo.append(0)
+        elif num == 1:
+            yield 1
+            fibo.append(1)
+        else:
+            yield fibo[num-2] + fibo[num-1]
+            fibo.append(fibo[num-2] + fibo[num-1])
 
+###############################################
 def main():
-    print('This program print a fibonacci sequence from 0 -> input')
+    # Testing block 1
+    # Scenario:
+    #   This block will:
+    #       1. Test modified fn() function by printing out the first 2 value of Fibonacci sequence
+    #       2. Test modified fn() function by printing out the next 100 value of Fibonacci sequence
 
-    # Exception handling for input others than positive integers
-    try:
-        n = int(input('Enter a positive integer: '))
-        if n < 0:
-            sys.exit('Must be a positive integer.')
-    except:
-        sys.exit('Must be a positive integer.')
+    ###############################################
 
-    # Print out the sequence:
-    print(fn(n))
+    # Test 1
+    # 1.1 Test modified fn() function by printing out the first 2 value of Fibonacci sequence
+    print('Test 1.1. Printing out the first 2 value of Fibonacci sequence')
 
+    fib = fn()
+    print(next(fib))
+    print(next(fib))
+    print()
+
+    # 1.2 Test modified fn() function by printing out the next 100 value of Fibonacci sequence (#3 to #102)
+    print('Test 1.2. Test modified fn() function by printing out the next 100 value of Fibonacci sequence (#3 to #102)')
+
+    for i in range (0,101):
+        print(next(fib))
+        i +=1
+
+###############################################
 
 #######################
 if __name__ == '__main__':
