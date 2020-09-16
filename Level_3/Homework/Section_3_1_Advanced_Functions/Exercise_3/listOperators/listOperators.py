@@ -17,7 +17,7 @@
 
 ###############################################
 # Method to take 2 list as arguments
-#   Return a list that has Tru or False to represent comparison of value between the two if list has the same length
+#   Return a list that has True or False to represent comparison of value between the two if list has the same length
 def reconcileLists(l1, l2):
     # If the list are of the same length:
     #   Via map: pass the comparison of each value from each list--which should return True or False--and return
@@ -25,6 +25,5 @@ def reconcileLists(l1, l2):
     # Else: print an error message and return nothing.
     return list(map(lambda val1, val2: val1 == val2, l1, l2)) if len(l1) == len(l2) \
         else print('List are not of the same length')
-
 
 ###############################################

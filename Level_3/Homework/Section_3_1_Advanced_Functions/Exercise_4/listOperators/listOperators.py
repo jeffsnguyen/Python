@@ -29,7 +29,7 @@
 
 # reconcileLists method
 # Method to take 2 list as arguments
-#   Return a list that has Tru or False to represent comparison of value between the two if list has the same length
+#   Return a list that has True or False to represent comparison of value between the two if list has the same length
 # Modified to take breakFn parameter (a function or lambda) to do additional comparison instead of the original
 #   value comparison
 def reconcileLists(l1, l2, breakFn):
