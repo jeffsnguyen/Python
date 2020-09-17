@@ -59,10 +59,10 @@ def main():
     # here: an incorrect type is passed into asset
     try:
         mortgage1 = FixedMortgage(100000, .05, 30, car1)
-    except ValueError as valEx:
+    except ValueError as valEx:  # handle the asset type value error
         print(valEx)
         pass
-    except Exception as Ex:
+    except Exception as Ex:  # catch other unknown error
         print(Ex)
         pass
 
@@ -88,10 +88,10 @@ def main():
     # here: an incorrect type is passed into asset
     try:
         autoloan1 = AutoLoan(100000, .05, 30, vacayhome1)
-    except ValueError as valEx:
+    except ValueError as valEx:  # handle the asset type value error
         print(valEx)
         pass
-    except Exception as Ex:
+    except Exception as Ex:  # catch other unknown error
         print(Ex)
         pass
     print()
