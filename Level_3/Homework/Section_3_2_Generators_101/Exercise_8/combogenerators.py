@@ -2,7 +2,8 @@
 # Level: 3
 # Section: 3.2: Generators 101
 # Exercise: 8
-# Description: Create three generator expressions and use the appropriate itertools function to get all the
+# Description: Contains the tests for itertools.combinations
+# Create three generator expressions and use the appropriate itertools function to get all the
 #   combinations of the values. Print out the result as a list.
 
 #######################

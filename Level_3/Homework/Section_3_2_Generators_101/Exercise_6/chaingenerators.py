@@ -2,7 +2,8 @@
 # Level: 3
 # Section: 3.2: Generators 101
 # Exercise: 6
-# Description: Create three generator expressions and use itertools.chain to attach them together. Print out the
+# Description: Contains the tests for itertools.chain
+# Create three generator expressions and use itertools.chain to attach them together. Print out the
 #   result as a list.
 
 #######################

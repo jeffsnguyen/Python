@@ -2,9 +2,10 @@
 # Level: 3
 # Section: 3.2: Generators 101
 # Exercise: 9
-# Description: Create a list of ten names. Loop through the list and output each name in the following format:
-#               Name 1: Henry
-#               Name 2: Jake
+# Description: Contains the tests for looping through generator
+# Create a list of ten names. Loop through the list and output each name in the following format:
+#   Name 1: Henry
+#   Name 2: Jake
 
 #######################
 # Importing necessary packages
