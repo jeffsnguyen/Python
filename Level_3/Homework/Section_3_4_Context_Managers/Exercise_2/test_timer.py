@@ -120,6 +120,11 @@ def main():
             # context manager automatically clean up after itself, no need to close the file
 
             print('Has the file been closed? ', f.closed)
+
+    # The Context Manager approach is compared to previous method is:
+    #       1. Cleaner, does not requires explicitly calling start() and end()
+    #       2. Enable on-demand resources allocation
+    #       3. Exception handling is easier
 ###############################################
 
 #######################
