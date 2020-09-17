@@ -1,27 +1,23 @@
 # Type: Homework
-# Level: 2
-# Section: 2.1: Classes
-# Exercise: 1
+# Level: 3
+# Section: 3.4: Context Managers
+# Exercise: 2
 # Description: This contains the class Timer
-#   We’ve been using time.time before and after code blocks to report the difference as the ‘time taken’.
-#   This exercise is to generalize and encapsulate this into a class, to make things cleaner and reusable.
-#   The steps are as follows:
-#       a. Create a class called Timer.
-#       b. Add a start method and end method. They should work as follows:
-#               t = Timer()
-#               t.start()
-#               # Lots of code here
-#               t.end() # This should stop the timer and print the time taken
-#       c. Note that start should give an error if the Timer is already started and end should give an error
-#           if the Timer is not currently running.
-#       d. Add a method to retrieve the last timer result.
-#       e. Add the ability to configure the Timer to display either seconds, minutes, or hours.
-#           The timer result (i.e. from end and retrieveLastResult) should use whatever the current configuration is.
-#       f. Test your class thoroughly.
-#   This is obviously cleaner than the previous approach of subtracting times everywhere.
-#   The remaining downside to this class is that one must still explicitly invoke t.start() and t.end()
-#   around the code one wishes to time. We will remedy this when we extend this class using
-#   context managers and decorators (see Levels 3 and 5) to make things even cleaner syntactically.
+#   Modify the Timer class to work as a context manager. Essentially, it should be possible to do the following:
+#
+#       with Timer('timerName')
+#           print('Do Work Here')
+
+#       An example output would look like: timerName: 1.5467 seconds
+#
+#   The timer class should still have a configurable display. The context manager should be coded so
+#       that the following code works, to configure the display when using the context manager:
+#
+#       with Timer('timerName') as timer:
+#           timer.configureTimerDisplay('hrs')
+#           print('Do Work Here')
+#
+#   How does this compare to the previous approach of using the regular Timer class?
 
 # Importing packages
 from time import time
@@ -34,9 +30,20 @@ class Timer(object):
 
     # Initialization function with hours, minutes and seconds arguments
     # Also included in this function is ability to set the arguments to 0 if they don't already exists
-    def __init__(self, seconds=None):
-        self._seconds = float(seconds) if seconds is not None \
-            else float(Timer._dseconds) if hasattr(Timer, '_dseconds') else 0
+    def __init__(self, timerName):
+        self._timerName = timerName
+
+    # Start the context (timer)
+    def __enter__(self):
+        self.start = time()  # Call start() to start timer
+        print('Starting timer, wait for process to complete...')
+        return self
+
+    # Exit the context (timer)
+    def __exit__(self, *args):  # Call end() to get timer result and end the timer
+        self.end = time()
+        print('End timer.')
+        print(self.timerName + ': ' + str(self.end-self.start) + ' ' + str(self.timer_dict[self.timer_config]))
 
     # Initialize a counter instance variable to check if timer has/ has not started
     # Initial value is False: timer not started
@@ -53,13 +60,13 @@ class Timer(object):
 
     # Decorator to create a property function to define the argument seconds
     @property
-    def seconds(self):
-        return self._seconds
+    def timerName(self):
+        return self._timerName
 
     # Decorator to set seconds
-    @seconds.setter
-    def seconds(self, iseconds):
-        self._seconds = iseconds  # Set instance variable seconds from input
+    @timerName.setter
+    def timerName(self, itimerName):
+        self._timerName = itimerName  # Set instance variable seconds from input
 
     ##########################################################
     # Class method functions to perform some actions
@@ -68,23 +75,9 @@ class Timer(object):
     @classmethod
     # Set at the class level the value of hours, minutes, seconds as default if not speicified
     # Instead of storing dhours, dminutes and dseconds at the object level, store them at the class level
-    def defaultTime(cls, seconds):
+    def defaultTime(cls, timerName):
         # Get values of each class variable from the instance object
-        cls._dseconds = seconds
-
-    # Class method to accept time display configuration
-    @classmethod
-    def timerConfig(cls, itimer_config):
-        cls.timer_config = itimer_config
-        # try except to handle exception of time configuration not existing in timer_dict dictionary
-        # Only valid keys: 1: seconds, 60: minutes, 3600: hours
-        try:
-            print('Time is currently configured to display in ' + str(cls.timer_dict[cls.timer_config]) + '.')
-        except:
-            print('Time configuration, ' + str(cls.timer_config) +
-                  ', is not implemented, only: 1: seconds, 60: minutes, 3600: hours.')
-            print('Timer will be displayed in seconds by default...')
-        return cls.timer_config
+        cls._timerName = timerName
 
     ##########################################################
     # Instance methods
@@ -118,7 +111,7 @@ class Timer(object):
             try:
                 print('Function took ' + str(self.time_elapsed) + ' ' + self.timer_dict[self.timer_config] + ' to run.')
             except KeyError as keyEx:
-                print('Time config ' + str(keyEx) + ' is not valid. Result will be displayed in seconds (config = 1).')
+                print('Time config' + str(keyEx) + ' is not valid. Result will be displayed in seconds (config = 1).')
                 print('Function took ' + str(self.time_elapsed_default) + ' seconds to run.')
 
             self.timer_check = False  # Reset the check variable
@@ -132,7 +125,23 @@ class Timer(object):
         try:
             print('The last timer is: ' + str(self.last_result) + ' ' + self.timer_dict[self.timer_config])
         except KeyError as keyEx:
-            print('Time config ' + str(keyEx) + ' is not valid. Result will be displayed in seconds (config = 1).')
+            print('Time config' + str(keyEx) + ' is not valid. Result will be displayed in seconds (config = 1).')
             print('Function took ' + str(self.time_elapsed_default) + ' seconds to run.')
 
         return self.last_result
+
+    # Instance method to accept time display configuration
+    def timerConfig(self, itimer_config):
+        # Set time config based on user input
+        # sec = 1 = seconds
+        # min = 60 = minutes
+        # hrs = 3600 = hours
+        if itimer_config == 'sec':
+            self.timer_config = 1
+        elif itimer_config == 'min':
+            self.timer_config = 60
+        elif itimer_config == 'hrs':
+            self.timer_config = 3600
+        else:  # if input lookup fail, raise value error to user
+            raise ValueError
+        print('Time is currently configured to display in ' + str(self.timer_dict[self.timer_config]) + '.')

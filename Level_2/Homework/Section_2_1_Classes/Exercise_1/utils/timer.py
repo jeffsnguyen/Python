@@ -152,8 +152,7 @@ class Timer(object):
         # Only valid keys: 1: seconds, 60: minutes, 3600: hours
         try:
             print('Time is currently configured to display in ' + str(cls.timer_dict[cls.timer_config]) + '.')
-        except:
-            print('Time configuration, ' + str(cls.timer_config) +
-                  ', is not implemented, only: 1: seconds, 60: minutes, 3600: hours.')
+        except KeyError as keyEx:
+            print(keyEx)
             print('Timer will be displayed in seconds by default...')
         return cls.timer_config

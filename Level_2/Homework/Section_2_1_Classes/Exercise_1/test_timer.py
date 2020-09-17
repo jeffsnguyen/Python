@@ -93,7 +93,7 @@ def main():
     #       will be calculated using default time config, which 1.
     #   2. Timer will be displayed in default time config, which is = 1.
     print('Test 3')
-    t.timerConfig(360)  # Set timer display configuration
+    t.timerConfig(2)  # Set timer display configuration
     t.start()  # Start the counter
     # Run the testing loop to test Timer functionalities
     # Alternative, paste in your own code to test your own function
