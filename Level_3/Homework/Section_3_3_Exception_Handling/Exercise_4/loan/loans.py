@@ -74,7 +74,7 @@ class AutoLoan(FixedRateLoan):
         # Check if passed-in car attribute is of the Car family (base or derived)
         # Init the attribute if True, else raise value error
         if not isinstance(car, Car):
-            raise ValueError('car attribute needs to be a Car type.')
+            raise ValueError('car must be a Car type.')
         else:
             # invoke init function if there is a base class
             super(AutoLoan, self).__init__(notional, rate, term, car)

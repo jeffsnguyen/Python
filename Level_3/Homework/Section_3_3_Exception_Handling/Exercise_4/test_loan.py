@@ -56,7 +56,7 @@ def main():
     mortgage1 = FixedMortgage(100000, .05, 30, vacayhome1)
 
     # Exception Handling block on intentionally incorrect passed-in value.
-    # here: an incorrect type is passed into asset
+    # here: an incorrect type is passed into home
     try:
         mortgage1 = FixedMortgage(100000, .05, 30, car1)
     except ValueError as valEx:  # handle the asset type value error
@@ -85,7 +85,7 @@ def main():
     autoloan2 = AutoLoan(100000, .05, 30, car2)
 
     # Exception Handling block on intentionally incorrect passed-in value.
-    # here: an incorrect type is passed into asset
+    # here: an incorrect type is passed into car
     try:
         autoloan1 = AutoLoan(100000, .05, 30, vacayhome1)
     except ValueError as valEx:  # handle the asset type value error
@@ -112,6 +112,41 @@ def main():
     print('The current available equity is: ', mortgage1.equity(20))
     print('The current available equity is: ', autoloan2.equity(20))
     print()
+
+    # Test 1.7
+    # Scenario: Test the __init__ function of Loan
+    #   The __init__ method will only works if the asset parameters is from the Asset family (base or derived).
+    #   Initialize the loan only if, else raise a value error.
+    # Exception Handling block on intentionally incorrect passed-in value.
+    # here: a string is passed into asset
+    print('Test 1.7')
+    try:
+        loan1 = Loan(100000, .05, 30, 'sdfsf')
+    except ValueError as valEx:  # handle the asset type value error
+        print(valEx)
+        pass
+    except Exception as Ex:  # catch other unknown error
+        print(Ex)
+        pass
+    print()
+
+    # Test 1.8
+    # Scenario: Test the __init__ function of Loan
+    #   The __init__ method will only works if the asset parameters is from the Asset family (base or derived).
+    #   Initialize the loan only if, else raise a value error.
+    # Exception Handling block on intentionally incorrect passed-in value.
+    # here: a tuple is passed into asset
+    print('Test 1.7')
+    try:
+        loan1 = Loan(100000, .05, 30, (-1000, 'george'))
+    except ValueError as valEx:  # handle the asset type value error
+        print(valEx)
+        pass
+    except Exception as Ex:  # catch other unknown error
+        print(Ex)
+        pass
+    print()
+
     ###############################################
 
 
