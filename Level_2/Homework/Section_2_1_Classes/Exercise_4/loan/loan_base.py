@@ -164,5 +164,5 @@ class Loan(object):
     @classmethod
     def calcBalance(cls, face, rate, term, period):
         return face * ((1 + rate / 12) ** period) - \
-               (Loan.calcMonthlyPmt(face, rate, term) * (((1 + (rate / 12)) ** period - 1) / (rate / 12)))
+               (cls.calcMonthlyPmt(face, rate, term) * (((1 + (rate / 12)) ** period - 1) / (rate / 12)))
     ##########################################################
