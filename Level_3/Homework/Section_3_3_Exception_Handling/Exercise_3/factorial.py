@@ -46,8 +46,8 @@ def main():
         except ValueError as valEx:
             print(valEx)
             pass
-        except Exception as Ex:  # handle other unknown exception
-            print('Unknown error: ' + str(Ex))
+        except Exception:  # handle other unknown exception
+            print(Exception('Unknown error: '))
     pass
     print()
 
@@ -56,14 +56,14 @@ def main():
     # Program takes 1 input from user, handle strictly general exceptions
     try:  # catching string input exception
         x = int(input('Input a number: '))  # take input
-    except Exception:  # handle non-number exception, for example: string
-        print(Exception('Must be an integer'))
+    except Exception as Ex:  # handle non-number exception, for example: string
+        print(Ex)
         pass
     else:
         try:  # catching other exception related to factorial, e.g. can't be negative
             print(str(x) + '! = ' + str(factorial(x)))
         except Exception as Ex:  # handle other unknown exception
-            print(Ex('Unknown error.'))
+            print(Ex)
     pass
     print()
 

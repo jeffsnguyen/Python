@@ -23,7 +23,7 @@ class Loan(object):
         self._term = term
 
         if not isinstance(asset, Asset):
-            raise ValueError
+            raise ValueError('Must be an asset type.')
         else:
             self._asset = asset
 
