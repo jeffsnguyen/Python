@@ -15,13 +15,11 @@
 ###############################################
 # Return the factorial of num
 def factorial(num):
-    if not isinstance(int(num), int):
-        raise ValueError('Must be an integer')
-    elif not int(num) >= 0:
+    if not num >= 0:  # Check if the integer is positive
         raise ValueError('Must be a positive number')
     else:
         result = 1
-        for n in range(2, int(num)+1):
+        for n in range(2, num+1):
             result *= n
         return result
 ###############################################
@@ -36,26 +34,36 @@ def main():
     # Test 1. Handling both specific and general exceptions
     print('Test 1. Handling both specific and general exceptions.')
     # Program takes 1 input from user, handle input exception
-def main():
-    x = input('Input a number: ')  # take input
-    try:
-        print(str(x) + '! = ' + str(factorial(x)))
-    except ValueError as valEx:  # handle non-number exception, for example: string
-        print(valEx)
+
+    try:  # catching string input exception
+        x = int(input('Input a number: '))  # take input
+    except ValueError:  # handle non-number exception, for example: string
+        print(ValueError('Must be an integer'))
         pass
-    except Exception as Ex:  # handle other unknown exception
-        print('Unknown error: ' + str(Ex))
+    else:
+        try:  # catching other exception related to factorial, e.g. can't be negative
+            print(str(x) + '! = ' + str(factorial(x)))
+        except ValueError as valEx:
+            print(valEx)
+            pass
+        except Exception as Ex:  # handle other unknown exception
+            print('Unknown error: ' + str(Ex))
     pass
     print()
 
     # Test 2. Handling both only general exceptions
     print('Test 2. Handling only general exceptions.')
     # Program takes 1 input from user, handle strictly general exceptions
-    x = input('Input a number: ')  # take input
-    try:
-        print(str(x) + '! = ' + str(factorial(x)))
-    except Exception as Ex:  # handle other unknown exception
-        print(Ex)
+    try:  # catching string input exception
+        x = int(input('Input a number: '))  # take input
+    except Exception:  # handle non-number exception, for example: string
+        print(Exception('Must be an integer'))
+        pass
+    else:
+        try:  # catching other exception related to factorial, e.g. can't be negative
+            print(str(x) + '! = ' + str(factorial(x)))
+        except Exception as Ex:  # handle other unknown exception
+            print(Ex('Unknown error.'))
     pass
     print()
 
