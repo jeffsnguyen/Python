@@ -15,11 +15,15 @@
 ###############################################
 # Return the factorial of num
 def factorial(num):
-    result = 1
-    for n in range(2, num+1):
-        result *= n
-    return result
-
+    if not isinstance(int(num), int):
+        raise ValueError('Must be an integer')
+    elif not int(num) >= 0:
+        raise ValueError('Must be a positive number')
+    else:
+        result = 1
+        for n in range(2, int(num)+1):
+            result *= n
+        return result
 ###############################################
 def main():
     # Testing block
@@ -33,38 +37,27 @@ def main():
     print('Test 1. Handling both specific and general exceptions.')
     # Program takes 1 input from user, handle input exception
     # Also catch other unknown exception
-    # 1st try-except block to handle input
+    x = input('Input a number: ')  # take input
     try:
-        x = int(input('Input a number: '))  # take input and convert to int
-    except ValueError as valueEx:  # handle non-number exception, for example: string
-        print(valueEx)
+        print(str(x) + '! = ' + str(factorial(x)))
+    except ValueError as valEx:  # handle non-number exception, for example: string
+        print(valEx)
         pass
-    except Exception as ex:  # handle other unknown exception
-        print('Unknown error: ' + str(ex))
-        pass
-    else:
-        # 2nd try-except block to handle division
-        try:
-            print(str(x) + '! = ' + str(factorial(x)))
-        except Exception as ex:  # handle other unknown exception
-            print('Unknown error: ' + str(ex))
+    except Exception as Ex:  # handle other unknown exception
+        print('Unknown error: ' + str(Ex))
+    pass
     print()
 
     # Test 2. Handling both only general exceptions
     print('Test 2. Handling only general exceptions.')
     # Program takes 1 input from user, handle strictly general exceptions
-    # 1st try-except block to handle input
+    x = input('Input a number: ')  # take input
     try:
-        x = int(input('Input a number: '))  # take input and convert to int
-    except Exception as ex:  # handle other unknown exception
-        print('Unknown error: ' + str(ex))
-        pass
-    else:
-        # 2nd try-except block to handle division
-        try:
-            print(str(x) + '! = ' + str(factorial(x)))
-        except Exception as ex:  # handle other unknown exception
-            print('Unknown error: ' + str(ex))
+        print(str(x) + '! = ' + str(factorial(x)))
+    except Exception as Ex:  # handle other unknown exception
+        print(Ex)
+    pass
+    print()
 
 
 ###############################################
