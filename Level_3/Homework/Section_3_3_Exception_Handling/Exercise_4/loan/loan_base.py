@@ -21,7 +21,11 @@ class Loan(object):
         self._notional = notional
         self._rate = rate
         self._term = term
-        self._asset = asset
+
+        if not isinstance(asset, Asset):
+            raise ValueError
+        else:
+            self._asset = asset
 
     ##########################################################
 

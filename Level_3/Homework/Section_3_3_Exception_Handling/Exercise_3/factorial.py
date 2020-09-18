@@ -36,7 +36,7 @@ def main():
     # Test 1. Handling both specific and general exceptions
     print('Test 1. Handling both specific and general exceptions.')
     # Program takes 1 input from user, handle input exception
-    # Also catch other unknown exception
+def main():
     x = input('Input a number: ')  # take input
     try:
         print(str(x) + '! = ' + str(factorial(x)))
