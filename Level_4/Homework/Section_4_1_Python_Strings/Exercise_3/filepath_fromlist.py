@@ -3,17 +3,15 @@
 # Section: 4.1 Python Strings
 # Exercise: 1
 # Description: Contains the tests for various filepath operations
-#   Save the following Windows file-path into a string variable: C:\Users\Me\Desktop\MyTable.csv.
-#
-#   Perform the following operations:
-#       a. Extract the filename with extension from the path.
-#       b. Extract the file extension only.
-#       c. Add another folder (can name it whatever you’d like) between ‘Desktop’ and the filename.
+#   Create a list as follows: [‘C:’, ‘Users’, ‘Me’, ‘Desktop’, ‘MyTable.csv’]. Perform the following:
+#       a. Join the list together to create a valid pathname.
+#       b. Insert another folder into the list, between ‘Desktop’ and ‘MyTable.csv’ and join the
+#           resulting list to create a valid pathname.
 #######################
 # Importing necessary packages
 import os
-
 import shutil
+
 #######################
 
 ###############################################

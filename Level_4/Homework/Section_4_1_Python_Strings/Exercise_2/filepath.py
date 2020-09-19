@@ -25,26 +25,26 @@ def main():
 
     # a. Extract the filename with extension from the path.
     print('a. Extract the filename with extension from the path.')
-    print(fp.rsplit('\\', 1)[1])
+    print(fp.rsplit('\\', 1)[1])  # rsplit to split the last element by '\\' and index to grab it
     print()
 
     # b. Extract the file extension only.
     print('b. Extract the file extension only.')
-    print(fp.split('.')[1])
+    print(fp.split('.')[1]) # rsplit to split the last element by '.' and index to grab it
     print()
 
     # c. Add another folder (can name it whatever you like) between Desktop and the filename.
     print('c. Add another folder (can name it whatever you like) between Desktop and the filename.')
-    fp1 = 'C:\\Users\\Me\\Desktop\\Another_Folder\\'
+    fp1 = 'C:\\Users\\Me\\Desktop\\Another_Folder\\'   # Create the new folder path
     try:  # try-except block to catch if folder already exist
-        os.mkdir(fp1)
+        os.mkdir(fp1)   # create the folder
     except FileExistsError as fileEEx:
         print(fileEEx)
         pass
     else:
         try:  # try-except block to catch if move can't be done
-            dest = shutil.move(fp, fp1)
-        except Exception as Ex:
+            dest = shutil.move(fp, fp1)   # move the file
+        except Exception as Ex:   # catch shutil.Error
             print(Ex)
             pass
 
