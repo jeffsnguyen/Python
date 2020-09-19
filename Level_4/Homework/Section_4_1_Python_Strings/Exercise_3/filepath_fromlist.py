@@ -1,7 +1,7 @@
 # Type: Homework
 # Level: 4
 # Section: 4.1 Python Strings
-# Exercise: 1
+# Exercise: 3
 # Description: Contains the tests for various filepath operations
 #   Create a list as follows: [‘C:’, ‘Users’, ‘Me’, ‘Desktop’, ‘MyTable.csv’]. Perform the following:
 #       a. Join the list together to create a valid pathname.
