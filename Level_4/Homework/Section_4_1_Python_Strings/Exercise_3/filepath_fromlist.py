@@ -9,8 +9,6 @@
 #           resulting list to create a valid pathname.
 #######################
 # Importing necessary packages
-import os
-import shutil
 
 #######################
 
@@ -19,34 +17,23 @@ import shutil
 ###############################################
 def main():
 
-    fp = 'C:\\Users\\sonje\\Desktop\\MyTable.csv'
+    fp_elements = ['C:', 'Users', 'Me', 'Desktop', 'MyTable.csv']
 
-    # a. Extract the filename with extension from the path.
-    print('a. Extract the filename with extension from the path.')
-    print(fp.rsplit('\\', 1)[1])
+    # a. Join the list together to create a valid pathname.
+    print('a. Join the list together to create a valid pathname.')
+    fp = '\\'.join(fp_elements)  # join the elements together to create the filepath
+    print(fp)
     print()
 
-    # b. Extract the file extension only.
-    print('b. Extract the file extension only.')
-    print(fp.split('.')[1])
-    print()
+    # b. Insert another folder into the list, between ‘Desktop’ and ‘MyTable.csv’ and join the
+    #       resulting list to create a valid pathname.
+    print('b. Insert another folder into the list, between ‘Desktop’ and ‘MyTable.csv’ '
+          'and join the resulting list to create a valid pathname.')
+    fp_elements.insert(4, 'Another_Folder')  # Insert the new folder name to file path elements list
+    print(fp_elements)  # print the file path
+    fp = '\\'.join(fp_elements)  # join the elements together to create the filepath
+    print(fp)
 
-    # c. Add another folder (can name it whatever you like) between Desktop and the filename.
-    print('c. Add another folder (can name it whatever you like) between Desktop and the filename.')
-    fp1 = 'C:\\Users\\sonje\\Desktop\\Another_Folder\\'
-    try:  # try-except block to catch if folder already exist
-        os.mkdir(fp1)
-    except FileExistsError as fileEEx:
-        print(fileEEx)
-        pass
-    else:
-        try:  # try-except block to catch if move can't be done
-            dest = shutil.move(fp, fp1)
-        except Exception as Ex:
-            print(Ex)
-            pass
-            
-    print()
 
 ###############################################
 
