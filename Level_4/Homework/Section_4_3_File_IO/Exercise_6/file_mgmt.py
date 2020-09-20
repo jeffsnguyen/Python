@@ -1,9 +1,9 @@
 # Type: Homework
 # Level: 4
 # Section: 4.3 File I/O
-# Exercise: 4
+# Exercise: 6
 # Description: Contains the tests for various filepath operations
-#   Open a brand-new file and write to it (should write several lines).
+#   Open the file from 4) and append to it.
 #######################
 # Importing necessary packages
 import os
@@ -21,7 +21,7 @@ def main():
     # Testing block
     # Scenario:
     #   This block will:
-    #       1. Open a brand-new file and write to it (should write several lines).
+    #       1. Open the file from 4) and append to it.
 
     #######################
     # Test 1
@@ -34,20 +34,22 @@ def main():
     cWD = os.getcwd()
 
     # Generate new file path
-    logging.debug('Creating file 1')
     fName1 = 'babyShark.txt'
     fp1 = os.path.join(cWD, fName1)
     logging.debug(f'New file path: {fp1}')
 
-    logging.debug(f'Creating new file at {fp1}.')
-    with open(fp1, 'w') as file1:
-        file1.write('File creation success.\n')
-        file1.write('Baby shark, doo, doo, doo, doo, doo, doo\n')
-        file1.write('Baby shark, doo, doo, doo, doo, doo, doo\n')
-        file1.write('Baby shark, doo, doo, doo, doo, doo, doo\n')
-        file1.write('Baby shark\n')
+    logging.info(f'Appending new lines to {fp1}.')
 
-    logging.info(f'Success.')
+    try:  # block to catch if file doesn't exist
+        with open(fp1, 'a') as file1:
+            file1.write('Mommy shark, doo, doo, doo, doo, doo, doo\n')
+            file1.write('Mommy shark, doo, doo, doo, doo, doo, doo\n')
+            file1.write('Mommy shark, doo, doo, doo, doo, doo, doo\n')
+            file1.write('Mommy shark\n')
+    except FileNotFoundError as fnfEx:
+        logging.error(f'Failed. {fnfEx}')
+    else:
+        logging.info(f'Success.')
 
     logging.info(f'#######################{testNum} Completed.')
     #######################
