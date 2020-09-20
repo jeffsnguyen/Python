@@ -284,8 +284,9 @@ def main():
     delete_dName = 'Another_Directory'
     logging.debug(f'Deleting this {delete_dName}.')
 
+    # Assign the specific path to delete
     delete_dPath = os.path.join(cWD, delete_dName)
-    logging.debug(f'Deleting this {delete_dPath}.')
+    logging.info(f'Deleting everything under {delete_dPath}.')
 
     try:  # Catching unknown exception
         shutil.rmtree(delete_dPath)
