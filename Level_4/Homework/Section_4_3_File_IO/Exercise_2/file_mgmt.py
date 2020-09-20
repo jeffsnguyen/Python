@@ -31,22 +31,30 @@ def main():
     testNum = 'Test 1'
     logging.info(f'{testNum}')
 
+    # Get current working directory
     cWD = os.getcwd()
     logging.debug(f'Current working directory is: {cWD}.')
 
+    # Set walking path
     walkD = 'C:\\'
     logging.info(f'Path to start walking: {cWD}.')
 
+    # Set file extension
+    fileExt = '.pdf'
+    logging.debug(f'Setting file extension to be {fileExt}.')
+
+    # Create empty file list
     fileList = []
     logging.debug(f'Generate empty file list {fileList}.')
 
-    with Timer('searchpy'):
-        logging.info(f'Start timer. Please wait.')
+    # Walking with timer to start search
+    with Timer('searchPY'):
         count = 0  # Count # of files found
         for root, dirs, files in os.walk(walkD):  # walk top down from the preset top directory
             for file in files:
                 # If file extension match, add to list and increase count.
-                if file.endswith('.py'):
+                if file.endswith(fileExt):
+                    logging.debug(f'Found matching: {file}.')
                     fileList.append(file)
                     count += 1
 
