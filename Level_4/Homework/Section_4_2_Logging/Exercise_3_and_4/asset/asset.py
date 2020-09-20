@@ -14,7 +14,7 @@
 #           take a long time, so the explicit versions are recommended).
 
 # Importing packages
-
+import logging
 
 # Asset class
 # This class object takes on the value of the asset
@@ -23,6 +23,7 @@ class Asset(object):
     # Initialization function with value
     # Also included in this function is ability to set the arguments to 0 if they don't already exists
     def __init__(self, initialValue):
+
         # Main attributes
         self._initialValue = initialValue
 
@@ -45,16 +46,25 @@ class Asset(object):
     # Return a yearly depreciation rate
     # Raise NotImplementedError to make Asset object abstract and prevent direct instantiation
     def annualDeprRate(self, period = None):
+        logging.getLogger().setLevel(logging.ERROR)  # Set logging level
+        # Capture step/job done to debug
+        logging.error('Something went wrong. This is not implemented.')
         raise NotImplementedError
 
     # Calculate and return a monthly depreciation rate based on the annual depreciation rate
     # Formula monthly = annual / 12
     def monthlyDeprRate(self, period = None):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Calculate monthlyDeprRate.')
         return self.annualDeprRate(period) / 12
 
     # Calculate and return current value of asset at a given time t
     # Formula: current value = initial value * [(1-monthlyDeprRate)**t]
     def value(self, t):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Calculate value(t).')
         return self._initialValue * ((1 - self.monthlyDeprRate(t))**t)
 
     ##########################################################

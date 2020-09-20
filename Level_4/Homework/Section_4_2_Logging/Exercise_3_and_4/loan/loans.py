@@ -16,6 +16,7 @@
 # Importing packages
 from loan.loan_base import Loan
 from asset.asset import Asset, Car, HouseBase, Lambourghini, Lexus, Civic, PrimaryHome, VacationHome
+import logging
 
 # Derived classes from Loan:
 # FixedRateLoan
@@ -42,11 +43,22 @@ class VariableRateLoan(Loan):
     #   3. Return the corresponded key value (interest rate) of the newly founded closest key. This is the interest
     #       rate we are looking for.
     def getRate(self, startPeriod = None):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Calculate getRate.')
+
+        logging.debug('Step: Get the key from rateDict and save them.')
         self.sorted_key = dict(sorted(self._rateDict.items(), key = lambda k:k[1], reverse = False))
+
+        logging.debug('Step: Sort and grab the closest key based on the delta value of the key and the startPeriod')
         self.closest_key = min(self.sorted_key.keys(), key = lambda k: abs(k - startPeriod))
+
+        logging.debug('Step: Repeat the process until the closest key is less than the startPeriod')
         while self.closest_key > startPeriod:
             self.sorted_key.pop(self.closest_key, None)
             self.closest_key = min(self.sorted_key.keys(), key=lambda k: abs(k - startPeriod))
+
+        logging.debug('Step: Return the rate value corresponded to the closest term to the startPeriod')
         return self._rateDict[self.closest_key]
 
     # Return the repr value of the whole rateDict

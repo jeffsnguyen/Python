@@ -62,7 +62,7 @@ def main():
             pass
         # context manager automatically clean up after itself, no need to close the file
         logging.info(f'Has the file been closed? {f.closed}.')
-    print()
+
 
     # Test 2
     # 2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
@@ -91,7 +91,6 @@ def main():
                 pass
             # context manager automatically clean up after itself, no need to close the file
             logging.info(f'Has the file been closed? {f.closed}.')
-    print()
 
     # Test 3
     # 3. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
@@ -133,7 +132,7 @@ def main():
         except Exception:  # catch other unanticipated error
             logging.info(Exception('Unknown error.'))
             pass
-    print()
+
 
 ###############################################
 

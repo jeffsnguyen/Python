@@ -15,6 +15,11 @@
 
 # Importing packages
 from asset.asset import Asset
+import logging
+
+#######################
+logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style="{")
+#######################
 
 # loan class
 # This class object takes on the arguments asset, face, rate, term
@@ -23,12 +28,15 @@ class Loan(object):
     # Initialization function with asset, face, rate, term
     # Also included in this function is ability to set the arguments to 0 if they don't already exists
     def __init__(self, notional, rate, term, asset):
+
         # Main attributes
         self._notional = notional
         self._rate = rate
         self._term = term
 
         if not isinstance(asset, Asset):
+            logging.getLogger().setLevel(logging.ERROR)   # Set logging level
+            logging.error('Something wrong with parameters type.')   # Log the error prior to raising it
             raise ValueError('asset must be of Asset type.')
         else:
             self._asset = asset
@@ -90,42 +98,65 @@ class Loan(object):
         # r = monthly rate, P = notional value, N = term in months
         # DIV/0 exception handling: print and warning message and return value of None
         try:
+            logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+            # Capture step/job done to debug
+            logging.debug('Step: Trying to calculate monthlyPayment')
             return self.calcMonthlyPmt(self._notional, self.getRate(period), self._term)
         except ZeroDivisionError:
-            print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
-            return None
+            logging.getLogger().setLevel(logging.ERROR)  # Set logging level
+            raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
 
     # Instance method to calculate total payments
     def totalPayments(self):
         # Calculate total payment using the formula total = monthlyPayment * term * 12
         # r = monthly rate, P = notional value, N = term in months
         try:
+            logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+            # Capture step/job done to debug
+            logging.debug('Step: Trying to calculate totalPayments using monthlyPayments and term')
             return self.monthlyPayment() * self._term * 12
-        except:
-            print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
-            return None
+        except ZeroDivisionError:
+            logging.getLogger().setLevel(logging.ERROR)  # Set logging level
+            raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
 
     # Instance method to calculate total interest over the entire loan
     def totalInterest(self):
         # Calculate payment using the formula total_interest = totalpayment = notional value
         try:
+            logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+            # Capture step/job done to debug
+            logging.debug('Step: Trying to calculate totalInterest using totalPayments and notional')
             return self.totalPayments() - self._notional
-        except:
-            print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
-            return None
+        except ZeroDivisionError:
+            logging.getLogger().setLevel(logging.ERROR)  # Set logging level
+            raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
 
     # Instance method to calculate interest due at time t
     # This method use the given formula
     def interestDue(self, t):
+        if t > self._term:
+            logging.getLogger().setLevel(logging.INFO)  # Set logging level
+            logging.info('t value is greater than term')
+
         # Calculate payment using the formula interestDue = r * loan balance bal
         # r = monthly rate, P = notional value, N = term in months
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate totalInterest using totalPayments and notional')
         return Loan.monthlyRate(self.getRate(t)) * self.balance(t - 1)
 
     # Instance method to calculate principal due at time t
     # This method use the given formula
     def principalDue(self, t):
+        if t > self._term:
+            logging.getLogger().setLevel(logging.INFO)  # Set logging level
+            logging.info('t value is greater than term')
+
         # Calculate payment using the formula principalDue = monthlyPayment - interestDue
         # r = monthly rate, P = notional value, N = term in months
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate principalDue using monthlyPayments and interestDue')
         return Loan.monthlyPayment(t) - self.interestDue(t)
 
     # Instance method to calculate remaining loan balance due at time t
@@ -133,44 +164,108 @@ class Loan(object):
     # Modified to delegate to calcBalance(face, rate, term, period)
     # Notional is equivalent to face
     def balance(self, t):
+        if t > self._term:
+            logging.getLogger().setLevel(logging.INFO)  # Set logging level
+            logging.info('t value is greater than term')
+
         # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
         # r = monthly rate, P = notional value, N = term in months
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate balance using calcBalance')
         return self.calcBalance(self._notional, self.getRate(t), self._term, t)
 
     # Instance method to calculate interest due at time t
     # This method use the recursive function
     def interestDueRecursive(self, t):
+        # Warn user when running a recursive function
+        logging.getLogger().setLevel(logging.WARN)  # Set logging level
+        # Capture step/job done to debug
+        logging.warn('Step: You are running a recursive function. This will take a long time.')
+
+        if t > self._term:
+            logging.info('t value is greater than term')
+
         # Calculate payment using recursive functions
         if t == 1:
+            logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+            # Capture step/job done to debug
+            logging.debug('Step: Trying to calculate interestDueRecursive, return notional * monthlyRate if term = 1')
             return self._notional * Loan.monthlyRate(self.getRate(t))
         else:
+            # Capture step/job done to debug
+            logging.debug('Step: Trying to calculate interestDueRecursive, '
+                          'return balanceRecursive(t-1) * monthlyRate if term != 1')
             return self.balanceRecursive(t - 1) * Loan.monthlyRate(self.getRate())
 
     # Instance method to calculate principal due at time t
     # This method use the recursive function
     def principalDueRecursive(self, t):
+        # Warn user when running a recursive function
+        logging.getLogger().setLevel(logging.WARN)  # Set logging level
+        # Capture step/job done to debug
+        logging.warn('Step: You are running a recursive function. This will take a long time.')
+
+        if t > self._term:
+            logging.info('t value is greater than term')
+
         # Calculate payment using recursive functions
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate principalDueRecursive, return monthlyPayment - interestDueRecursive')
         return self.monthlyPayment() - self.interestDueRecursive(t)
 
     # Instance method to calculate remaining loan balance due at time t
     # This method use the recursive function
     def balanceRecursive(self, t):
+        # Warn user when running a recursive function
+        logging.getLogger().setLevel(logging.WARN)  # Set logging level
+        # Capture step/job done to debug
+        logging.warn('Step: You are running a recursive function. This will take a long time.')
+
+        if t > self._term:
+            logging.info('t value is greater than term')
+
         # Calculate payment using recursive functions
         if t == 1:
+            logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+            # Capture step/job done to debug
+            logging.debug('Step: Trying to calculate balanceRecursive, '
+                          'return notional - princiaplDueRecursive if term = 1')
             return self._notional - self.principalDueRecursive(t)
         else:
+            # Capture step/job done to debug
+            logging.debug('Step: Trying to calculate interestDueRecursive, '
+                          'return balanceRecursive(t-1) - principalDueRecursive if term != 1')
             return self.balanceRecursive(t - 1) - self.principalDueRecursive(t)
 
     # Instance method to get interest rate from Loan object.
     def getRate(self, period=None):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to get rate by simply returning rate parameters.')
         return self._rate
 
     # Instance method to return the current asset value for the given period times a recovery multiplier of .6
     def recoveryValue(self, t):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate recoveryValue by asset.value(t) * .6.')
+
+        if t > self._term:
+            logging.info('t value is greater than term')
+
         return self._asset.value(t) * .6
 
     # Instance method to return the available equity (current asset value less current loan balance)
     def equity(self, t):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate equity by asset.value(t) - balance(t).')
+
+        if t > self._term:
+            logging.info('t value is greater than term')
+
         return self._asset.value(t) - self.balance(t)
     ##########################################################
 
@@ -183,10 +278,15 @@ class Loan(object):
     @classmethod
     def calcMonthlyPmt(cls, face, rate, term):
         try:
+            logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+            # Capture step/job done to debug
+            logging.debug('Step: Trying to calculate calcMonthlyPmt')
             return (Loan.monthlyRate(rate) * face * (1 + Loan.monthlyRate(rate)) ** (term * 12)) / \
                    (((1 + Loan.monthlyRate(rate)) ** (term * 12)) - 1)
         except ZeroDivisionError:
-            print('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
+            logging.getLogger().setLevel(logging.ERROR)  # Set logging level
+            logging.error('Something went wrong. Division by 0.')  # Log the error prior to raising it
+            raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
             return None
 
     # Class method to calculate outstanding balance of the given loan at given period
@@ -194,6 +294,9 @@ class Loan(object):
     # r = monthly rate, P = notional value, N = term in months
     @classmethod
     def calcBalance(cls, face, rate, term, period):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate calcBalance')
         return face * ((1 + Loan.monthlyRate(rate)) ** period) - \
                (Loan.calcMonthlyPmt(face, rate, term) * (((1 + Loan.monthlyRate(rate)) ** period - 1) /
                                                          Loan.monthlyRate(rate)))
@@ -205,11 +308,17 @@ class Loan(object):
     # Monthly rate = Annual Rate / 12
     @staticmethod
     def monthlyRate(annual_rate):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate monthlyRate')
         return annual_rate / 12
 
     # Static method to return annual rate for a passed in monthly rate
     # Annual rate = Monthly Rate * 12
     @staticmethod
     def annualRate(monthly_rate):
+        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
+        # Capture step/job done to debug
+        logging.debug('Step: Trying to calculate annualRate')
         return monthly_rate * 12
     ##########################################################
