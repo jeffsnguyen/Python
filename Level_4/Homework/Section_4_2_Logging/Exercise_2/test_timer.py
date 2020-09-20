@@ -1,7 +1,7 @@
 # Type: Homework
 # Level: 4
 # Section: 4.2: Logging
-# Exercise: 1
+# Exercise: 2
 # Description: Contains the tests for modified Timer class
 #   Modify your Timer class to use a logging statement (info level) instead of a print statement.
 
