@@ -1,11 +1,17 @@
 # Type: Homework
-# Level: 3
-# Section: 3.3: Exception Handling
-# Exercise: 4
+# Level: 4
+# Section: 4.2: Logging
+# Exercise: 3
 # Description: This contains Loan class methods, modified to handle exception
-#   Modify all the applicable Loan classes from Level 2 so that if an incorrect Asset type is passed-into
-#       the __init__ function, an exception is raised (instead of printing the message to the user). Test this
-#       out in main, and handle the exception.
+#   Add logging statements to your Loan class. This should consist of the following:
+#       a. Anytime an exception is thrown (i.e., when an incorrect Asset type is passed-into the
+#           initialization function), log an error prior to raising the exception.
+#       b. Debug-level logs which display interim steps of calculations and return values for the Loan functions.
+#       c. Info-level logs to display things like ‘t is greater than term’ in the loan functions.
+#       d. At the point the exception is caught (in your main function) use logging.exception to display
+#           the exception in addition to a custom message.
+#       e. Add a warn log to the recursive versions of the waterfall functions (that they are expected to
+#           take a long time, so the explicit versions are recommended).
 
 # Importing packages
 from asset.asset import Asset

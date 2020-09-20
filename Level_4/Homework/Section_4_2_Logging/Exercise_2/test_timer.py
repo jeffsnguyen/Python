@@ -23,7 +23,10 @@ def testing_loop(x):
     # Signal completion of loop
     logging.info('Loop completed.')
 ###############################################
+
+
 logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style="{")
+
 ###############################################
 def main():
 
@@ -38,7 +41,7 @@ def main():
     #           and its ability to config time display format
     #       3. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
     #           and its ability to config time display format.  This time using incorrect timer config format.
-    #       4. Test the modified Timer class to time a loop that will take more than 60 seconds
+    #   NEW 4. Test the modified Timer class to time a loop that will take more than 60 seconds
     ###############################################
 
     # Test 1
