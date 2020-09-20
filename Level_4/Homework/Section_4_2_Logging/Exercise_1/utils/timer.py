@@ -9,6 +9,7 @@
 from time import time
 import logging
 
+logging.basicConfig(format="{processName:<12} {message} ({filename}:{lineno})", style="{")
 # Timer class
 # This class object takes on hours, minutes, seconds arguments
 # It also has functionalities to count time elapsed and configure format of said time elapsed
@@ -22,14 +23,14 @@ class Timer(object):
     # Start the context (timer)
     def __enter__(self):
         self.start = time()  # Call start() to start timer
-        print('Starting timer, wait for process to complete...')
+        logging.info('Starting timer, wait for process to complete...')
         return self
 
     # Exit the context (timer)
     def __exit__(self, *args):  # Call end() to get timer result and end the timer
         self.end = time()
-        print('End timer.')
-        print(f'{self.timerName}: {self.end-self.start} {self.timer_dict[self.timer_config]}.')
+        logging.info('End timer.')
+        logging.info(f'{self.timerName}: {self.end-self.start} {self.timer_dict[self.timer_config]}.')
 
     # Initialize a counter instance variable to check if timer has/ has not started
     # Initial value is False: timer not started
@@ -73,7 +74,7 @@ class Timer(object):
         if self.timer_check:
             logging.info('Error: Timer already running. Please wait...')
         else:
-            print('Starting timer, wait for process to complete...')
+            logging.info('Starting timer, wait for process to complete...')
             self.counter_start = time()
             self.timer_check = True
 
@@ -85,7 +86,7 @@ class Timer(object):
             logging.info('Error: Timer is not running. Use start to start timer.')
         else:  # If timer is not running:
             self.counter_end = time()  # Take the time stamp of the timer with time()
-            print('End timer.')  # Inform user that timer has ended.
+            logging.info('End timer.')  # Inform user that timer has ended.
 
             # Calculate time elapsed in given configuration
             self.time_elapsed_default = self.counter_end - self.counter_start
@@ -95,10 +96,10 @@ class Timer(object):
             # try except to handle exception of time configuration not existing in timer_dict dictionary
             # Only valid keys: 1: seconds, 60: minutes, 3600: hours
             try:
-                print(f'Function took {self.time_elapsed} {self.timer_dict[self.timer_config]} to run.')
+                logging.info(f'Function took {self.time_elapsed} {self.timer_dict[self.timer_config]} to run.')
             except KeyError:
                 logging.info(f'Time config is not valid. Result will be displayed in seconds (config = 1).')
-                print(f'Function took {self.time_elapsed_default} seconds to run.')
+                logging.info(f'Function took {self.time_elapsed_default} seconds to run.')
 
             self.timer_check = False  # Reset the check variable
 
@@ -109,10 +110,10 @@ class Timer(object):
         # try except to handle exception of time configuration not existing in timer_dict dictionary
         # Only valid keys: 1: seconds, 60: minutes, 3600: hours
         try:
-            print(f'The last timer is: {self.last_result} {self.timer_dict[self.timer_config]}.')
+            logging.info(f'The last timer is: {self.last_result} {self.timer_dict[self.timer_config]}.')
         except KeyError:
             logging.info(f'Time config is not valid. Result will be displayed in seconds (config = 1).')
-            print(f'Function took {self.time_elapsed_default} seconds to run.')
+            logging.info(f'Function took {self.time_elapsed_default} seconds to run.')
         return self.last_result
 
     # Instance method to accept time display configuration
@@ -129,4 +130,4 @@ class Timer(object):
             self.timer_config = 3600
         else:  # if input lookup fail, raise value error to user
             raise ValueError('Timer config invalid.')
-        print(f'Time is currently configured to display in {self.timer_dict[self.timer_config]}.')
+        logging.info(f'Time is currently configured to display in {self.timer_dict[self.timer_config]}.')

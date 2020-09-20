@@ -12,7 +12,7 @@ import logging
 #######################
 
 ###############################################
-
+logging.basicConfig(format="{processName:<12} {message} ({filename}:{lineno})", style="{")
 ###############################################
 def main():
 
@@ -31,7 +31,7 @@ def main():
 
     # Test 1
     # 1. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
-    print('1. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1')
+    logging.info('1. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1')
 
     with Timer('babySharkTimer'):
         # Doing work below
@@ -46,13 +46,13 @@ def main():
             logging.info(Exception('Unknown error.'))
             pass
         # context manager automatically clean up after itself, no need to close the file
-        print(f'Has the file been closed? {f.closed}.')
+        logging.info(f'Has the file been closed? {f.closed}.')
     print()
 
     # Test 2
     # 2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
     #   and its ability to config time display format
-    print('2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1 '
+    logging.info('2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1 '
           'and its ability to config time display format')
 
     with Timer('babySharkTimer') as timer:
@@ -62,7 +62,7 @@ def main():
             timer.timerConfig('hrs')
         except Exception:
             logging.info(Exception('Timer config invalid.'))
-            print('Using seconds as default. Continue...')
+            logging.info('Using seconds as default. Continue...')
         finally:
             # try-except block to catch errors
             try:
@@ -75,13 +75,13 @@ def main():
                 logging.info(Exception('Unknown error.'))
                 pass
             # context manager automatically clean up after itself, no need to close the file
-            print(f'Has the file been closed? {f.closed}.')
+            logging.info(f'Has the file been closed? {f.closed}.')
     print()
 
     # Test 3
-    # 2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
+    # 3. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
     #   and its ability to config time display format. This time using incorrect timer config format.
-    print('2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1 '
+    logging.info('3. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1 '
           'and its ability to config time display format.  This time using incorrect timer config format.')
 
     with Timer('babySharkTimer') as timer:
@@ -91,7 +91,7 @@ def main():
             timer.timerConfig('Hello')
         except ValueError as valEx:
             logging.info(valEx)
-            print('Using seconds as default. Continue...')
+            logging.info('Using seconds as default. Continue...')
         finally:
             # try-except block to catch errors
             try:
@@ -104,7 +104,7 @@ def main():
                 logging.info(Exception('Unknown error.'))
                 pass
             # context manager automatically clean up after itself, no need to close the file
-            print(f'Has the file been closed? {f.closed}.')
+            logging.info(f'Has the file been closed? {f.closed}.')
 
     # The Context Manager approach is compared to previous method is:
     #       1. Cleaner, does not requires explicitly calling start() and end()
