@@ -22,7 +22,6 @@
 # Importing necessary packages
 from asset.asset import Asset, Car, HouseBase, Lambourghini, Lexus, Civic, PrimaryHome, VacationHome
 from loan.mortgage import MortgageMixin, FixedMortgage, VariableMortgage
-from loan.loan_base import Loan
 from loan.loans import FixedRateLoan, VariableRateLoan, AutoLoan
 import logging
 #######################
@@ -31,18 +30,19 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
 # Setting log file config
-logging.basicConfig(filename='log.txt', filemode = 'a',
+logging.basicConfig(filename='log.txt', filemode='a',
                         format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style='{')
 #######################
+
 
 # function to handle user prompt to enter loan data
 def loanDataEntry():
     # Create dictionary to look up object type.
-    loanName = {1: FixedMortgage, 2: AutoLoan }
+    loanName = {1: FixedMortgage, 2: AutoLoan}
     assetName = {1: Car, 2: Lambourghini, 3: Lexus, 4: Civic,
                  5: HouseBase, 6: PrimaryHome, 7: VacationHome}
     car_assetName = {1: Car, 2: Lambourghini, 3: Lexus, 4: Civic}
-    house_assetName= {5: HouseBase, 6: PrimaryHome, 7: VacationHome}
+    house_assetName = {5: HouseBase, 6: PrimaryHome, 7: VacationHome}
 
     # Handle loan type input
     logging.debug('Starting a loop to handle value error.')
@@ -71,7 +71,6 @@ def loanDataEntry():
                 print(f'Failed. {loanType} is not valid. Try again.')
                 flag = False
 
-
     # Handle asset type input
     logging.debug('Starting a loop to handle value error.')
     flag = False
@@ -96,7 +95,8 @@ def loanDataEntry():
                 pass
             else:  # If int conversion of key is successful
                 logging.debug('Conversion of key succeed. Checking if key is in dict.')
-                if assetType in car_assetName:  # if dict lookup succeed, set flag = True to end loop, otherwise, continue
+                # if dict lookup succeed, set flag = True to end loop, otherwise, continue
+                if assetType in car_assetName:
                     flag = True
                 else:
                     logging.debug(f'{assetType} is not valid.')
@@ -121,13 +121,13 @@ def loanDataEntry():
                 pass
             else:  # If int conversion of key is successful
                 logging.debug('Conversion of key succeed. Checking if key is in dict.')
-                if assetType in house_assetName:  # if dict lookup succeed, set flag = True to end loop, otherwise, continue
+                # if dict lookup succeed, set flag = True to end loop, otherwise, continue
+                if assetType in house_assetName:
                     flag = True
                 else:
                     logging.debug(f'{assetType} is not valid.')
                     print(f'Failed. {assetType} is not valid. Try again.')
                     flag = False
-
 
     # Handle asset value
     logging.debug('Starting a loop to handle value error.')
@@ -204,13 +204,14 @@ def loanDataEntry():
     # Attempt to instantiate the object
     try:
         logging.debug('Attempt to instantiate object.')
-        object = loanName[loanType](notionalVal, rateVal, termVal, assetName[assetType](assetVal))
-        print(f'{object}')
-        return object
+        objectInput = loanName[loanType](notionalVal, rateVal, termVal, assetName[assetType](assetVal))
+        print(f'{objectInput}')
+        return objectInput
     except Exception as Ex:
         print(f'Failed to create loan object. {Ex}')
         logging.exception(f'Failed to instantiate object. {Ex}')
         raise Exception
+
 
 def main():
 
@@ -230,7 +231,6 @@ def main():
     # Master key is the 2 options user are given
     # 1 prompt for data entry
     # 2 save data to CSV file
-
 
     master_key = input('Press 1 to enter loan info. Press 2 to write them to CSV. = ')
     # 1 Execute prompt for data entry
@@ -254,13 +254,15 @@ def main():
                 logging.debug(f'Open CSV for append at {loanFile}')
                 for loan in loans:  # loop through the list to write to csv
                     logging.debug(f'Writing {loan} to CSV')
-                    file1.write(f'{loan.__class__.__name__}, {loan.asset.__class__.__name__}, {loan.asset.initialValue}, {loan.notional}, {loan.rate}, {loan.term}\n')
+                    file1.write(f'{loan.__class__.__name__}, {loan.asset.__class__.__name__}, '
+                                f'{loan.asset.initialValue}, {loan.notional}, {loan.rate}, {loan.term}\n')
         except FileNotFoundError as fnfEx:
             logging.error(f'Failed. {fnfEx}')
         else:
             logging.info(f'Success.')
 
     ###############################################
+
 
 #######################
 if __name__ == '__main__':

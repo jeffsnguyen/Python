@@ -229,8 +229,9 @@ def main():
 
     # Master key is the 2 options user are given
     # 1 prompt for data entry
-    # 2 save data to CSV file
-
+    # 2 export data to CSV file
+    # 3 import data from CSV file
+    # 4 Display WAR WAM of all the loans
 
     master_key = input('Press 1 to enter loan info. Press 2 to write them to CSV. = ')
     # 1 Execute prompt for data entry
@@ -247,18 +248,38 @@ def main():
             print(f'Loan entry successfully recorded under: {loan1}.')  # Display record to user
             print(f'Current loans are: {loans}')
             print()
+
     # 2 Execute prompt for CSV export
     elif master_key == '2':
         try:  # block to catch if file doesn't exist
-            with open(loanFile, 'a') as file1:   # open the csv file
+            with open(loanFile, 'a') as fExport:   # open the csv file
                 logging.debug(f'Open CSV for append at {loanFile}')
                 for loan in loans:  # loop through the list to write to csv
                     logging.debug(f'Writing {loan} to CSV')
-                    file1.write(f'{loan.__class__.__name__}, {loan.asset.__class__.__name__}, {loan.asset.initialValue}, {loan.notional}, {loan.rate}, {loan.term}\n')
+                    fExport.write(f'{loan.__class__.__name__}, {loan.asset.__class__.__name__}, {loan.asset.initialValue}, {loan.notional}, {loan.rate}, {loan.term}\n')
         except FileNotFoundError as fnfEx:
             logging.error(f'Failed. {fnfEx}')
         else:
             logging.info(f'Success.')
+
+    # 3 Execute prompt for CSV import
+    elif master_key == '3'
+        import_loanFile = input('Enter filepath to import = ')
+        try:  # block to catch if file doesn't exist
+            with open(import_loanFile, 'r') as file
+
+        except FileNotFoundError as fnfEx:
+            logging.error(f'Failed. {fnfEx}')
+        else:
+        logging.info(f'Success.')
+
+            with open(loanFile, 'a') as file1:  # open the csv file
+                logging.debug(f'Open CSV for append at {loanFile}')
+                for loan in loans:  # loop through the list to write to csv
+                    logging.debug(f'Writing {loan} to CSV')
+                    file1.write(
+                        f'{loan.__class__.__name__}, {loan.asset.__class__.__name__}, {loan.asset.initialValue}, {loan.notional}, {loan.rate}, {loan.term}\n')
+
 
     ###############################################
 
