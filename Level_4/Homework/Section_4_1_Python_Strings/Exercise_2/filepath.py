@@ -18,6 +18,7 @@ import shutil
 
 ###############################################
 
+
 ###############################################
 def main():
 
@@ -30,7 +31,7 @@ def main():
 
     # b. Extract the file extension only.
     print('b. Extract the file extension only.')
-    print(fp.split('.')[1]) # rsplit to split the last element by '.' and index to grab it
+    print(fp.split('.')[1])  # rsplit to split the last element by '.' and index to grab it
     print()
 
     # c. Add another folder (can name it whatever you like) between Desktop and the filename.
@@ -43,7 +44,7 @@ def main():
         pass
     else:
         try:  # try-except block to catch if move can't be done
-            dest = shutil.move(fp, fp1)   # move the file
+            shutil.move(fp, fp1)   # move the file
         except Exception as Ex:   # catch shutil.Error
             print(Ex)
             pass
@@ -51,6 +52,7 @@ def main():
     print()
 
 ###############################################
+
 
 #######################
 if __name__ == '__main__':

@@ -62,7 +62,7 @@ def main():
                 age = int(age)
             except ValueError:   # catch non-integer input
                 print(ValueError('Age must be an integer'))
-            except Exception as Ex:   # catch unknown exceptions
+            except Exception:   # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:   # check if age is positive
@@ -71,7 +71,7 @@ def main():
                     #######################
                     # 1.1 Using format flag to display result
                     #######################
-                    print('%s is %i years old and lives in %s.'%(name, age, country))
+                    print('%s is %i years old and lives in %s.' % (name, age, country))
         keepGoing = input('To stop enter 0, to continue enter anything else: ')
         print()
     #######################
@@ -95,7 +95,7 @@ def main():
                 age = int(age)
             except ValueError:  # catch non-integer input
                 print(ValueError('Age must be an integer'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -105,7 +105,7 @@ def main():
                     # 1.2 Using format function to display result
                     #######################
                     print('{name} is {age} years old and lives in {country}.'
-                          .format(name = name, age = age, country = country))
+                          .format(name=name, age=age, country=country))
         keepGoing = input('To stop enter 0, to continue enter anything else: ')
         print()
     #######################
@@ -128,7 +128,7 @@ def main():
                 age = int(age)
             except ValueError:  # catch non-integer input
                 print(ValueError('Age must be an integer'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -161,7 +161,7 @@ def main():
                 age = int(age)
             except ValueError:  # catch non-integer input
                 print(ValueError('Age must be an integer'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -207,7 +207,7 @@ def main():
                 age = float(age)
             except ValueError:  # catch non-float input
                 print(ValueError('Age must be a number (integer or float).'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -240,7 +240,7 @@ def main():
                 age = float(age)
             except ValueError:  # catch non-float input
                 print(ValueError('Age must be a number (integer or float).'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -273,7 +273,7 @@ def main():
                 age = float(age)
             except ValueError:  # catch non-float input
                 print(ValueError('Age must be a number (integer or float).'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -306,7 +306,7 @@ def main():
                 age = float(age)
             except ValueError:  # catch non-float input
                 print(ValueError('Age must be a number (integer or float).'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -354,7 +354,7 @@ def main():
                 age = float(age)
             except ValueError:  # catch non-float input
                 print(ValueError('Age must be a number (integer or float).'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -387,7 +387,7 @@ def main():
                 age = float(age)
             except ValueError:  # catch non-float input
                 print(ValueError('Age must be a number (integer or float).'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -421,7 +421,7 @@ def main():
                 age = float(age)
             except ValueError:  # catch non-float input
                 print(ValueError('Age must be a number (integer or float).'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -454,7 +454,7 @@ def main():
                 age = float(age)
             except ValueError:  # catch non-float input
                 print(ValueError('Age must be a number (integer or float).'))
-            except Exception as Ex:  # catch unknown exceptions
+            except Exception:  # catch unknown exceptions
                 print(Exception('Unknown Error'))
             else:
                 if not age >= 0:  # check if age is positive
@@ -472,7 +472,6 @@ def main():
     # inline expression can be evaluated inside the string
     # not having to memorized format flags
     ###############################################
-
 
 
 ###############################################

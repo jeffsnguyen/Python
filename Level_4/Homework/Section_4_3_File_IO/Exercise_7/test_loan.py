@@ -31,7 +31,7 @@ for handler in logging.root.handlers[:]:
 
 # Setting log file config
 logging.basicConfig(filename='log.txt', filemode='a',
-                        format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style='{')
+                    format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style='{')
 #######################
 
 
@@ -226,7 +226,7 @@ def main():
     loans = []
     logging.debug(f'Initiate {loans} to save loan info.')
 
-    loanFile = 'loansRecord.csv' # Initiate a file name variable
+    loanFile = 'loansRecord.csv'  # Initiate a file name variable
 
     # Master key is the 2 options user are given
     # 1 prompt for data entry

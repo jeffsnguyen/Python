@@ -98,7 +98,7 @@ def main():
 
     # m. Find the index of the second occurrence of the word course.
     print('m. Find the index of the second occurrence of the word course.')
-    print(s1.find('course',12))  # set the start position after the first one, which is 11th, so set start = 12
+    print(s1.find('course', 12))  # set the start position after the first one, which is 11th, so set start = 12
     print()
 
     # n. Find the index of the second to last occurrence of the letter ‘t’, between the 7th and 33rd

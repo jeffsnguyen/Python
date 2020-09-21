@@ -14,6 +14,8 @@ import logging
 ###############################################
 logging.basicConfig(format="{processName:<12} {message} ({filename}:{lineno})", style="{")
 ###############################################
+
+
 def main():
 
     # Set logging level
@@ -53,7 +55,7 @@ def main():
     # 2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
     #   and its ability to config time display format
     logging.info('2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1 '
-          'and its ability to config time display format')
+                 'and its ability to config time display format')
 
     with Timer('babySharkTimer') as timer:
         # Doing work below
@@ -82,7 +84,7 @@ def main():
     # 3. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
     #   and its ability to config time display format. This time using incorrect timer config format.
     logging.info('3. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1 '
-          'and its ability to config time display format.  This time using incorrect timer config format.')
+                 'and its ability to config time display format.  This time using incorrect timer config format.')
 
     with Timer('babySharkTimer') as timer:
         # Doing work below
@@ -111,6 +113,7 @@ def main():
     #       2. Enable on-demand resources allocation
     #       3. Exception handling is easier
 ###############################################
+
 
 #######################
 if __name__ == '__main__':

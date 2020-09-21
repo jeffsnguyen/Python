@@ -10,6 +10,8 @@
 from utils.timer import Timer
 import logging
 #######################
+
+
 # Create a testing function to run a meaningless loop to take up some time
 # so that the Timer class can be tested
 def testing_loop(x):
@@ -28,6 +30,8 @@ def testing_loop(x):
 logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style="{")
 
 ###############################################
+
+
 def main():
 
     # Set logging level
@@ -63,12 +67,11 @@ def main():
         # context manager automatically clean up after itself, no need to close the file
         logging.info(f'Has the file been closed? {f.closed}.')
 
-
     # Test 2
     # 2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
     #   and its ability to config time display format
     logging.info('2. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1 '
-          'and its ability to config time display format')
+                 'and its ability to config time display format')
 
     with Timer('babySharkTimer') as timer:
         # Doing work below
@@ -96,7 +99,7 @@ def main():
     # 3. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1
     #   and its ability to config time display format. This time using incorrect timer config format.
     logging.info('3. Test the modified Timer class to time babyShark file IO in Exercise 3.4.1 '
-          'and its ability to config time display format.  This time using incorrect timer config format.')
+                 'and its ability to config time display format.  This time using incorrect timer config format.')
 
     with Timer('babySharkTimer') as timer:
         # Doing work below

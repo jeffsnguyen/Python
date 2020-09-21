@@ -16,10 +16,11 @@ from utils.timer import Timer
 # Add config of log
 logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style="{")
 ###############################################
+
+
 def main():
     # Set logging level
     logging.getLogger().setLevel(logging.DEBUG)
-
 
     # Testing block
     # Scenario:
@@ -65,6 +66,7 @@ def main():
     #######################
 
 ###############################################
+
 
 #######################
 if __name__ == '__main__':

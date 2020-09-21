@@ -51,8 +51,8 @@ def main():
     logging.info('Test 1.1')
     asset1 = Asset(1000000)
     car1 = Car(100000)
-    loan1 = Loan(100000, .05, 30, asset1)
-    loan1 = Loan(100000, .05, 30, car1)
+    Loan(100000, .05, 30, asset1)
+    Loan(100000, .05, 30, car1)
 
     # Test 1.2
     # Scenario: Test the __init__ function of MortgageMixin
@@ -64,8 +64,8 @@ def main():
     housebase1 = HouseBase(1000000)
     primaryhome1 = PrimaryHome(100000)
     vacayhome1 = VacationHome(100000)
-    mortgage1 = FixedMortgage(100000, .05, 30, housebase1)
-    mortgage1 = FixedMortgage(100000, .05, 30, primaryhome1)
+    FixedMortgage(100000, .05, 30, housebase1)
+    FixedMortgage(100000, .05, 30, primaryhome1)
     mortgage1 = FixedMortgage(100000, .05, 30, vacayhome1)
 
     # Exception Handling block on intentionally incorrect passed-in value.
@@ -131,7 +131,7 @@ def main():
     # here: a string is passed into asset
     logging.info('Test 1.7')
     try:
-        loan1 = Loan(100000, .05, 30, 'sdfsf')
+        Loan(100000, .05, 30, 'sdfsf')
     except ValueError as valEx:  # handle the asset type value error
         logging.getLogger().setLevel(logging.ERROR)
         logging.error(valEx)
@@ -139,7 +139,6 @@ def main():
     except Exception as Ex:  # catch other unknown error
         logging.exception(Ex)
         pass
-
 
     # Test 1.8
     # Scenario: Test the __init__ function of Loan
@@ -150,7 +149,7 @@ def main():
     logging.getLogger().setLevel(logging.INFO)
     logging.info('Test 1.8')
     try:
-        loan1 = Loan(100000, .05, 30, (-1000, 'george'))
+        Loan(100000, .05, 30, (-1000, 'george'))
     except ValueError as valEx:  # handle the asset type value error
         logging.getLogger().setLevel(logging.ERROR)
         logging.error(valEx)
