@@ -13,6 +13,8 @@ import logging
 ###############################################
 # Add config of log
 logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style="{")
+
+
 ###############################################
 def main():
     # Set logging level
@@ -55,6 +57,7 @@ def main():
     #######################
 
 ###############################################
+
 
 #######################
 if __name__ == '__main__':
