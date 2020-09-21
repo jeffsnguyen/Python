@@ -18,7 +18,6 @@ from asset.asset import Asset
 import logging
 
 #######################
-logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style="{")
 #######################
 
 # loan class

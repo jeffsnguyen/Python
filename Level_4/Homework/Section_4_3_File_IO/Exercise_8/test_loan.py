@@ -20,10 +20,8 @@
 #       of loans.
 
 # Importing necessary packages
-from asset.asset import Asset, Car, HouseBase, Lambourghini, Lexus, Civic, PrimaryHome, VacationHome
-from loan.mortgage import MortgageMixin, FixedMortgage, VariableMortgage
-from loan.loan_base import Loan
-from loan.loans import FixedRateLoan, VariableRateLoan, AutoLoan
+from loan.loanpool import LoanPool
+from loan.loanIO import loanDataEntry, loanReadCSV
 import logging
 #######################
 # To enable PyCharm to create log file
@@ -31,186 +29,10 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 
 # Setting log file config
-logging.basicConfig(filename='log.txt', filemode = 'a',
-                        format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style='{')
+logging.basicConfig(filename='log.txt', filemode='a',
+                    format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style='{')
 #######################
 
-# function to handle user prompt to enter loan data
-def loanDataEntry():
-    # Create dictionary to look up object type.
-    loanName = {1: FixedMortgage, 2: AutoLoan }
-    assetName = {1: Car, 2: Lambourghini, 3: Lexus, 4: Civic,
-                 5: HouseBase, 6: PrimaryHome, 7: VacationHome}
-    car_assetName = {1: Car, 2: Lambourghini, 3: Lexus, 4: Civic}
-    house_assetName= {5: HouseBase, 6: PrimaryHome, 7: VacationHome}
-
-    # Handle loan type input
-    logging.debug('Starting a loop to handle value error.')
-    flag = False
-    while not flag:
-        print('Enter type of loan:\n '
-              '1 = FixedMortgage\n '
-              '2 = AutoLoan\n')
-        try:  # exception block to handle value error
-            loanType = int(input('Loan Type = '))
-            logging.debug(f'Prompt user to enter Loan type {loanType}.')
-        except ValueError as valEx:
-            print(f'Failed. Expecting an integer. {valEx}')
-            logging.error(f'Failed. {valEx}')
-            pass
-        except Exception as Ex:
-            print(f'Failed. Unknown error. {Ex}')
-            logging.exception(f'Failed. {Ex}')
-            pass
-        else:  # If int conversion of key is successful
-            logging.debug('Conversion of key succeed. Checking if key is in dict.')
-            if loanType in loanName:  # if dict lookup succeed, set flag = True to end loop, otherwise, continue
-                flag = True
-            else:
-                logging.debug(f'{loanType} is not valid.')
-                print(f'Failed. {loanType} is not valid. Try again.')
-                flag = False
-
-
-    # Handle asset type input
-    logging.debug('Starting a loop to handle value error.')
-    flag = False
-    while not flag:
-        logging.debug(f'Checking {loanType} to choose what to display to user.')
-        if loanType == 2:  # If loanType is AutoLoan, only shows Car parent and child options
-            print('Enter type of asset:\n '
-                  '1 = Car\n '
-                  '2 = Lambourghini\n '
-                  '3 = Lexus\n '
-                  '4 = Civic\n ')
-            try:  # exception block to handle value error
-                assetType = int(input('Asset Type = '))
-                logging.debug(f'Prompt user to enter Asset type {assetType}.')
-            except ValueError as valEx:
-                print(f'Failed. Expecting an integer. {valEx}')
-                logging.error(f'Failed. {valEx}')
-                pass
-            except Exception as Ex:
-                print(f'Failed. Unknown error. {Ex}')
-                logging.exception(f'Failed. {Ex}')
-                pass
-            else:  # If int conversion of key is successful
-                logging.debug('Conversion of key succeed. Checking if key is in dict.')
-                if assetType in car_assetName:  # if dict lookup succeed, set flag = True to end loop, otherwise, continue
-                    flag = True
-                else:
-                    logging.debug(f'{assetType} is not valid.')
-                    print(f'Failed. {assetType} is not valid. Try again.')
-                    flag = False
-        else:  # Else, shows Housebase parent and child options
-            logging.debug(f'Checking {loanType} to choose what to display to user.')
-            print('Enter type of asset:\n '
-                  '5 = HouseBase\n '
-                  '6 = PrimaryHome\n '
-                  '7 = VacationHome\n')
-            try:  # exception block to handle value error
-                assetType = int(input('Asset Type = '))
-                logging.debug(f'Prompt user to enter Asset type {assetType}.')
-            except ValueError as valEx:
-                print(f'Failed. Expecting an integer. {valEx}')
-                logging.error(f'Failed. {valEx}')
-                pass
-            except Exception as Ex:
-                print(f'Failed. Unknown error. {Ex}')
-                logging.exception(f'Failed. {Ex}')
-                pass
-            else:  # If int conversion of key is successful
-                logging.debug('Conversion of key succeed. Checking if key is in dict.')
-                if assetType in house_assetName:  # if dict lookup succeed, set flag = True to end loop, otherwise, continue
-                    flag = True
-                else:
-                    logging.debug(f'{assetType} is not valid.')
-                    print(f'Failed. {assetType} is not valid. Try again.')
-                    flag = False
-
-
-    # Handle asset value
-    logging.debug('Starting a loop to handle value error.')
-    flag = False
-    while not flag:
-        try:  # try-except block to handle value error
-            assetVal = float(input('Asset Value (Must be a valid number) = '))
-            logging.debug(f'Prompt user to enter asset value {assetVal}.')
-        except ValueError as valEx:
-            print(f'Failed. Must be a number. {valEx}')
-            logging.error(f'Failed. {valEx}')
-            pass
-        except Exception as Ex:
-            print(f'Failed. Unknown error. {Ex}')
-            logging.error(f'Failed. {Ex}')
-            pass
-        else:
-            flag = True
-
-    # Handle notional value
-    logging.debug('Starting a loop to handle value error.')
-    flag = False
-    while not flag:
-        try:  # try-except block to handle value error
-            notionalVal = float(input('Loan Notional Value (Must be a valid number) = '))
-            logging.debug(f'Prompt user to enter loan notional value {notionalVal}.')
-        except ValueError as valEx:
-            print(f'Failed. Must be a number. {valEx}')
-            logging.error(f'Failed. {valEx}')
-            pass
-        except Exception as Ex:
-            print(f'Failed. Unknown error. {Ex}')
-            logging.error(f'Failed. {Ex}')
-            pass
-        else:
-            flag = True
-
-    # Handle rate value
-    logging.debug('Starting a loop to handle value error.')
-    flag = False
-    while not flag:
-        try:  # try-except block to handle value error
-            rateVal = float(input('Loan Rate Value (Must be a valid number) = '))
-            logging.debug(f'Prompt user to enter loan rate value {rateVal}.')
-        except ValueError as valEx:
-            print(f'Failed. Must be a number. {valEx}')
-            logging.error(f'Failed. {valEx}')
-            pass
-        except Exception as Ex:
-            print(f'Failed. Unknown error. {Ex}')
-            logging.error(f'Failed. {Ex}')
-            pass
-        else:
-            flag = True
-
-    # Handle term value
-    logging.debug('Starting a loop to handle value error.')
-    flag = False
-    while not flag:
-        try:  # try-except block to handle value error
-            termVal = float(input('Loan Term Value (Must be a valid number) = '))
-            logging.debug(f'Prompt user to enter loan term value {termVal}.')
-        except ValueError as valEx:
-            print(f'Failed. Must be a number. {valEx}')
-            logging.error(f'Failed. {valEx}')
-            pass
-        except Exception as Ex:
-            print(f'Failed. Unknown error. {Ex}')
-            logging.error(f'Failed. {Ex}')
-            pass
-        else:
-            flag = True
-
-    # Attempt to instantiate the object
-    try:
-        logging.debug('Attempt to instantiate object.')
-        object = loanName[loanType](notionalVal, rateVal, termVal, assetName[assetType](assetVal))
-        print(f'{object}')
-        return object
-    except Exception as Ex:
-        print(f'Failed to create loan object. {Ex}')
-        logging.exception(f'Failed to instantiate object. {Ex}')
-        raise Exception
 
 def main():
 
@@ -221,11 +43,11 @@ def main():
     master_key = ''
     logging.debug(f'Initiate {master_key} to take user input.')
 
-    # Initiate empty list to save loans
-    loans = []
-    logging.debug(f'Initiate {loans} to save loan info.')
+    loanFile = 'loansRecord.csv'  # Initiate a file name variable
 
-    loanFile = 'loansRecord.csv' # Initiate a file name variable
+    # Initiate empty lists for export and import
+    loans_writeCSV = []
+    loans_readCSV = []
 
     # Master key is the 2 options user are given
     # 1 prompt for data entry
@@ -233,55 +55,107 @@ def main():
     # 3 import data from CSV file
     # 4 Display WAR WAM of all the loans
 
-    master_key = input('Press 1 to enter loan info. Press 2 to write them to CSV. = ')
-    # 1 Execute prompt for data entry
-    if master_key == '1':
-        logging.debug(f'Calling {loanDataEntry} to take user prompt.')
-        try:
-            loan1 = loanDataEntry()  # Call the module to enter data
-            loans.append(loan1)  # add the data entry to a list
-        except Exception as Ex:
-            print(f'Failed. Unknown error. {Ex}')
-            pass
-        else:
-            logging.debug(f'Data entry successful at {loan1}')
-            print(f'Loan entry successfully recorded under: {loan1}.')  # Display record to user
-            print(f'Current loans are: {loans}')
+    master_key = 100
+    while not master_key == '0':
+        master_key = input('Press\n'
+                           '1 to enter loan info\n'
+                           '2 to write them to CSV. (exit to view result)\n'
+                           '3 to import from CSV.\n'
+                           '4 to see WAR and WAM of all loans (must run #3 import first)\n'
+                           '0 to exit (you will lose all progress\n'
+                           'Input = ')
+
+        #######################
+        # 1 Execute prompt for data entry
+        if master_key == '1':
+            logging.debug(f'Initiate {loans_writeCSV} to save loan info.')
+
+            try:
+                logging.debug(f'Calling {loanDataEntry} to take user prompt.')
+                loan1 = loanDataEntry()  # Call the module to enter data
+                loans_writeCSV.append(loan1)  # add the data entry to a list
+            except Exception as Ex:
+                print(f'Failed. Unknown error. {Ex}')
+                pass
+            else:
+                logging.debug(f'Data entry successful at {loan1}')
+                print(f'Loan entry successfully recorded under: {loan1}.')  # Display record to user
+                logging.info(f'Current loans are: {loans_writeCSV}')
+                print()
+        #######################
+
+        #######################
+        # 2 Execute prompt for CSV export
+        elif master_key == '2':
+            try:  # block to catch if file doesn't exist
+                fileExport = open(loanFile, 'a')
+            except FileNotFoundError as fnfEx:
+                logging.error(f'Failed. {fnfEx}')
+            else:
+                logging.info(f'File founded {fileExport}.')
+                count = 0
+                for loan in loans_writeCSV:  # loop through the list to write to csv
+                    logging.debug(f'Writing {loan} to CSV')
+                    # Write to CSV
+                    fileExport.write(f'{loan.__class__.__name__}, {loan.asset.__class__.__name__}, '
+                                     f'{loan.asset.initialValue}, {loan.notional}, {loan.rate}, {loan.term}\n')
+                    count += 1
+                print(f'Successfully exported {count} loans to {loanFile}. See log for details.')
+                print()
+                logging.info(f'Successfully exported {count} to {loanFile}.')
+                logging.info(f'Exported values are: {loans_writeCSV}')
+
+        #######################
+
+        #######################
+        # 3 Execute prompt for CSV import
+        elif master_key == '3':
+            import_loanFile = input('Enter filepath to import = ')
+            logging.info(f'Prompt user to choose path for CSV to import. {import_loanFile}')
+
+            try:  # block to catch if file doesn't exist
+                fileImport = open(import_loanFile, 'r')
+            except FileNotFoundError as fnfEx:
+                logging.error(f'Failed. {fnfEx}')
+            else:
+                logging.info(f'File founded. {import_loanFile}')
+                # Loop through line by line
+                count = 0
+                for line in fileImport:
+                    # For each line in the file:
+                    # 1. Strip special characters, replace space with '' and split them to a list
+                    # 2. Dissect the list by calling loanReadCSV(list), which:
+                    # 3. Append the result to a list and/or raise any error.
+                    try:
+                        loans_readCSV.append(loanReadCSV(line.strip().replace(' ', '').split(',')))
+                    except ValueError as valEx:
+                        print(f'Failed to process a line, see log.')
+                        logging.error(f'Failed to process line. {valEx}')
+                    except Exception as Ex:
+                        print(f'Failed to process a line, see log.')
+                        logging.error(f'Failed to process line. {Ex}')
+                    else:
+                        logging.info(f'Successfully imported line.')
+                        count += 1
+
+                print(f'Successfully imported {count} lines from {import_loanFile}. See log for details.')
+                print()
+                logging.info(f'Successfully imported {count} lines from {import_loanFile}.')
+                logging.info(f'Imported values are: {loans_readCSV}')
+        #######################
+
+        #######################
+        # Calculate and display WAR WAM
+        # Must run #3 first
+        elif master_key == '4':
+            logging.debug(f'Grabbing loans from {loans_readCSV}')
+            print(f' WAR = {LoanPool(loans_readCSV).WAR()}')  # Instantiate LoanPool object and call WAR
+            print(f' WAM = {LoanPool(loans_readCSV).WAM()}')  # Instantiate LoanPool object and call WAR
             print()
-
-    # 2 Execute prompt for CSV export
-    elif master_key == '2':
-        try:  # block to catch if file doesn't exist
-            with open(loanFile, 'a') as fExport:   # open the csv file
-                logging.debug(f'Open CSV for append at {loanFile}')
-                for loan in loans:  # loop through the list to write to csv
-                    logging.debug(f'Writing {loan} to CSV')
-                    fExport.write(f'{loan.__class__.__name__}, {loan.asset.__class__.__name__}, {loan.asset.initialValue}, {loan.notional}, {loan.rate}, {loan.term}\n')
-        except FileNotFoundError as fnfEx:
-            logging.error(f'Failed. {fnfEx}')
-        else:
-            logging.info(f'Success.')
-
-    # 3 Execute prompt for CSV import
-    elif master_key == '3'
-        import_loanFile = input('Enter filepath to import = ')
-        try:  # block to catch if file doesn't exist
-            with open(import_loanFile, 'r') as file
-
-        except FileNotFoundError as fnfEx:
-            logging.error(f'Failed. {fnfEx}')
-        else:
-        logging.info(f'Success.')
-
-            with open(loanFile, 'a') as file1:  # open the csv file
-                logging.debug(f'Open CSV for append at {loanFile}')
-                for loan in loans:  # loop through the list to write to csv
-                    logging.debug(f'Writing {loan} to CSV')
-                    file1.write(
-                        f'{loan.__class__.__name__}, {loan.asset.__class__.__name__}, {loan.asset.initialValue}, {loan.notional}, {loan.rate}, {loan.term}\n')
-
+        #######################
 
     ###############################################
+
 
 #######################
 if __name__ == '__main__':

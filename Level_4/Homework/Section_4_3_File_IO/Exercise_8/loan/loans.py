@@ -18,6 +18,10 @@ from loan.loan_base import Loan
 from asset.asset import Asset, Car, HouseBase, Lambourghini, Lexus, Civic, PrimaryHome, VacationHome
 import logging
 
+#######################
+
+#######################
+
 # Derived classes from Loan:
 # FixedRateLoan
 class FixedRateLoan(Loan):
