@@ -71,7 +71,7 @@ def main():
     # Exception Handling block on intentionally incorrect passed-in value.
     # here: an incorrect type is passed into home
     try:
-        mortgage1 = FixedMortgage(100000, .05, 30, car1)
+        mortgage1 = FixedMortgage(100000.05, .05, 30, car1)
     except ValueError as valEx:  # handle the asset type value error
         logging.getLogger().setLevel(logging.ERROR)
         logging.error(valEx)
