@@ -71,15 +71,19 @@ def main():
     print(z.seconds)
     print()
 
+    print(d4)
     print(str(d4))  # no formatting choice
     print(d.strftime('%d/%m/%y : %H:%M:%S:%ms'))
     print(d.strftime('%d--%m--%y : %H:::%M:::%S'))
     print(d.strftime('%d/%m/%Y : %H:%M:%S'))
     print()
 
-    d = input('Enter date: ')
-    datetime.datetime.strptime(d, '%Y-%m-%d')
-    print(d)
+    d6 = datetime.datetime(year=2016, month=12, day=14, hour=10, minute=31, second=12, microsecond=12354)
+    print(d6)
+    #d = input('Enter date: ')
+    #d1 = datetime.datetime.strptime(d, '%Y-%m-%d')
+    #print(d1)
+    #print(type(d1))
 
 #######################
 if __name__ == '__main__':
