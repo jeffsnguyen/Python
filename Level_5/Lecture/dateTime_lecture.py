@@ -72,7 +72,7 @@ def main():
     print()
 
     print(str(d4))  # no formatting choice
-    print(d.strftime('%d/%m/%y : %H:%M:%S'))
+    print(d.strftime('%d/%m/%y : %H:%M:%S:%ms'))
     print(d.strftime('%d--%m--%y : %H:::%M:::%S'))
     print(d.strftime('%d/%m/%Y : %H:%M:%S'))
     print()

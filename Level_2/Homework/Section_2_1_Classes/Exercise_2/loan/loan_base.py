@@ -78,7 +78,7 @@ class Loan(object):
             return None
 
     # Instance method to calculate total payments
-    def totalPayments(self):
+    def totalPayments(self, t=None):
         # Calculate total payment using the formula total = monthlyPayment * term * 12
         # r = monthly rate, P = notional value, N = term in months
         try:
