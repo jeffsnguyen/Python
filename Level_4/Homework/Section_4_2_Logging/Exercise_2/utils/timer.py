@@ -30,12 +30,11 @@ class Timer(object):
     def __exit__(self, *args):  # Call end() to get timer result and end the timer
         self.end = time()
         logging.info('End timer.')
-        if (self.end - self.start) > self.warnThreshold:
-            logging.getLogger().setLevel(logging.WARN)
-            logging.warn(f'{self.timerName}: {self.end - self.start} {self.timer_dict[self.timer_config]}.')
-            logging.getLogger().setLevel(logging.INFO)
-        else:
-            logging.info(f'{self.timerName}: {self.end-self.start} {self.timer_dict[self.timer_config]}.')
+
+        # initiate a lookup dict
+
+        logFunc = logging.info if self.end > self.warnThreshold else logging.warning
+        logFunc(f'{self._timerName}: {(self.end - self.start)} {self.timer_dict[self.timer_config]}')
 
     # Set warnThreshold variable
     warnThreshold = 60

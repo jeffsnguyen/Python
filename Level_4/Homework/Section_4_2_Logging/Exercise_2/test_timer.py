@@ -8,22 +8,11 @@
 #######################
 # Importing necessary packages
 from utils.timer import Timer
+import time
 import logging
 #######################
 
 
-# Create a testing function to run a meaningless loop to take up some time
-# so that the Timer class can be tested
-def testing_loop(x):
-    logging.info('Running a meaningless count from 1 to ' + str(x) + ' to test the Timer class...')
-
-    # Run the meaningless loop to test
-    count = 0
-    for i in range(1, x):
-        count += i
-
-    # Signal completion of loop
-    logging.info('Loop completed.')
 ###############################################
 
 
@@ -125,15 +114,15 @@ def main():
 
     # Test 4
     # 4. Test the modified Timer class to time a loop that will take more than 60 seconds
-    logging.info('4. Test the modified Timer class to time a loop that will take more than 60 seconds.')
+    logging.info('4. Test the modified Timer class to sleep for 60 seconds.')
 
-    with Timer('uselessLoop'):
+    with Timer('sleepySleep'):
         # Doing work below
         # try-except block to catch errors
         try:
-            testing_loop(700000000)
-        except Exception:  # catch other unanticipated error
-            logging.info(Exception('Unknown error.'))
+            time.sleep(60)
+        except Exception as Ex:  # catch other unanticipated error
+            logging.info(Exception(f'Unknown error. {Ex}'))
             pass
 
 
