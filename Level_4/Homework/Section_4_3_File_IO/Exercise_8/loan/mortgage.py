@@ -45,7 +45,6 @@ class MortgageMixin(object):
     #   For example, for 100k home, mortgage > 100k -> have to pay PMI
     # This function returns .000075 of the loan notional value if LTV > .8
     def PMI(self, period = None):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate PMI')
         return .000075 * self._asset.value(period) if (self._notional / self._asset.value(period)) > .8 else 0
@@ -54,7 +53,6 @@ class MortgageMixin(object):
     # This add PMI on top of the monthly payment value in Loan.monthlyPayment()
     # NOTE: This overrides Loan.monthlyPayment
     def monthlyPayment(self, period=None):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate monthlyPayment')
         return super(MortgageMixin, self).monthlyPayment(period) + self.PMI(period)
@@ -63,7 +61,6 @@ class MortgageMixin(object):
     # This add PMI on top of the monthly payment value in Loan.monthlyPayment()
     # NOTE: This overrides Loan.monthlyPayment
     def principalDue(self, period):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate principalDue')
         return self.monthlyPayment(period) - super(MortgageMixin, self).interestDue(period)

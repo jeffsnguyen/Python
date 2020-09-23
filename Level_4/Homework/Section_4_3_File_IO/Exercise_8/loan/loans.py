@@ -47,7 +47,6 @@ class VariableRateLoan(Loan):
     #   3. Return the corresponded key value (interest rate) of the newly founded closest key. This is the interest
     #       rate we are looking for.
     def getRate(self, startPeriod = None):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate getRate.')
 

@@ -60,7 +60,6 @@ class LoanPool(object):
     # Instance method
     # Get the aggregate remaining loan balance for a given period
     def totalPayments(self, t=0):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate totalPayments(t).')
         return sum([loan.balance(t) for loan in self._loans])
@@ -68,7 +67,6 @@ class LoanPool(object):
     # Instance method
     # Get the total loan principal
     def totalPrincipal(self):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate totalPrincipals.')
         return sum(self._notional)
@@ -76,7 +74,6 @@ class LoanPool(object):
     # Instance method
     # Get the aggregate payment due for a given period
     def paymentDue(self, t=0):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate paymentDue(t).')
         return sum([loan.monthlyPayment(t) for loan in self._loans])
@@ -84,7 +81,6 @@ class LoanPool(object):
     # Instance method
     # Get the aggregate interest due for a given period
     def totalInterest(self, t=0):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate totalInterest(t).')
         return sum([loan.interestDue(t) for loan in self._loans])
@@ -92,7 +88,6 @@ class LoanPool(object):
     # Instance method
     # Get the aggregate principal due for a given period
     def principalDue(self, t=0):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate principalDue.')
         return self.paymentDue(t) - self.totalInterest(t)
@@ -101,7 +96,6 @@ class LoanPool(object):
     # Get the count of loan with positive balance for a given period
     def activeLoanCount(self, t):
         count = 0
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate activeLoanCount.')
         for loan in self._loans:
@@ -112,7 +106,6 @@ class LoanPool(object):
     # Instance method
     # Calculate Weighted Average Maturity of loans in the pool
     def WAM(self):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate sum totalPrincipal.')
 
@@ -130,7 +123,6 @@ class LoanPool(object):
     # Instance method
     # Calculate Weighted Average Rate of loans in the pool
     def WAR(self):
-        logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
         logging.debug('Step: Calculate sum totalPrincipal.')
 
