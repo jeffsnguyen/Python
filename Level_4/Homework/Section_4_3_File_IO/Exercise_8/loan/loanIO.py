@@ -19,7 +19,7 @@ import logging
 # Function to handle user prompt to enter loan data
 def loanDataEntry():
     # Create dictionary to look up object type.
-    loanName = {1: FixedMortgage, 2: AutoLoan }
+    loanName = {1: FixedMortgage, 2: AutoLoan}
     assetName = {1: Car, 2: Lambourghini, 3: Lexus, 4: Civic,
                  5: HouseBase, 6: PrimaryHome, 7: VacationHome}
     car_assetName = {1: Car, 2: Lambourghini, 3: Lexus, 4: Civic}

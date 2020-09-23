@@ -102,7 +102,7 @@ def main():
                     count += 1
                 print(f'Successfully exported {count} loans to {loanFile}. See log for details.')
                 print()
-                logging.info(f'Successfully exported {count} to {loanFile}.')
+                logging.info(f'Successfully exported {count} loans to {loanFile}.')
                 logging.info(f'Exported values are: {loans_writeCSV}')
 
         #######################
@@ -150,7 +150,7 @@ def main():
         elif master_key == '4':
             logging.debug(f'Grabbing loans from {loans_readCSV}')
             print(f' WAR = {LoanPool(loans_readCSV).WAR()}')  # Instantiate LoanPool object and call WAR
-            print(f' WAM = {LoanPool(loans_readCSV).WAM()}')  # Instantiate LoanPool object and call WAR
+            print(f' WAM = {LoanPool(loans_readCSV).WAM()}')  # Instantiate LoanPool object and call WAM
             print()
         #######################
 
