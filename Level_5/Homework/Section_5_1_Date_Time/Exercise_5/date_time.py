@@ -74,9 +74,6 @@ def dateDiff():
 
     #######################
     # Calculating time delta
-    dT1 = datetime.datetime(year=2011, month=9, day=1, hour=1, minute=27, second=12, microsecond=124)
-    dT2 = datetime.datetime(year=2015, month=10, day=14, hour=10, minute=30, second=12, microsecond=12354)
-
     time_delta = abs(dT1 - dT2)
 
     logging.debug(f'Calculated time_delta = {time_delta}')
@@ -118,15 +115,14 @@ def main():
     # Testing block
     # Scenario:
     #   This block will:
-    #       a. Handle datetime input in the format: 2016-09-25 18:23:14:12342
-    #       bc. Handle timedelta addition and subtraction.
-
+    #       a. Handle time delta calculations and display in certain format
+    #
     #######################
     # Test a
     testNum = 'Test a'
     logging.info(f'{testNum}')
-    print('a. Handle datetime input in the format: 2016-09-25 18:23:14:12342')
-    logging.info('a. Handle datetime input in the format: 2016-09-25 18:23:14:12342')
+    print('a. Handle time delta calculations and display in certain format')
+    logging.info('a. Handle time delta calculations and display in certain format')
 
     dateDiff()
 
