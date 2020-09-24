@@ -22,9 +22,25 @@ logging.basicConfig(filename='log.txt', filemode='a',
                     format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style='{')
 ###############################################
 
+# Function to convert datetime to extracted total (total days, hours, etc.)
+def dateTimeConvert(dT_str, dT):
+    # Create a lookup dict
+    dT_dict = {'days': 86400000000,
+               'hours': 3600000000,
+               'minutes': 60000000,
+               'seconds': 1000000,
+               'microseconds': 1}
+
+    # Calculate total microseconds as the base
+    total_microseconds = dT.days * dT_dict['days'] + dT.seconds * dT_dict['seconds'] + dT.microseconds
+    logging.debug(f'Total base microseconds = {total_microseconds}')
+
+    return total_microseconds / dT_dict[dT_str]
+
 
 # Function to subtract 2 datetime
-def dateDiff(dT1, dT2):
+def dateDiff():
+
     #######################
     # Taking user input dT1
     logging.info('Taking user inputs')
@@ -53,11 +69,46 @@ def dateDiff(dT1, dT2):
     else:
         print(f'{dT2} Entered.')
         logging.info(f'Input accepted. {dT2}')
+        print()
         pass
 
     #######################
-    # Calculating time_delta
+    # Calculating time delta
+    dT1 = datetime.datetime(year=2011, month=9, day=1, hour=1, minute=27, second=12, microsecond=124)
+    dT2 = datetime.datetime(year=2015, month=10, day=14, hour=10, minute=30, second=12, microsecond=12354)
 
+    time_delta = abs(dT1 - dT2)
+
+    logging.debug(f'Calculated time_delta = {time_delta}')
+
+    # Displaying total
+    print(f'Total days = {dateTimeConvert("days", time_delta)}')
+    print(f'Total hours = {dateTimeConvert("hours", time_delta)}')
+    print(f'Total minutes = {dateTimeConvert("minutes", time_delta)}')
+    print(f'Total seconds = {dateTimeConvert("seconds", time_delta)}')
+    print(f'Total microseconds = {dateTimeConvert("microseconds", time_delta)}')
+    logging.debug(f'Called {dateTimeConvert} to do the conversion.')
+
+    # Display in broken down format:
+    dT_dict = {'days': 1,
+               'hours': 24,
+               'minutes': 1440,
+               'seconds': 86400,
+               'microseconds': 1000000}
+
+    # Calculate each parameters broken down
+    logging.debug(f'Calculating separate parameters for {time_delta}')
+    day = time_delta.days
+    hour = int((dateTimeConvert("hours", time_delta) - (day * dT_dict["hours"])) % dT_dict["hours"])
+    minute = int((dateTimeConvert("minutes", time_delta) -
+                  (day * dT_dict["minutes"]) - (60 * hour)) % dT_dict["minutes"])
+    second = int((dateTimeConvert("seconds", time_delta) -
+                  (day * dT_dict["seconds"]) - (3600 * hour ) - (60 * minute)) % dT_dict["seconds"])
+
+
+    print(f'The difference is {day} days, {hour} hours, {minute} minutes, {second} seconds '
+          f'and {time_delta.microseconds} microseconds.')
+    # print(time_delta)  # For comparison
 
 ###############################################
 def main():
@@ -76,54 +127,9 @@ def main():
     logging.info(f'{testNum}')
     print('a. Handle datetime input in the format: 2016-09-25 18:23:14:12342')
     logging.info('a. Handle datetime input in the format: 2016-09-25 18:23:14:12342')
-    # 2020-09-23 1:6:30:123456
 
-    print()
+    dateDiff()
 
-    logging.info(f'#######################{testNum} Completed.')
-    #######################
-
-    #######################
-    # Test bc
-    testNum = 'Test bc'
-    logging.info(f'{testNum}')
-    print('bc. Handle timedelta addition and subtraction')
-    logging.info('b. Handle timedelta addition and subtraction')
-    # 2020-09-23 1:6:30:123456
-    # Taking user inputs
-    logging.info('Taking user inputs')
-    time_delta = input('Enter time delta 1:6:30:123456 = ')
-    negFlag = False
-    if time_delta[0] == '-':  # If see minus sign, set flag true and split '-', grab the index 1 which is the time
-        negFlag = True
-        time_delta = time_delta.split('-')[1]
-
-    try:  # Exception Handling block to handle datetime conversion
-        time_delta = datetime.datetime.strptime(time_delta, '%H:%M:%S:%f')
-    except Exception as Ex:
-        print(f'Failed. Incorrect format. See log for more details.')
-        logging.error(f'Failed. {Ex}')
-        pass
-    else:
-        print(f'-{time_delta} Entered.') if negFlag else print(f'{time_delta} Entered.')
-
-        # Extract parameters from time_delta
-        hour = time_delta.hour
-        minute = time_delta.minute
-        second = time_delta.second
-        microsecond = time_delta.microsecond
-
-        # Handle addition and subtraction
-        if negFlag:
-            date_timeR = date_time - datetime.timedelta\
-                        (hours=hour, minutes=minute, seconds=second, microseconds=microsecond)
-            print(f'{date_time} - {time_delta} = {date_timeR}')
-        else:
-            date_timeR = date_time + datetime.timedelta\
-                        (hours=hour, minutes=minute, seconds=second, microseconds=microsecond)
-            print(f'{date_time} + {time_delta} = {date_timeR}')
-
-        logging.debug(f'Successfully calculated {date_timeR}')
     print()
 
     logging.info(f'#######################{testNum} Completed.')
