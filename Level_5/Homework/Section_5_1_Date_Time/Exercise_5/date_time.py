@@ -22,6 +22,7 @@ logging.basicConfig(filename='log.txt', filemode='a',
                     format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style='{')
 ###############################################
 
+
 # Function to convert datetime to extracted total (total days, hours, etc.)
 def dateTimeConvert(dT_str, dT):
     # Create a lookup dict
@@ -100,12 +101,12 @@ def dateDiff():
     minute = int((dateTimeConvert("minutes", time_delta) -
                   (day * dT_dict["minutes"]) - (60 * hour)) % dT_dict["minutes"])
     second = int((dateTimeConvert("seconds", time_delta) -
-                  (day * dT_dict["seconds"]) - (3600 * hour ) - (60 * minute)) % dT_dict["seconds"])
-
+                  (day * dT_dict["seconds"]) - (3600 * hour) - (60 * minute)) % dT_dict["seconds"])
 
     print(f'The difference is {day} days, {hour} hours, {minute} minutes, {second} seconds '
           f'and {time_delta.microseconds} microseconds.')
     # print(time_delta)  # For comparison
+
 
 ###############################################
 def main():
