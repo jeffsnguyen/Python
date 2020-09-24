@@ -65,6 +65,7 @@ def main():
     d4 = datetime.datetime(2016, 12, 14, 10, 31)
     d5 = datetime.datetime(2016, 12, 10, 10, 11)
     z = abs(d5 - d4)
+    print(f'{type(d4)}')
     print(f'Time delta z = {z}')
     print(f'{z.days} days')
     print(z.microseconds)
