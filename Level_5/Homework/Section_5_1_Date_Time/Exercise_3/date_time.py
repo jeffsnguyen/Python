@@ -1,7 +1,7 @@
 # Type: Homework
 # Level: 5
 # Section: 5.1 Date/Time
-# Exercise: 2
+# Exercise: 3
 # Description: Contains the tests for various Date/Time operations
 #   Modify the above program to request the user enter the date in the following format (for example):
 #       2016 September 25 06:24:14:12342 PM
