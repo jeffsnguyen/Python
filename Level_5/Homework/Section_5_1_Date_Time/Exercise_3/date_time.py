@@ -50,15 +50,15 @@ def main():
             # 2. Split 'AM' from the input
             # 3. Grab the index 0 item and strip it
             # 4. Convert to a datetime variable and immediately convert it back to string with AM/PM format
-            date_time = datetime.datetime.strptime(date_time.split('AM')[0].strip(), '%Y %B %d %I:%M:%S:%f').\
-                        strftime('%Y %B %d %I:%M:%S:%f %p')
+            date_time = datetime.datetime.strptime(date_time.split('AM')[0].strip(), '%Y %B %d %I:%M:%S:%f')
+            date_timeSTR = date_time.strftime('%Y %B %d %I:%M:%S:%f %p')
         except Exception as Ex:
             print(f'Failed. Incorrect format. See log for more details.')
             logging.error(f'Failed. {Ex}')
             pass
         else:
-            print(f'{date_time}')
-            logging.info(f'Input accepted. {date_time}')
+            print(f'{date_timeSTR}')
+            logging.info(f'Input accepted. {date_timeSTR}')
             pass
     elif 'PM' in date_time:
         try:  # Exception Handling block to handle datetime conversion
@@ -69,14 +69,36 @@ def main():
             pass
         else:
             # Add 12 hours because PM and strftime it back to AM/PM string format
-            date_time = (date_time + datetime.timedelta(hours=12)).strftime('%Y %B %d %I:%M:%S:%f %p')
-            print(f'{date_time}')
-            logging.info(f'Input accepted. {date_time}')
+            date_time = date_time + datetime.timedelta(hours=12)
+            date_timeSTR = date_time.strftime('%Y %B %d %I:%M:%S:%f %p')
+            print(f'{date_timeSTR}')
+            logging.info(f'Input accepted. {date_timeSTR}')
             pass
     else:
         print('Invalid format.')
         logging.error('Invalid format.')
 
+    print()
+
+    # Parameters extractions
+    logging.debug('Start parameter extraction.')
+
+    year = date_time.year
+    month = date_time.month
+    day = date_time.day
+    hour = date_time.hour
+    minute = date_time.minute
+    second = date_time.second
+    microsecond = date_time.microsecond
+    # Display the extracted parameters:
+    logging.info('Displaying the parameters.')
+    print(f'Year: {year}\n'
+          f'Month: {month}\n'
+          f'Day: {day}\n'
+          f'Hour: {hour}\n'
+          f'Minute: {minute}\n'
+          f'Second: {second}\n'
+          f'Microsecond: {microsecond}\n')
     print()
 
     logging.info(f'#######################{testNum} Completed.')
