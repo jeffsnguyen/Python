@@ -26,17 +26,17 @@ logging.basicConfig(filename='log.txt', filemode='a',
 # Function to convert datetime to extracted total (total days, hours, etc.)
 def dateTimeConvert(dT_str, dT):
     # Create a lookup dict
-    dT_dict = {'days': 86400000000,
+    dT_dictMS = {'days': 86400000000,
                'hours': 3600000000,
                'minutes': 60000000,
                'seconds': 1000000,
                'microseconds': 1}
 
     # Calculate total microseconds as the base
-    total_microseconds = dT.days * dT_dict['days'] + dT.seconds * dT_dict['seconds'] + dT.microseconds
+    total_microseconds = dT.days * dT_dictMS['days'] + dT.seconds * dT_dictMS['seconds'] + dT.microseconds
     logging.debug(f'Total base microseconds = {total_microseconds}')
 
-    return total_microseconds / dT_dict[dT_str]
+    return total_microseconds / dT_dictMS[dT_str]
 
 
 # Function to subtract 2 datetime
