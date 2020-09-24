@@ -90,11 +90,22 @@ def main():
     minute = date_time.minute
     second = date_time.second
     microsecond = date_time.microsecond
+    # Display the extracted parameters:
+    logging.info('Displaying the parameters.')
+    print(f'Year: {year}\n'
+          f'Month: {month}\n'
+          f'Day: {day}\n'
+          f'Hour: {hour}\n'
+          f'Minute: {minute}\n'
+          f'Second: {second}\n'
+          f'Microsecond: {microsecond}\n')
+    print()
 
     # d. Display the entered datetime with the following format: 2016-09-25 18:23:14:12342
     print(date_time.strftime('%y-%m-%d %H:%M:%S:%f'))
+    print()
 
-    # d. Display the entered datetime with the following format: 2016 September 25 06:24:14:12342 PM
+    # e. Display the entered datetime with the following format: 2016 September 25 06:24:14:12342 PM
     print(date_time.strftime('%Y %B %d %I:%M:%S:%f'))
 
     print()
