@@ -64,9 +64,9 @@ def main():
 
     d4 = datetime.datetime(2016, 12, 14, 10, 31)
     d5 = datetime.datetime(2016, 12, 10, 10, 11)
-    z = d5 - d4
+    z = abs(d5 - d4)
     print(d4 - d5)
-    print(z.days)
+    print(f'{z.days} days')
     print(z.microseconds)
     print(z.seconds)
     print()
