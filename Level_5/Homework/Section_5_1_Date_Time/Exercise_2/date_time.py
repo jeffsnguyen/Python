@@ -55,6 +55,27 @@ def main():
         pass
     print()
 
+    # Parameters extractions
+    logging.debug('Start parameter extraction.')
+
+    year = date_time.year
+    month = date_time.month
+    day = date_time.day
+    hour = date_time.hour
+    minute = date_time.minute
+    second = date_time.second
+    microsecond = date_time.microsecond
+    # Display the extracted parameters:
+    logging.info('Displaying the parameters.')
+    print(f'Year: {year}\n'
+          f'Month: {month}\n'
+          f'Day: {day}\n'
+          f'Hour: {hour}\n'
+          f'Minute: {minute}\n'
+          f'Second: {second}\n'
+          f'Microsecond: {microsecond}\n')
+    print()
+
     logging.info(f'#######################{testNum} Completed.')
     #######################
 
