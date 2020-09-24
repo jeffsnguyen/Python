@@ -4,7 +4,7 @@
 # Exercise: 2
 # Description: Contains the tests for various Date/Time operations
 #   Modify the above program to request the user enter the date in the following format (for example):
-#       2016-09-25 18:23:14:12342
+#       2016 September 25 06:24:14:12342 PM
 #######################
 # Importing necessary packages
 import logging
