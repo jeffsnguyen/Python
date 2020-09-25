@@ -27,6 +27,10 @@ class Asset(object):
         # Main attributes
         self._initialValue = initialValue
 
+    # Returning string representative
+    def __repr__(self):
+        return f'{self.__class__.__name__}({self._initialValue})'
+
     ##########################################################
     # Decorators to define and set values for instance variables
     # Decorator to create a property function to define the attribute initialValue
@@ -67,9 +71,6 @@ class Asset(object):
         logging.debug('Step: Calculate value(t).')
         return self._initialValue * ((1 - self.monthlyDeprRate(t))**t)
 
-    # Returning string representative
-    def __repr__(self):
-        return f'Asset({self._initialValue})'
     ##########################################################
 
     ##########################################################

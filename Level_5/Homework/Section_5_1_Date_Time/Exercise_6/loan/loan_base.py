@@ -35,7 +35,8 @@ class Loan(object):
 
     # Wrapper to display
     def __repr__(self):
-        return f'Loan({self._notional}, {self._rate}, {self._maturity_start}, {self._maturity_end}, {self._asset})'
+        return f'{self.__class__.__name__}({self._notional}, {self._rate}, ' \
+               f'{self._maturity_start}, {self._maturity_end}, {self._asset})'
 
     ##########################################################
 

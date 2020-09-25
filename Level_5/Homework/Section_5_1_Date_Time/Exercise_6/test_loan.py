@@ -50,6 +50,7 @@ def main():
 
     print(f'Loan = {loan1}')
     print(f'Loan class = {type(loan1)}')
+    print(f'Loan asset class = {type(loan1.asset)}')
     print(f'Loan term = {loan1.term()}')
     print(f'Loan monthly payments = {loan1.monthlyPayment()}')
     print(f'loan total payments = {loan1.totalPayments()}')
@@ -78,6 +79,7 @@ def main():
 
     print(f'Loan = {loan1}')
     print(f'Loan class = {type(loan1)}')
+    print(f'Loan asset class = {type(loan1.asset)}')
     print(f'Loan term = {loan1.term()}')
     print(f'Loan monthly payments = {loan1.monthlyPayment()}')
     print(f'loan total payments = {loan1.totalPayments()}')
