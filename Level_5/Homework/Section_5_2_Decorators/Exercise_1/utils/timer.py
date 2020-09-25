@@ -1,24 +1,35 @@
 # Type: Homework
-# Level: 4
-# Section: 4.2: Logging
-# Exercise: 2
+# Level: 5
+# Section: 5.2: Decorators
+# Exercise: 1
 # Description: This contains the class Timer
-#   Modify your Timer class to use a logging statement (info level) instead of a print statement.
+#   Modify the Timer class to work as a decorator (feel free to use the provided sample code). Its
+#       usage should look like this:
+#       @Timer
+#       def myFunc(arg1, arg2):
+#           print('Do Work Here')
+#   An example output would look like: <function myFunc at 0x34173DF0>: 1.5467 seconds
+#
+#   How does this compare to the previous approach to using the context manager? When is this
+#       more useful and when are context managers more useful?
 
 # Importing packages
 from time import time
 import logging
+import functools
 
 logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style="{")
 # Timer class
 # This class object takes on hours, minutes, seconds arguments
 # It also has functionalities to count time elapsed and configure format of said time elapsed
+# Now works as a decorator
 class Timer(object):
 
     # Initialization function with hours, minutes and seconds arguments
-    # Also included in this function is ability to set the arguments to 0 if they don't already exists
-    def __init__(self, timerName):
-        self._timerName = timerName
+    # Modified for Timer class to take a function as a parameter so the class can work as a decorator
+    def __init__(self, func):
+        #self._timerName = timerName
+        self._func = func
 
     # Start the context (timer)
     def __enter__(self):
@@ -31,11 +42,16 @@ class Timer(object):
         self.end = time()
         logging.info('End timer.')
         if (self.end - self.start) > self.warnThreshold:
-            logging.getLogger().setLevel(logging.WARN)
-            logging.warn(f'{self.timerName}: {self.end - self.start} {self.timer_dict[self.timer_config]}.')
-            logging.getLogger().setLevel(logging.INFO)
+            print(f'{self.timerName}: {self.end - self.start} {self.timer_dict[self.timer_config]}.')
         else:
-            logging.info(f'{self.timerName}: {self.end-self.start} {self.timer_dict[self.timer_config]}.')
+            print(f'{self.timerName}: {self.end-self.start} {self.timer_dict[self.timer_config]}.')
+
+    # Call method to use Timer as a decorator
+    def __call__(self, *args, **kwargs):
+        self.start = time()  # Start the timer
+        self._func(*args, **kwargs)   # Call function
+        self.end = time()  # End the timer
+        return f'Function {self._func}: {self.end - self.start} seconds.'   # Return result
 
     # Set warnThreshold variable
     warnThreshold = 60
