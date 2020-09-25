@@ -33,6 +33,7 @@ def intenseFunction(input):
     sleep(input)  # cause program to wait and do nothing for 5 seconds
     return 'Done'
 
+
 def main():
 
     logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
@@ -60,8 +61,6 @@ def main():
 
     logging.info(f'#######################{testNum} Completed.')
     #######################
-
-
 
     ###############################################
 
