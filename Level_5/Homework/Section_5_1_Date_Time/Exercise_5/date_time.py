@@ -23,7 +23,7 @@ logging.basicConfig(filename='log.txt', filemode='a',
 ###############################################
 
 
-# Function to convert datetime to extracted total (total days, hours, etc.)
+# Function to convert datetime to extracted total microseconds
 def dateTimeConvert(dT_str, dT):
     # Create a lookup dict
     dT_dictMS = {'days': 86400000000,
