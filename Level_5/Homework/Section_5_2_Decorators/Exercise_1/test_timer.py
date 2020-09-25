@@ -2,7 +2,7 @@
 # Level: 5
 # Section: 5.2: Decorators
 # Exercise: 1
-# Description: This contains tests for Loan classes
+# Description: This contains tests for Timer classes
 #   Modify the Timer class to work as a decorator (feel free to use the provided sample code). Its
 #       usage should look like this:
 #       @Timer
