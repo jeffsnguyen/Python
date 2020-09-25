@@ -266,7 +266,6 @@ class Loan(object):
         except ZeroDivisionError:
             logging.error('Something went wrong. Division by 0.')  # Log the error prior to raising it
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
-            return None
 
     # Class method to calculate outstanding balance of the given loan at given period
     # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
