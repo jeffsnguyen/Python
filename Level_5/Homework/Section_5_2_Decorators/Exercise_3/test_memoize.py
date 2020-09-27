@@ -8,7 +8,6 @@
 
 # Importing necessary packages
 import logging
-#from utils.timer import Timer, Memoize
 from loan.loan_base import Loan
 from asset.asset import Asset, Car
 import datetime
@@ -60,6 +59,7 @@ def main():
     ## Not sure why the difference is marginal.
 
     #######################
+
 
 #######################
 if __name__ == '__main__':
