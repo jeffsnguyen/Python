@@ -16,6 +16,7 @@
 import logging
 from time import sleep
 from utils.timer import Timer
+import functools
 #######################
 # To enable PyCharm to create log file
 for handler in logging.root.handlers[:]:
@@ -32,16 +33,21 @@ class Memoize(object):
     def __init__(self, func):
         self._func = func
         self._memoized_dict = {}  # Initialize an empty dict to cache
+        self.__wrapped__ = self.__call__
 
     def __call__(self, *args, **kwargs):
         # check if args or kwargs are in the dict
         # if not, add to the dict and return the key value
-        if args not in self._memoized_dict:
-            self._memoized_dict[args] = self._func(*args)
-            return self._memoized_dict[args]
-        elif kwargs not in self._memoized_dict:
-            self._memoized_dict[kwargs] = self._func(**kwargs)
-            return self._memoized_dict[kwargs]
+        if any((args, kwargs)) not in self._memoized_dict:
+            logging.debug(f'Checking if {args} or {kwargs} are in the dict.')
+            self._memoized_dict[(str(args) + str(kwargs))] = self._func(*args, **kwargs)
+            return self._memoized_dict[(str(args) + str(kwargs))]
+        #if args not in self._memoized_dict:
+        #    self._memoized_dict[args] = self._func(*args)
+        #    return self._memoized_dict[args]
+        #elif kwargs not in self._memoized_dict:
+        #    self._memoized_dict[kwargs] = self._func(**kwargs)
+        #    return self._memoized_dict[kwargs]
 
 #######################
 
