@@ -29,7 +29,7 @@ logging.basicConfig(filename='log.txt', filemode='a',
 
 
 # Memoize class
-class Memoize(object):
+class Memoize:
     def __init__(self, func):
         self._func = func
         self._memoized_dict = {}  # Initialize an empty dict to cache
@@ -38,16 +38,12 @@ class Memoize(object):
     def __call__(self, *args, **kwargs):
         # check if args or kwargs are in the dict
         # if not, add to the dict and return the key value
-        if any((args, kwargs)) not in self._memoized_dict:
-            logging.debug(f'Checking if {args} or {kwargs} are in the dict.')
+        if (str(args) + str(kwargs)) not in self._memoized_dict:
+            logging.debug(f'{args} or {kwargs} is is not in the dict.')
             self._memoized_dict[(str(args) + str(kwargs))] = self._func(*args, **kwargs)
-            return self._memoized_dict[(str(args) + str(kwargs))]
-        #if args not in self._memoized_dict:
-        #    self._memoized_dict[args] = self._func(*args)
-        #    return self._memoized_dict[args]
-        #elif kwargs not in self._memoized_dict:
-        #    self._memoized_dict[kwargs] = self._func(**kwargs)
-        #    return self._memoized_dict[kwargs]
+            logging.debug(f'Saved {self._memoized_dict[(str(args) + str(kwargs))]} to cache.')
+            logging.debug(f'My cache is now {self._memoized_dict}')
+        return self._memoized_dict[(str(args) + str(kwargs))]
 
 #######################
 
@@ -60,12 +56,16 @@ def intenseFunction(param1, param2):
     return f'{param1} + {param2} = {param1+param2}'
 
 
-# Timing the Memoize of a list comprehension
+# Timing the Memoize of a Fib sequence generator
 @Timer  # decorating the function with the Timer function
 @Memoize  # Memoize decorator to cache
-def intenseLoop(loopnum):
-    count = sum([item for item in range(loopnum)])
-    return f'Look at me go: My count = {count}'
+def fib(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fib(n-1) + fib(n-2)
 
 
 def main():
@@ -77,7 +77,7 @@ def main():
     # Scenario:
     #   This block will:
     #       1. Test the intenseFunction with Timer and Memoize decorator
-    #       2. Test the intenseLoop with Timer and Memoize decorator
+    #       2. Test the fib() with Timer and Memoize decorator
     #######################
     # Test 1
     testNum = 'Test 1'
@@ -95,10 +95,10 @@ def main():
     # Test 2
     testNum = 'Test 2'
     logging.info(f'{testNum}')
-    print('2. Test the intenseLoop with Timer and Memoize decorator')
-    logging.info('2. Test the intenseLoop with Timer and Memoize decorator')
+    print('2. Test the fib() with Timer and Memoize decorator')
+    logging.info('2. Test the fib() with Timer and Memoize decorator')
 
-    print(intenseLoop(10000000))
+    print(fib(100))
 
     logging.info(f'#######################{testNum} Completed.')
     #######################
