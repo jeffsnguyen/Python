@@ -13,6 +13,7 @@
 # Importing necessary packages
 import logging
 import datetime
+import operator
 #######################
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -68,6 +69,7 @@ def main():
     # Taking user inputs
     logging.info('Taking user inputs')
     time_delta = input('Enter time delta 1:6:30:123456 = ')
+    deltaln = time_delta
     negFlag = False
     if time_delta[0] == '-':  # If see minus sign, set flag true and split '-', grab the index 1 which is the time
         negFlag = True
@@ -89,14 +91,10 @@ def main():
         microsecond = time_delta.microsecond
 
         # Handle addition and subtraction
-        if negFlag:
-            date_timeR = date_time - datetime.timedelta\
-                        (hours=hour, minutes=minute, seconds=second, microseconds=microsecond)
-            print(f'{date_time} - {time_delta} = {date_timeR}')
-        else:
-            date_timeR = date_time + datetime.timedelta\
-                        (hours=hour, minutes=minute, seconds=second, microseconds=microsecond)
-            print(f'{date_time} + {time_delta} = {date_timeR}')
+        op = operator.sub if deltaln[0] == '-' else operator.add
+        date_timeR = op(date_time, datetime.timedelta
+                        (hours=hour, minutes=minute, seconds=second, microseconds=microsecond))
+        print(f'{date_timeR}')
 
         logging.debug(f'Successfully calculated {date_timeR}')
     print()
