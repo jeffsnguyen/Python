@@ -14,6 +14,7 @@ import logging
 #######################
 #######################
 
+
 # loan class
 # This class object takes on the arguments asset, face, rate, term
 class Loan(object):
@@ -115,6 +116,8 @@ class Loan(object):
 
         return round(total_microseconds / dT_dictMS['months'])
 
+        # Instance method to return timedelta of start date and end datetime parameters
+
     # Instance method to calculate monthly payments
     # Now modified to delegate to calcMonthlyPmt() which is a class method
     # Add dummy period argument to handle exceptions where some loan type
@@ -191,6 +194,7 @@ class Loan(object):
 
     # Instance method to calculate interest due at time t
     # This method use the recursive function
+    @Memoize
     def interestDueRecursive(self, t):
         # Warn user when running a recursive function
         # Capture step/job done to debug
@@ -210,32 +214,9 @@ class Loan(object):
                           'return balanceRecursive(t-1) * monthlyRate if term != 1')
             return self.balanceRecursive(t - 1) * self.monthlyRate(self.getRate())
 
-    # Same function but use the Memoize decorator to cache result
-    # Instance method to calculate interest due at time t
-    # This method use the recursive function
-    @Memoize
-    def interestDueRecursiveMemoize(self, t):
-        # Warn user when running a recursive function
-        # Capture step/job done to debug
-        logging.warning('Step: You are running a recursive function. This will take a long time.')
-
-        if t > self.term() / 12:
-            logging.info('t value is greater than term')
-
-        # Calculate payment using recursive functions
-        if t == 1:
-            # Capture step/job done to debug
-            logging.debug(
-                'Step: Trying to calculate interestDueRecursive, return notional * monthlyRate if term = 1')
-            return self._notional * self.monthlyRate(self.getRate(t))
-        else:
-            # Capture step/job done to debug
-            logging.debug('Step: Trying to calculate interestDueRecursive, '
-                          'return balanceRecursive(t-1) * monthlyRate if term != 1')
-            return self.balanceRecursiveMemoize(t - 1) * self.monthlyRate(self.getRate())
-
     # Instance method to calculate principal due at time t
     # This method use the recursive function
+    @Memoize
     def principalDueRecursive(self, t):
         # Warn user when running a recursive function
         # Capture step/job done to debug
@@ -249,26 +230,9 @@ class Loan(object):
         logging.debug('Step: Trying to calculate principalDueRecursive, return monthlyPayment - interestDueRecursive')
         return self.monthlyPayment() - self.interestDueRecursive(t)
 
-    # With Memoize
-    # Instance method to calculate principal due at time t
-    # This method use the recursive function
-    @Memoize
-    def principalDueRecursiveMemoize(self, t):
-        # Warn user when running a recursive function
-        # Capture step/job done to debug
-        logging.warning('Step: You are running a recursive function. This will take a long time.')
-
-        if t > self.term() / 12:
-            logging.info('t value is greater than term')
-
-        # Calculate payment using recursive functions
-        # Capture step/job done to debug
-        logging.debug(
-            'Step: Trying to calculate principalDueRecursive, return monthlyPayment - interestDueRecursive')
-        return self.monthlyPayment() - self.interestDueRecursive(t)
-
     # Instance method to calculate remaining loan balance due at time t
     # This method use the recursive function
+    @Memoize
     def balanceRecursive(self, t):
         # Warn user when running a recursive function
         # Capture step/job done to debug
@@ -281,37 +245,13 @@ class Loan(object):
         if t == 1:
             # Capture step/job done to debug
             logging.debug('Step: Trying to calculate balanceRecursive, '
-                          'return notional - princiaplDueRecursive if term = 1')
+                          'return notional - principalDueRecursive if term = 1')
             return self._notional - self.principalDueRecursive(t)
         else:
             # Capture step/job done to debug
             logging.debug('Step: Trying to calculate interestDueRecursive, '
                           'return balanceRecursive(t-1) - principalDueRecursive if term != 1')
             return self.balanceRecursive(t - 1) - self.principalDueRecursive(t)
-
-    # With Memoize
-    # Instance method to calculate remaining loan balance due at time t
-    # This method use the recursive function
-    @Memoize
-    def balanceRecursiveMemoize(self, t):
-        # Warn user when running a recursive function
-        # Capture step/job done to debug
-        logging.warning('Step: You are running a recursive function. This will take a long time.')
-
-        if t > self.term() / 12:
-            logging.info('t value is greater than term')
-
-        # Calculate payment using recursive functions
-        if t == 1:
-            # Capture step/job done to debug
-            logging.debug('Step: Trying to calculate balanceRecursive, '
-                          'return notional - princiaplDueRecursive if term = 1')
-            return self._notional - self.principalDueRecursiveMemoize(t)
-        else:
-            # Capture step/job done to debug
-            logging.debug('Step: Trying to calculate interestDueRecursive, '
-                          'return balanceRecursive(t-1) - principalDueRecursive if term != 1')
-            return self.balanceRecursiveMemoize(t - 1) - self.principalDueRecursiveMemoize(t)
 
     # Instance method to get interest rate from Loan object.
     def getRate(self, period=None):
@@ -371,8 +311,6 @@ class Loan(object):
     ##########################################################
     # Add static method functionalities to loan class
 
-    # Static method to return monthly rate for a passed in annual rate
-    # Monthly rate = Annual Rate / 12
     @staticmethod
     def monthlyRate(annual_rate):
         # Capture step/job done to debug

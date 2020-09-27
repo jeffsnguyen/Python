@@ -25,7 +25,7 @@ logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:
 
 #######################
 # Memoize class
-class Memoize(object):
+class Memoize:
     def __init__(self, func):
         self._func = func
         self._memoized_dict = {}  # Initialize an empty dict to cache
@@ -33,12 +33,12 @@ class Memoize(object):
     def __call__(self, *args, **kwargs):
         # check if args or kwargs are in the dict
         # if not, add to the dict and return the key value
-        if args not in self._memoized_dict:
-            self._memoized_dict[args] = self._func(*args)
-            return self._memoized_dict[args]
-        elif kwargs not in self._memoized_dict:
-            self._memoized_dict[kwargs] = self._func(**kwargs)
-            return self._memoized_dict[kwargs]
+        if (str(args) + str(kwargs)) not in self._memoized_dict:
+            logging.debug(f'{args} or {kwargs} is is not in the dict.')
+            self._memoized_dict[(str(args) + str(kwargs))] = self._func(*args, **kwargs)
+            logging.debug(f'Saved {self._memoized_dict[(str(args) + str(kwargs))]} to cache.')
+            logging.debug(f'My cache is now {self._memoized_dict}')
+        return self._memoized_dict[(str(args) + str(kwargs))]
 
     # Get method to get the other class instance object
     def __get__(self, obj, objtype):
