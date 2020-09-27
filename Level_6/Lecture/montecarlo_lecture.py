@@ -34,6 +34,7 @@ def main():
     print(random.normalvariate(50, 2))  # Normally distributed
     print()
 
+    print(random.random()*20+30)
     print('Set 6')
 #######################
 if __name__ == '__main__':
