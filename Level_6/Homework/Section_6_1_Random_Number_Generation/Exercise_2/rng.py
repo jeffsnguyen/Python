@@ -2,7 +2,7 @@
 # Level: 6
 # Section: 6.1: Random Number Generation
 # Exercise: 2
-# Description: Contains the code to write RNGs to CSV
+# Description: Contains the code to print distributions to Python console
 #   Do the same thing as Exercise 1, but this time we are going to print the distribution in the Python
 #       shell output. You can do this using horizontal dashes (-). The naive approach would be to print one
 #       dash for each time a certain number appears (each number getting its own row of dashes).
