@@ -44,6 +44,7 @@ import random
 
 #######################
 
+
 ###############################################
 class Player(object):
 
@@ -71,5 +72,5 @@ class Player(object):
     # Returning a choice
     def secondPlayerSelect(self, stay_strat):
         self._secondPlayerSelect = self._firstPlayerSelect if stay_strat else \
-            random.choice([i for i in range(1,4) if i not in (self._firstHostSelect, self._firstPlayerSelect)])
+            random.choice([i for i in range(1, 4) if i not in (self._firstHostSelect, self._firstPlayerSelect)])
         return self._secondPlayerSelect

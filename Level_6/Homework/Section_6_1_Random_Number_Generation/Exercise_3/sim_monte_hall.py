@@ -69,10 +69,11 @@ def playGame(stayStrat):
 
     # Player Turn 2 (final)
     # stayStrat is a given boolean parameter
-    finalchoice = player.secondPlayerSelect(stayStrat)  # Player select second door to open
-    game.get_secondPlayerSelect(finalchoice)  # Host save player selection
+    finalChoice = player.secondPlayerSelect(stayStrat)  # Player select second door to open
+    game.get_secondPlayerSelect(finalChoice)  # Host save player selection
 
-    return game.checkResult(finalchoice)
+    return game.checkResult(finalChoice)
+
 
 ###############################################
 def main():
@@ -89,31 +90,34 @@ def main():
     random.seed()
     player1 = Player()
     game1 = Game(player1)
-    print(f'Here is the preset doors: {game1._prizeDict}')
-    print(f'Here is the preset wining door choice: {game1._prizeLoc}.')
+    print(f'Here is the preset doors: {game1.getDict()}')
+    print(f'Here is the preset wining door choice: {game1.get_prizeLoc()}.')
     print(f'Starting game...')
-    print(f'Player selected {player1.firstPlayerSelect()} as first door to open.')
+    player_firstChoice = player1.firstPlayerSelect()
+    print(f'Player selected {player_firstChoice} as first door to open.')
 
     # Host class registering player's choice
-    print(f'Host acknowledged Player choice of {game1.get_firstPlayerSelect(player1._firstPlayerSelect)} '
+    print(f'Host acknowledged Player choice of {game1.get_firstPlayerSelect(player_firstChoice)} '
           f'as first door to open.')
-    print(f'Host opened door {game1.open_firstHostSelect()}.')
+    host_choice = game1.open_firstHostSelect()
+    print(f'Host opened door {host_choice}.')
 
-    # Host class registering player's choice
-    print(f'Player acknowledge host choice of {player1.get_firstHostSelect(game1._firstHostSelect)} '
+    # Player class registering host's choice
+    print(f'Player acknowledge host choice of {player1.get_firstHostSelect(host_choice)} '
           f'as first door to open.')
 
-    finalchoice = player1.secondPlayerSelect(True)  # Save the player's final choice
+    finalChoice = player1.secondPlayerSelect(True)  # Save the player's final choice
 
-    if finalchoice == player1._firstPlayerSelect:
-        print(f'Player chose to stay at door {finalchoice}.')
-        print(f'Host acknowledge player wants to stay at door {game1.get_secondPlayerSelect(finalchoice)}.')  # Host class registering player's choice
-    else:
-        print(f'Player chose to open door: {finalchoice}.')
+    if finalChoice == player_firstChoice:
+        print(f'Player chose to stay at door {finalChoice}.')
         # Host class registering player's choice
-        print(f'Host acknowledge player wants to open door {game1.get_secondPlayerSelect(finalchoice)}.')
+        print(f'Host acknowledge player wants to stay at door {game1.get_secondPlayerSelect(finalChoice)}.')
+    else:
+        print(f'Player chose to open door: {finalChoice}.')
+        # Host class registering player's choice
+        print(f'Host acknowledge player wants to open door {game1.get_secondPlayerSelect(finalChoice)}.')
 
-    print(f'Did player win? {game1.checkResult(finalchoice)}')
+    print(f'Did player win? {game1.checkResult(finalChoice)}')
     print(f'End of game.')
     print()
     ###############################################

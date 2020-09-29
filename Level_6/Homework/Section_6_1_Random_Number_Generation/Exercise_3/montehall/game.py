@@ -40,7 +40,6 @@
 #######################
 # Importing necessary packages
 import logging
-from montehall.player import Player
 import random
 
 
@@ -62,6 +61,14 @@ class Game(object):
         self._firstPlayerSelect = None
         self._secondPlayerSelect = None
         self._firstHostSelect = None
+
+    # Grab the dictionary
+    def getDict(self):
+        return self._prizeDict
+
+    # Grab the winning location
+    def get_prizeLoc(self):
+        return self._prizeLoc
 
     # Receive Player's first choice of door
     # Grab the choice from Player class
