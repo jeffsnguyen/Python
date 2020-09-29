@@ -1,7 +1,7 @@
 # Type: Homework
 # Level: 5
 # Section: 5.2: Decorators
-# Exercise: 1
+# Exercise: 3
 # Description: This contains the class Timer
 #   Modify the Timer class to work as a decorator (feel free to use the provided sample code). Its
 #       usage should look like this:
