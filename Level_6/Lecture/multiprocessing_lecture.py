@@ -47,7 +47,7 @@ def main():
     s = time.time()
 
     # Create processes
-    for i in range(50):  # Loop 5 times to create 5 child processes, too many will crash computer
+    for i in range(5):  # Loop 5 times to create 5 child processes, too many will crash computer
         # target = doWork() is the function you want the process to call
         # args = arguments to get passed to the target = doWork()
         p = multiprocessing.Process(target=doWork, args=(input_queue, output_queue))
