@@ -39,7 +39,7 @@
 
 #######################
 # Importing necessary packages
-import random
+from time import time
 import logging
 from montehall.player import Player
 from montehall.game import Game
@@ -77,10 +77,8 @@ def playGame(stayStrat):
 ###############################################
 def main():
     # Hypothesis:
-    # H_0 (null): Mean returns of staying is equal mean returns of switching.
-    #       i.e.: Player choice does not influence outcome.
-    # H_a (alternative): Mean returns of staying is different than mean returns of switching.
-    #       i.e.: Player choice influence outcome
+    # H_0 (null): Probability of winning by staying is equal probability of winning by switching.
+    # H_a (alternative): Probability of winning by staying is not equal probability of winning by switching.
 
     # Set logging level
     logging.getLogger().setLevel(logging.DEBUG)
@@ -117,20 +115,48 @@ def main():
 
     print(f'Did player win? {game1.checkResult(finalchoice)}')
     print(f'End of game.')
+    print()
     ###############################################
 
+    ###############################################
+    # Test 1. Stay Strategy
     # Playing game in a loop
     # Loop set at 10,000,000 iteration
+    print('Test 1')
     print('Playing the Monte Hall Game with stay strategy.')
     numIteration = 10000000
     resultList = []
+    startTime = time()
     for i in range(numIteration):
-        result = playGame(True)
-        resultList.append(result)
-
+        result = playGame(True)  # Play the game
+        resultList.append(result)  # Add the result to the list
+    endTime = time()
     print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
+    print(f'Took {endTime - startTime} seconds to run.')
+    print()
+    ###############################################
 
+    ###############################################
+    # Test 2 Switch Strategy
+    # Playing game in a loop
+    # Loop set at 10,000,000 iteration
+    print('Test 2')
+    print('Playing the Monte Hall Game with switch strategy.')
+    numIteration = 10000000
+    resultList = []
+    startTime = time()
+    for i in range(numIteration):
+        result = playGame(False)  # Play the game
+        resultList.append(result)  # Add the result to the list
+    endTime = time()
+    print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
+    print(f'Took {endTime - startTime} seconds to run.')
+    print()
+    ###############################################
 
+    # Based on the repetition result, reject the null hypothesis: probability of winning by staying is not equal
+    # the probability of winning by switching.
+    # One should always switch to get a higher chance at winning.
 ###############################################
 
 
