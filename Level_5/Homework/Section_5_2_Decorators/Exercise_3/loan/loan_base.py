@@ -9,7 +9,8 @@
 
 # Importing packages
 from asset.asset import Asset
-from utils.timer import Timer, Memoize
+from utils.timer import Timer
+from utils.memoize import Memoize
 import logging
 #######################
 #######################
