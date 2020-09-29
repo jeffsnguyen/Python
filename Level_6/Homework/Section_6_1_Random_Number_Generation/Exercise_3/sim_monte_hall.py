@@ -97,7 +97,7 @@ def main():
     print(f'Player selected {player_firstChoice} as first door to open.')
 
     # Host class registering player's choice
-    print(f'Host acknowledged Player choice of {game1.get_firstPlayerSelect(player_firstChoice)} '
+    print(f'Host acknowledge Player choice of {game1.get_firstPlayerSelect(player_firstChoice)} '
           f'as first door to open.')
     host_choice = game1.open_firstHostSelect()
     print(f'Host opened door {host_choice}.')
