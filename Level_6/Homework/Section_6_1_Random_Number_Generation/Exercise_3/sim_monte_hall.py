@@ -54,27 +54,6 @@ logging.basicConfig(filename='log.txt', filemode='a', datefmt='%Y-%m-%d %H:%M:%S
 ###############################################
 
 
-# Play the Monte Hall game
-def playGame(stayStrat):
-    player = Player()
-    game = Game(player)
-    # Start Game
-    # Player Turn 1
-    player_firstChoice = player.firstPlayerSelect()  # Player select first door to open
-    game.get_firstPlayerSelect(player_firstChoice)  # Host save player selection
-
-    # Host Turn
-    host_choice = game.open_firstHostSelect()  # Host select first door to open
-    player.get_firstHostSelect(host_choice)  # Player save host's selection
-
-    # Player Turn 2 (final)
-    # stayStrat is a given boolean parameter
-    finalChoice = player.secondPlayerSelect(stayStrat)  # Player select second door to open
-    game.get_secondPlayerSelect(finalChoice)  # Host save player selection
-
-    return game.checkResult(finalChoice)
-
-
 ###############################################
 def main():
     # Hypothesis:
@@ -82,57 +61,39 @@ def main():
     # H_a (alternative): Probability of winning by staying is not equal probability of winning by switching.
 
     # Set logging level
-    logging.getLogger().setLevel(logging.DEBUG)
+    # Change logging level to info to see the one time game progress.
+    logging.getLogger().setLevel(logging.WARNING)
 
     ###############################################
     # Play game 1 time in main
-    print(f'Demo Monte Hall.')
-    random.seed()
+    logging.info(f'###############################################')
+    logging.info(f'Begin Monte Hall game.')
+
+    # Initiate class variables
     player1 = Player()
     game1 = Game(player1)
-    print(f'Here is the preset doors: {game1.getDict()}')
-    print(f'Here is the preset wining door choice: {game1.get_prizeLoc()}.')
-    print(f'Starting game...')
-    player_firstChoice = player1.firstPlayerSelect()
-    print(f'Player selected {player_firstChoice} as first door to open.')
 
-    # Host class registering player's choice
-    print(f'Host acknowledge Player choice of {game1.get_firstPlayerSelect(player_firstChoice)} '
-          f'as first door to open.')
-    host_choice = game1.open_firstHostSelect()
-    print(f'Host opened door {host_choice}.')
+    # Call playGame() from Game() and get result. See log for details.
+    result = game1.playGame(False)
 
-    # Player class registering host's choice
-    print(f'Player acknowledge host choice of {player1.get_firstHostSelect(host_choice)} '
-          f'as first door to open.')
+    logging.info(f'Did player win? {result}.')
+    print(f'Did player win? {result}.')
 
-    finalChoice = player1.secondPlayerSelect(True)  # Save the player's final choice
+    logging.info(f'End game.')
 
-    if finalChoice == player_firstChoice:
-        print(f'Player chose to stay at door {finalChoice}.')
-        # Host class registering player's choice
-        print(f'Host acknowledge player wants to stay at door {game1.get_secondPlayerSelect(finalChoice)}.')
-    else:
-        print(f'Player chose to open door: {finalChoice}.')
-        # Host class registering player's choice
-        print(f'Host acknowledge player wants to open door {game1.get_secondPlayerSelect(finalChoice)}.')
-
-    print(f'Did player win? {game1.checkResult(finalChoice)}')
-    print(f'End of game.')
-    print()
     ###############################################
-
+    numIteration = 10000000
     ###############################################
     # Test 1. Stay Strategy
     # Playing game in a loop
     # Loop set at 10,000,000 iteration
     print('Test 1')
-    print('Playing the Monte Hall Game with stay strategy.')
-    numIteration = 10000000
+    print('Playing the Monte Hall Game with stay strategy...')
+
     resultList = []
     startTime = time()
     for i in range(numIteration):
-        result = playGame(True)  # Play the game
+        result = game1.playGame(True)  # Play the game
         resultList.append(result)  # Add the result to the list
     endTime = time()
     print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
@@ -145,12 +106,11 @@ def main():
     # Playing game in a loop
     # Loop set at 10,000,000 iteration
     print('Test 2')
-    print('Playing the Monte Hall Game with switch strategy.')
-    numIteration = 10000000
+    print('Playing the Monte Hall Game with switch strategy...')
     resultList = []
     startTime = time()
     for i in range(numIteration):
-        result = playGame(False)  # Play the game
+        result = game1.playGame(False)  # Play the game
         resultList.append(result)  # Add the result to the list
     endTime = time()
     print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')

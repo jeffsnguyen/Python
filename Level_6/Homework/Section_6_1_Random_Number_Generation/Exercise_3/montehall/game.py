@@ -41,7 +41,7 @@
 # Importing necessary packages
 import logging
 import random
-
+from montehall.player import Player
 
 #######################
 
@@ -50,45 +50,21 @@ class Game(object):
 
     # Initialize Game object
     def __init__(self, player):
-        self._prizeDict = {}
-        self._prizeLoc = random.randint(1, 3)  # Choosing a door to assign the prize to
-
-        # Loop through the dict to assign prize value, either 0 or 1
-        # 0 = goat (no prize), 1 = car (prize)
-        for index in range(1, 4):
-            self._prizeDict[index] = 0 if not index == self._prizeLoc else 1
         self._player = player
-        self._firstPlayerSelect = None
-        self._secondPlayerSelect = None
-        self._firstHostSelect = None
 
-    # Grab the dictionary
-    def getDict(self):
-        return self._prizeDict
+    # Play the game
+    def playGame(self, stayStrat):
+        # Host select prize location
+        prizeLoc = random.randint(1, 3)
 
-    # Grab the winning location
-    def get_prizeLoc(self):
-        return self._prizeLoc
+        # Host prompt player to make 1st door selection
+        firstPlayerSelect = self._player.firstPlayerSelect()
 
-    # Receive Player's first choice of door
-    # Grab the choice from Player class
-    def get_firstPlayerSelect(self, selection):
-        self._firstPlayerSelect = selection
-        return self._firstPlayerSelect
+        # Host open door
+        firstHostSelect = random.choice([i for i in range(1, 4) if not i == prizeLoc])
 
-    # Game host to open the first door
-    def open_firstHostSelect(self):
-        self._firstHostSelect = random.choice([i for i in range(1, 4) if not i == self._prizeLoc])
-        return self._firstHostSelect
+        # Host prompt player to make 2nd door selection
+        # PLayer to decide based on strategy (stay = True, switch = False)
+        secondPlayerSelect = self._player.secondPlayerSelect(firstHostSelect, stayStrat)
 
-    # Receive Player's second choice of door
-    # Grab the choice from Player class
-    def get_secondPlayerSelect(self, selection):
-        self._secondPlayerSelect = selection
-        return self._secondPlayerSelect
-
-    # Instance method to check result
-    def checkResult(self, selection):
-        return True if self.get_secondPlayerSelect(selection) == self._prizeLoc else False
-
-
+        return True if secondPlayerSelect == prizeLoc else False

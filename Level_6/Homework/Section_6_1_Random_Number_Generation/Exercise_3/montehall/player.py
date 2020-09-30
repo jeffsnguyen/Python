@@ -51,8 +51,6 @@ class Player(object):
     # Initialize Player object
     def __init__(self):
         self._firstPlayerSelect = None
-        self._secondPlayerSelect = None
-        self._firstHostSelect = None
 
     # Instance method to select 1st door
     # This is the first selection (cannot stay/do nothing), must pick a number 1,2 or 3
@@ -61,16 +59,8 @@ class Player(object):
         self._firstPlayerSelect = random.randint(1, 3)
         return self._firstPlayerSelect
 
-    # Instance method to get host first door choice
-    def get_firstHostSelect(self, selection):
-        self._firstHostSelect = selection
-        return self._firstHostSelect
-
     # Instance method to select second door
-    # This is the first selection (cannot stay/do nothing), must pick a number 1,2 or 3
-    #   {1: 'choose door 1', 2: 'choose door 2', 3: 'choose door 3'}
-    # Returning a choice
-    def secondPlayerSelect(self, stay_strat):
-        self._secondPlayerSelect = self._firstPlayerSelect if stay_strat else \
-            random.choice([i for i in range(1, 4) if i not in (self._firstHostSelect, self._firstPlayerSelect)])
-        return self._secondPlayerSelect
+    def secondPlayerSelect(self, firstHostSelect, stayStrat):
+        secondPlayerSelect = self._firstPlayerSelect if stayStrat else \
+            random.choice([i for i in range(1, 4) if i not in (firstHostSelect, self._firstPlayerSelect)])
+        return secondPlayerSelect
