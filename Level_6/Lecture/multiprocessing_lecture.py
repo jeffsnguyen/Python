@@ -20,7 +20,7 @@ def doWork(input, output):  # 2 parameters input queue and output queue
             break
 
 def f(a):  # runSim (for monte hall problem)
-    time.sleep(1)  # run simulation
+    time.sleep(10)  # run simulation
     return a  # In Monte Hall simulation, return the actual result
 
 def main():
