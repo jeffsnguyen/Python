@@ -1,5 +1,0 @@
-2020-09-29 22:50:06 INFO MainProcess  ############################################### (sim_monte_hall.py:62)
-2020-09-29 22:50:06 DEBUG MainProcess  Running 10000000 iterations of the game. (sim_monte_hall.py:69)
-2020-09-29 22:51:04 DEBUG MainProcess  Input queue creation timing: 58.36784863471985 seconds. (sim_monte_hall.py:84)
-2020-09-29 22:51:04 DEBUG MainProcess  Took 0.022006988525390625 to create 5 processes. (sim_monte_hall.py:97)
-2020-09-29 23:05:04 DEBUG MainProcess  Took 839.6488692760468 to append to list. (sim_monte_hall.py:113)

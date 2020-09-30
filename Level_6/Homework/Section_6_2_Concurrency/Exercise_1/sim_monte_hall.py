@@ -64,8 +64,9 @@ def main():
     print('Test Switch Strategy using Multiprocessing.')
     player1 = Player()
     game1 = Game(player1)
-    numProcess = 5
+    numProcess = 10
     parentIteration = 10000000  # Total number of iterations the game should be play
+    childIteration = int(parentIteration/numProcess)
     logging.debug(f'Running {parentIteration} iterations of the game.')
 
     ####################
@@ -73,28 +74,26 @@ def main():
     input_queue = multiprocessing.Queue()
     output_queue = multiprocessing.Queue()
 
-    input_startTime = time()
-
-    for i in range(parentIteration):
-        # Each item in the queue to have a tuple of a function playGame
-        #   and a list of arguments (boolean value False in this case, representing Switch strat being played)
-        input_queue.put((game1.playGame, (False,)))
-
-    input_endTime = time()
-    logging.debug(f'Input queue creation timing: {input_endTime - input_startTime} seconds.')
     ####################
     total_startTime = time()
 
-    process_startTime = time()
     # Create 5 child processes
     for i in range(numProcess):  # Loop 5 times to create 5 child processes
+        input_startTime = time()
+        for j in range(childIteration):
+            # Each item in the queue to have a tuple of a function playGame
+            #   and a list of arguments (boolean value False in this case, representing Switch strat being played)
+            input_queue.put((game1.playGame, (False,)))
+        input_endTime = time()
+        logging.debug(f'Input queue creation timing: {input_endTime - input_startTime} seconds.')
+
+        process_startTime = time()
         # target = doWork is the function for the process to call. doWork handling processing of the iterations
         # args = arguments to get passed to the target = doWork(), boolean value False in this case
         p = multiprocessing.Process(target=doWork, args=(input_queue, output_queue))
         p.start()
-
-    process_endTime = time()
-    logging.debug(f'Took {process_endTime - process_startTime} to create {numProcess} processes.')
+        process_endTime = time()
+        logging.debug(f'Took {process_endTime - process_startTime} to create 1 process.')
     ####################
 
     # Create an infinite loop and monitor output queue
@@ -119,9 +118,19 @@ def main():
     print()
     ###############################################
 
-    # Based on the repetition result, reject the null hypothesis: probability of winning by staying is not equal
-    # the probability of winning by switching.
-    # One should always switch to get a higher chance at winning.
+    # It's not faster. It's significantly slower.
+    # I tried to optimize the Game and Player base class and reduced non-currency run time by 40%.
+    # When I applies concurrency, it takes even longer than pre-optimization (because of added cost to input_queue.put()
+    # See below. Total joke.......
+    #
+    # I've noticed that pre-optimization, when the playGame() function sits outside the class and just call
+    #   functions to get selection from inside the class, it takes minimal time to create the input_queue. This is not
+    #   the case post optimization when playGame() is put inside the Game class, input_queue creation takes
+    #   significantly longer (minimum 10x longer). And of course the output_queue.get doesn't sit inside a process
+    #   so there's no performance to be had there.
+    #
+    # Speaking of: the most expensive part of the code is the while() loop to get from the queue. No improvement here.
+    # I have no idea how to fix this.
 ###############################################
 
 
