@@ -77,8 +77,8 @@ def main():
     ####################
     total_startTime = time()
 
-    # Create 5 child processes
-    for i in range(numProcess):  # Loop 5 times to create 5 child processes
+    # Create child processes
+    for i in range(numProcess):
         input_startTime = time()
         for j in range(childIteration):
             # Each item in the queue to have a tuple of a function playGame
@@ -125,12 +125,14 @@ def main():
     #
     # I've noticed that pre-optimization, when the playGame() function sits outside the class and just call
     #   functions to get selection from inside the class, it takes minimal time to create the input_queue. This is not
-    #   the case post optimization when playGame() is put inside the Game class, input_queue creation takes
+    #   the case post optimization when playGame() is put inside the Game class, input_queue.put takes
     #   significantly longer (minimum 10x longer). And of course the output_queue.get doesn't sit inside a process
     #   so there's no performance to be had there.
     #
-    # Speaking of: the most expensive part of the code is the while() loop to get from the queue. No improvement here.
-    # I have no idea how to fix this.
+    # Speaking of: the most expensive part of the code is the while() loop to get from the queue. No improvement here
+    # because it sits outside of the processes. I have no idea how to fix this.
+    #
+    # To answer e) There's no improvement from 5 processes (about 800 seconds) to 10 processes (935 seconds).
 ###############################################
 
 
