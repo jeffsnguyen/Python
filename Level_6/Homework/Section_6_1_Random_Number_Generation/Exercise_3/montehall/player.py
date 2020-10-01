@@ -39,7 +39,6 @@
 
 #######################
 # Importing necessary packages
-import logging
 import random
 
 #######################
@@ -61,6 +60,10 @@ class Player(object):
 
     # Instance method to select second door
     def secondPlayerSelect(self, firstHostSelect, stayStrat):
-        secondPlayerSelect = self._firstPlayerSelect if stayStrat else \
-            random.choice([i for i in range(1, 4) if i not in (firstHostSelect, self._firstPlayerSelect)])
+        playerChoice = {1, 2, 3}   # Establish a list of player choices to use for switch strat
+        playerChoice -= {firstHostSelect, self._firstPlayerSelect}  # Discard the first selection and host selection
+
+        # Select the first door for stay strat and select a random door from remaining for switch strat
+        secondPlayerSelect = self._firstPlayerSelect if stayStrat else random.choice(tuple(playerChoice))
+
         return secondPlayerSelect

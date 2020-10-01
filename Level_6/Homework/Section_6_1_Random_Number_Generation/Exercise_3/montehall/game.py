@@ -39,9 +39,8 @@
 
 #######################
 # Importing necessary packages
-import logging
 import random
-from montehall.player import Player
+
 
 #######################
 
@@ -54,6 +53,7 @@ class Game(object):
 
     # Play the game
     def playGame(self, stayStrat):
+
         # Host select prize location
         prizeLoc = random.randint(1, 3)
 
@@ -61,7 +61,9 @@ class Game(object):
         firstPlayerSelect = self._player.firstPlayerSelect()
 
         # Host open door
-        firstHostSelect = random.choice([i for i in range(1, 4) if not i == prizeLoc])
+        hostChoice = {1, 2, 3}  # Create a set contains possible door choice for host to open
+        hostChoice -= {firstPlayerSelect, prizeLoc}  # Discard prize location and 1st player selection
+        firstHostSelect = random.choice(tuple(hostChoice))  # Select a random door from remaining
 
         # Host prompt player to make 2nd door selection
         # PLayer to decide based on strategy (stay = True, switch = False)

@@ -39,11 +39,10 @@
 
 #######################
 # Importing necessary packages
-from time import time
+from utils.timer import Timer
 import logging
 from montehall.player import Player
 from montehall.game import Game
-import random
 #######################
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -74,10 +73,12 @@ def main():
     game1 = Game(player1)
 
     # Call playGame() from Game() and get result. See log for details.
-    result = game1.playGame(False)
+    with Timer('Monte_Hall_1_sim') as t:
+        result = game1.playGame(False)
 
     logging.info(f'Did player win? {result}.')
     print(f'Did player win? {result}.')
+    print()
 
     logging.info(f'End game.')
 
@@ -91,13 +92,11 @@ def main():
     print('Playing the Monte Hall Game with stay strategy...')
 
     resultList = []
-    startTime = time()
-    for i in range(numIteration):
-        result = game1.playGame(True)  # Play the game
-        resultList.append(result)  # Add the result to the list
-    endTime = time()
+    with Timer('MonteHall_Stay_10,000,000sims') as t:
+        for i in range(numIteration):
+            result = game1.playGame(True)  # Play the game
+            resultList.append(result)  # Add the result to the list
     print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
-    print(f'Took {endTime - startTime} seconds to run.')
     print()
     ###############################################
 
@@ -108,13 +107,11 @@ def main():
     print('Test 2')
     print('Playing the Monte Hall Game with switch strategy...')
     resultList = []
-    startTime = time()
-    for i in range(numIteration):
-        result = game1.playGame(False)  # Play the game
-        resultList.append(result)  # Add the result to the list
-    endTime = time()
+    with Timer('MonteHall_Switch_10,000,000sims') as t:
+        for i in range(numIteration):
+            result = game1.playGame(False)  # Play the game
+            resultList.append(result)  # Add the result to the list
     print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
-    print(f'Took {endTime - startTime} seconds to run.')
     print()
     ###############################################
 
