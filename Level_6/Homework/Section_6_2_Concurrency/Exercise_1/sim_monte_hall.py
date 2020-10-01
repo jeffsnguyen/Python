@@ -122,14 +122,16 @@ def main():
     player1 = Player()
     game1 = Game(player1)
 
-    runParalellSim(game1, False, 10000000, 4)
+    runParalellSim(game1, False, 10000000, 20)
 
     print()
     ###############################################
 
     # d) Run time significantly improved:
-    #   4 processes:
-    #   5 process:
+    #   4 processes: 30.22 seconds
+    #   5 process: 26.32 seconds
+    #   10 process: 20.726064443588257 seconds
+    #   20 process: 20.650052309036255
 ###############################################
 
 
