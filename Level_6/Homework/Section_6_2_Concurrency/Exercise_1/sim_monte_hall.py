@@ -17,7 +17,7 @@
 
 #######################
 # Importing necessary packages
-from time import time
+from utils.timer import Timer
 import logging
 from montehall.player import Player
 from montehall.game import Game
