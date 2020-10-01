@@ -32,11 +32,10 @@ class Timer(object):
 
     # Initialization function with hours, minutes and seconds arguments
     # Modified for Timer class to take a function as a parameter so the class can work as a decorator
-    #def __init__(self, func):
-    def __init__(self, timerName):
-        self._timerName = timerName
-        #update_wrapper(self, func)
-        #self._func = func
+    def __init__(self, func):
+        #self._timerName = timerName
+        update_wrapper(self, func)
+        self._func = func
 
     # Start the context (timer)
     def __enter__(self):

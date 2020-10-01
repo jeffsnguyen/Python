@@ -53,6 +53,22 @@ logging.basicConfig(filename='log.txt', filemode='a', datefmt='%Y-%m-%d %H:%M:%S
 ###############################################
 
 
+# Run the sim n time, return the list of results
+def runSimList(game, stayStrat, n):
+    result = []
+    for i in range(n):
+        result.append(game.playGame(stayStrat))
+
+    return result
+
+
+# Simply run the simulation n times and return the probability
+@Timer
+def runSimProbability(game, stayStrat, n):
+    result = runSimList(game, stayStrat, n)
+    print(f'Win probability: {sum(result) / len(result)}')
+
+
 ###############################################
 def main():
     # Hypothesis:
@@ -63,24 +79,20 @@ def main():
     # Change logging level to info to see the one time game progress.
     logging.getLogger().setLevel(logging.WARNING)
 
-    ###############################################
-    # Play game 1 time in main
-    logging.info(f'###############################################')
-    logging.info(f'Begin Monte Hall game.')
-
     # Initiate class variables
     player1 = Player()
     game1 = Game(player1)
 
-    # Call playGame() from Game() and get result. See log for details.
-    with Timer('Monte_Hall_1_sim') as t:
-        result = game1.playGame(False)
+    ###############################################
+    # Play game 1 time in main
+    print(f'Playing the game 1 time each with play and switch strategy.')
 
-    logging.info(f'Did player win? {result}.')
-    print(f'Did player win? {result}.')
+    runSimProbability(game1, False, 1)
     print()
 
-    logging.info(f'End game.')
+    runSimProbability(game1, True, 1)
+    print()
+    print(f'End game.')
 
     ###############################################
     numIteration = 10000000
@@ -90,13 +102,7 @@ def main():
     # Loop set at 10,000,000 iteration
     print('Test 1')
     print('Playing the Monte Hall Game with stay strategy...')
-
-    resultList = []
-    with Timer('MonteHall_Stay_10,000,000sims') as t:
-        for i in range(numIteration):
-            result = game1.playGame(True)  # Play the game
-            resultList.append(result)  # Add the result to the list
-    print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
+    runSimProbability(game1, True, numIteration)
     print()
     ###############################################
 
@@ -106,12 +112,7 @@ def main():
     # Loop set at 10,000,000 iteration
     print('Test 2')
     print('Playing the Monte Hall Game with switch strategy...')
-    resultList = []
-    with Timer('MonteHall_Switch_10,000,000sims') as t:
-        for i in range(numIteration):
-            result = game1.playGame(False)  # Play the game
-            resultList.append(result)  # Add the result to the list
-    print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
+    runSimProbability(game1, False, numIteration)
     print()
     ###############################################
 
