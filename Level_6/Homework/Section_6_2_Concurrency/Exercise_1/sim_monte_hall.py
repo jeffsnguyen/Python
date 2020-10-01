@@ -32,24 +32,82 @@ logging.basicConfig(filename='log.txt', filemode='a', datefmt='%Y-%m-%d %H:%M:%S
 ###############################################
 
 
+# Run the sim n time, return the list of results
+def runSimList(game, stayStrat, n):
+    result = []
+    for i in range(n):
+        result.append(game.playGame(stayStrat))
+
+    return result
+
+
+# Simply run the simulation n times and return the probability
+@Timer
+def runSimProbability(game, stayStrat, n):
+    result = runSimList(game, stayStrat, n)
+    print(f'Win probability: {sum(result) / len(result)}')
+
+
 # Function to process the iteration
 def doWork(input, output):  # 2 parameters input queue and output queue
-    while True:  # Infinite loop
-        try:  # this try-except is how we can know when execution is finished
-            # Each loop call get playGame(), the function that play 1 iteration of the MonteHall game
-            # args in this case is False, representing the Switch strat being play from the input_queue
-            f, args = input.get(timeout=1)
-            res = f(*args)  # call playGame() with the list of arguments
-            output.put(res)  # get the result from playGame() and put it on the output queue
-        except:
-            break
+    # Each loop call get playGame(), the function that play 1 iteration of the MonteHall game
+    # args in this case is False, representing the Switch strat being play from the input_queue
+    f, args = input.get(timeout=1)
+    res = f(*args)  # call playGame() with the list of arguments
+    output.put(res)  # get the result from playGame() and put it on the output queue
 
+
+# Run the simulation in parallel using multiprocessing
+# game is the object Game class
+# stayStrat is the player strategy: {True: 'always stay', False: 'always switch'}
+# nsim is number of simulations to run
+# nprocess is number of process to use
+@Timer
+def runParalellSim(game, stayStrat, nsim, nprocess):
+    # Create input/output queue
+    input_queue = multiprocessing.Queue()
+    output_queue = multiprocessing.Queue()
+
+    jobs = []  # Job list for each process
+    ####################
+
+    # Create child processes
+    for i in range(nprocess):
+        # Each item in the queue to have a tuple of a function runSimList
+        #   and a list of arguments (boolean value False in this case, representing Switch strat being played)
+        input_queue.put((runSimList, (game, stayStrat, int(nsim / nprocess))))
+
+        # target = doWork is the function for the process to call. doWork handling processing of the iterations
+        # args = arguments to get passed to the target = doWork(), boolean value False in this case
+        p = multiprocessing.Process(target=doWork, args=(input_queue, output_queue))
+        p.start()
+        jobs.append(p)  # Add each process to the job list
+    ####################
+
+    # Create an infinite loop and monitor output queue
+    resultList = []
+    while True:
+        if len(resultList) == nsim:
+            break
+        else:
+            r = output_queue.get()  # Take something off the queue, if queue has nothing, it will block (wait)
+            # until the queue has something, while other processes running in the background
+            # when it has something, add it to the list resultList = []
+            resultList.extend(r)  # When done, break the loop
+
+    print(f'Final result list has {len(resultList)} items.')
+    print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
+
+    # Clean up crew
+    for job in jobs:
+        job.join()
+        job.terminate()
 
 ###############################################
 def main():
     # Note:
-    # Stay Strat (True): At 10,000,000 iterations took total 88.8419759273529 seconds on a single process.
-    # Switch Strat (False): At 10,000,000 iterations took 116.31930994987488 total on a single process.
+    # Stay Strat (True): At 10,000,000 iterations took total 82.36606335639954 seconds on a single process.
+    # Switch Strat (False): At 10,000,000 iterations took 98.25793862342834 total on a single process.
 
     # Set logging level
     logging.getLogger().setLevel(logging.DEBUG)
@@ -59,80 +117,19 @@ def main():
     # Test Switch Strategy using Multiprocessing
     # Playing game in a loop
     # 5 processes, each run 2,000,000 iterations for a total 10,000,000 iterations.
-    logging.info('###############################################')
     print('Test 1')
-    print('Test Switch Strategy using Multiprocessing.')
+    print('Test Stay Strategy using Multiprocessing.')
     player1 = Player()
     game1 = Game(player1)
-    numProcess = 10
-    parentIteration = 10000000  # Total number of iterations the game should be play
-    childIteration = int(parentIteration/numProcess)
-    logging.debug(f'Running {parentIteration} iterations of the game.')
 
-    ####################
-    # Create input/output queue
-    input_queue = multiprocessing.Queue()
-    output_queue = multiprocessing.Queue()
+    runParalellSim(game1, False, 10000000, 4)
 
-    ####################
-    total_startTime = time()
-
-    # Create child processes
-    for i in range(numProcess):
-        input_startTime = time()
-        for j in range(childIteration):
-            # Each item in the queue to have a tuple of a function playGame
-            #   and a list of arguments (boolean value False in this case, representing Switch strat being played)
-            input_queue.put((game1.playGame, (False,)))
-        input_endTime = time()
-        logging.debug(f'Input queue creation timing: {input_endTime - input_startTime} seconds.')
-
-        process_startTime = time()
-        # target = doWork is the function for the process to call. doWork handling processing of the iterations
-        # args = arguments to get passed to the target = doWork(), boolean value False in this case
-        p = multiprocessing.Process(target=doWork, args=(input_queue, output_queue))
-        p.start()
-        process_endTime = time()
-        logging.debug(f'Took {process_endTime - process_startTime} to create 1 process.')
-    ####################
-
-    # Create an infinite loop and monitor output queue
-    resultList = []
-    append_startTime = time()
-    while True:
-        if len(resultList) == parentIteration:
-            break
-        else:
-            r = output_queue.get()  # Take something off the queue, if queue has nothing, it will block (wait)
-            # until the queue has something, while other processes running in the background
-            # when it has something, add it to the list resultList = []
-            resultList.append(r)  # When done, break the loop
-    append_endTime = time()
-
-    logging.debug(f'Took {append_endTime - append_startTime} to append to list.')
-    total_endTime = time()
-
-    print(f'Final result list has {len(resultList)} items.')
-    print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
-    print(f'Took {total_endTime - total_startTime} seconds to run.')
     print()
     ###############################################
 
-    # It's not faster. It's significantly slower.
-    # I tried to optimize the Game and Player base class and reduced non-currency run time by 40%.
-    # When I applies concurrency, it takes even longer than pre-optimization (because of added cost to input_queue.put()
-    # See below. Total joke.......
-    #
-    # I've noticed that pre-optimization, when the playGame() function sits outside the class and just call
-    #   functions to get selection from inside the class, it takes minimal time to create the input_queue. This is not
-    #   the case post optimization when playGame() is put inside the Game class, input_queue.put takes
-    #   significantly longer (minimum 10x longer). And of course the output_queue.get doesn't sit inside a process
-    #   so there's no performance to be had there.
-    #
-    # Speaking of: the most expensive part of the code is the while() loop to get from the queue. No improvement here
-    # because it sits outside of the processes. I have no idea how to fix this.
-    #
-    # To answer e) There's no improvement from 5 processes (about 800 seconds) to 10 processes (935 seconds).
+    # d) Run time significantly improved:
+    #   4 processes:
+    #   5 process:
 ###############################################
 
 

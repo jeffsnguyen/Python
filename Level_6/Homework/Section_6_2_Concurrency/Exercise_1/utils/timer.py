@@ -34,7 +34,7 @@ class Timer(object):
     # Modified for Timer class to take a function as a parameter so the class can work as a decorator
     def __init__(self, func):
     #def __init__(self, timerName):
-        self._timerName = timerName
+        #self._timerName = timerName
         update_wrapper(self, func)
         self._func = func
 
