@@ -20,6 +20,7 @@
 from utils.timer import Timer
 import logging
 from spv.tranche_base import Tranche
+from spv.tranches import StandardTranche
 #######################
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -38,6 +39,7 @@ def main():
 
     ###############################################
     tranche1 = Tranche(100000, 0.05, 'B')
+    standard_tranche1 = StandardTranche(tranche1)
 
     print(tranche1.__repr__())
 

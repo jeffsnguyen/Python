@@ -17,7 +17,6 @@ from spv.tranche_base import Tranche
 # Standard Tranche class
 # Standard tranches receive both interest and principal payments from the pool of loans.
 class StandardTranche(Tranche):
-
     def __init__(self, notional, rate, subordinationFlag):
         # Invoke base class init
         super(StandardTranche, self).__init__(notional, rate, subordinationFlag)
@@ -38,6 +37,8 @@ class StandardTranche(Tranche):
     # Add instance methods
 
     # Increase the current time period of the object
+    def increaseTimePeriod(self):
+        pass
 
     ##########################################################
     # Add class methods
