@@ -3,11 +3,10 @@
 # Section: Case Study: Asset Backed Security Modeling
 # Exercise: 1
 # Description: This contains the function run_once
-#
+# Have method executed only once based on a flag, can be reset base on the flag
+#   This will work as a decorator in other methods
 
 # Importing packages
-from time import time
-import logging
 from functools import wraps
 
 #######################
