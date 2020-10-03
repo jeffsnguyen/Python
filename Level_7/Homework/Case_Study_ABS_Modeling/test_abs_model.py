@@ -75,6 +75,10 @@ def main():
     print(trancheA.__repr__())
     print(trancheB.__repr__())
 
+    print(type(trancheA.increaseTimePeriod))
+    print(type(trancheA.makePrincipalPayment))
+    print(trancheA.makePrincipalPayment(1))
+    print(trancheA.makePrincipalPayment(2))
 
     print()
     ###############################################

@@ -9,7 +9,7 @@
 # Importing packages
 import logging
 from spv.tranche_base import Tranche
-from utils.run_once import run_once
+from utils.called_once import calledOnce
 #######################
 
 #######################
@@ -23,6 +23,7 @@ class StandardTranche(Tranche):
         # Invoke base class init
         super(StandardTranche, self).__init__(notional, rate, timePeriod, subordinationFlag)
         self._timePeriod = timePeriod
+        self._principal = 0
 
     ##########################################################
     # Decorators to define and set values for instance variables
@@ -38,9 +39,12 @@ class StandardTranche(Tranche):
 
     # Record principal payment for the current tranche time period
     # Can only be called once, otherwise raised an error
-    @run_once
-    def makePrincipalPayment(self, timeperiod):
-        pass
+    @calledOnce  # Decorator to make sure the method only called once
+    def makePrincipalPayment(self, timePeriod):
+        if not self._notional == 0:
+           return self._principal
+        else:
+            raise ValueError('Insufficient notional balance to make payment')
 
     ##########################################################
     # Add class methods
