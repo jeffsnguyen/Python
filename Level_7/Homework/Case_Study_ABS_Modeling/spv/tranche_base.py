@@ -16,10 +16,11 @@ import logging
 
 # Tranche Base class
 class Tranche(object):
-    def __init__(self, notional, rate, subordinationFlag):
+    def __init__(self, notional, rate, term, subordinationFlag):
         self._notional = notional
         self._rate = rate
+        self._term = term
         self._subordinationFlag = subordinationFlag
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({self._notional}, {self._rate}, {self._subordinationFlag})'
+        return f'{self.__class__.__name__}({self._notional}, {self._rate}, {self._term}, {self._subordinationFlag})'

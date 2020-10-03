@@ -9,35 +9,37 @@
 # Importing packages
 import logging
 from spv.tranche_base import Tranche
+from utils.run_once import run_once
 #######################
 
 #######################
+
 
 
 # Standard Tranche class
 # Standard tranches receive both interest and principal payments from the pool of loans.
 class StandardTranche(Tranche):
-    def __init__(self, notional, rate, subordinationFlag):
+    def __init__(self, notional, rate, timePeriod, subordinationFlag):
         # Invoke base class init
-        super(StandardTranche, self).__init__(notional, rate, subordinationFlag)
+        super(StandardTranche, self).__init__(notional, rate, timePeriod, subordinationFlag)
+        self._timePeriod = timePeriod
 
     ##########################################################
     # Decorators to define and set values for instance variables
     # Decorator to create a property function to define the attribute car
-    @property
-    def car(self):
-        return self._car
-
-    # Decorator to set car value
-    @car.setter
-    def car(self, icar):
-        self._car = icar  # Set instance variable car from input
 
     ##########################################################
     # Add instance methods
 
     # Increase the current time period of the object
     def increaseTimePeriod(self):
+        self._timePeriod += 1
+        return self._timePeriod
+
+    # Record principal payment for the current tranche time period
+    # Can only be called once, otherwise raised an error
+    @run_once
+    def makePrincipalPayment(self, timeperiod):
         pass
 
     ##########################################################

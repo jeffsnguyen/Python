@@ -19,8 +19,14 @@
 # Importing necessary packages
 from utils.timer import Timer
 import logging
+import datetime
 from spv.tranche_base import Tranche
 from spv.tranches import StandardTranche
+from loan.loanpool import LoanPool
+from loan.loans import FixedRateLoan, VariableRateLoan, AutoLoan
+from loan.mortgage import FixedMortgage, VariableMortgage
+from loan.loan_base import Loan
+from asset.asset import Car
 #######################
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -38,10 +44,37 @@ def main():
     logging.getLogger().setLevel(logging.DEBUG)
 
     ###############################################
-    tranche1 = Tranche(100000, 0.05, 'B')
-    standard_tranche1 = StandardTranche(tranche1)
+    dT_start1 = '2018-08-21 12:5:30:123456'
+    dT_start1 = datetime.datetime.strptime(dT_start1, '%Y-%m-%d %H:%M:%S:%f')
+    dT_end1 = dT_start1 + datetime.timedelta(days=300)
 
-    print(tranche1.__repr__())
+    dT_start2 = '2018-08-21 12:5:30:123456'
+    dT_start2 = datetime.datetime.strptime(dT_start2, '%Y-%m-%d %H:%M:%S:%f')
+    dT_end2 = dT_start2 + datetime.timedelta(days=240)
+
+    loan1 = AutoLoan(notional=100000, rate=.08, maturity_start=dT_start1, maturity_end=dT_end1, car=Car(100000))
+    loan2 = AutoLoan(notional=75000, rate=.06, maturity_start=dT_start2, maturity_end=dT_end2, car=Car(75000))
+    loans = LoanPool([loan1, loan2])
+
+    sum_principal = loans.totalPrincipal()
+    # wA = 0.8
+    # wB = 0.2
+    rateA = 0.05
+    rateB = 0.08
+    # notionalA = sum_principal * wA
+    # notionalB = sum_principal * wB
+
+    notionalA = 100000
+    notionalB = 75000
+
+    termA = 10
+    termB = 8
+    trancheA = StandardTranche(notionalA, rateA, termA, 'A')
+    trancheB = StandardTranche(notionalB, rateB, termB, 'B')
+
+    print(trancheA.__repr__())
+    print(trancheB.__repr__())
+
 
     print()
     ###############################################
