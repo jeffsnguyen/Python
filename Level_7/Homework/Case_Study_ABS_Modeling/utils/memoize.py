@@ -19,8 +19,6 @@ import logging
 from functools import partial
 
 #######################
-logging.basicConfig(format="{levelname} {processName:<12} {message} ({filename}:{lineno})", style="{")
-#######################
 
 
 #######################
