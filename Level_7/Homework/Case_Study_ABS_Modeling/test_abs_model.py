@@ -16,6 +16,7 @@ from loan.loans import FixedRateLoan, VariableRateLoan, AutoLoan
 from loan.mortgage import FixedMortgage, VariableMortgage
 from loan.loan_base import Loan
 from asset.asset import Car
+from spv.structured_securities import StructuredSecurities
 #######################
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -142,10 +143,8 @@ def main():
     notionalA = sum_principal * wA
     notionalB = sum_principal * wB
 
-    termA = 10
-    termB = 8
-    trancheA = StandardTranche(notionalA, rateA, termA, 'A')
-    trancheB = StandardTranche(notionalB, rateB, termB, 'B')
+    trancheA = StandardTranche(notionalA, rateA, 'A')
+    trancheB = StandardTranche(notionalB, rateB, 'B')
 
     print(trancheA.__repr__())
     print(trancheB.__repr__())
@@ -170,9 +169,20 @@ def main():
 
     print(f'Tranche A interest shortfall of period t=1 = {trancheA._interestShortFall[1]}')
     # print(f'Tranche A interest due of period t=2 = {trancheA.interestDue(2)}')
-
     print()
 
+    # Instantiate StructuredSecurities
+    tranches = [trancheA, trancheB]
+    structuredSecurities1 = StructuredSecurities(tranches)
+    print(f'{structuredSecurities1.__repr__()}')
+    print(f'{type(structuredSecurities1)}')
+    print(f'{structuredSecurities1._tranches}')
+    print(f'{sum(tranche._notional for tranche in structuredSecurities1._tranches)}')
+
+    # Test addTranche()
+    #trancheC = StandardTranche(notionalA, rateA, 'A')
+    structuredSecurities1.addTranche('StandardTranche', .2, .02, 'B')
+    print(f'{structuredSecurities1._tranches}')
     print()
     ###############################################
 

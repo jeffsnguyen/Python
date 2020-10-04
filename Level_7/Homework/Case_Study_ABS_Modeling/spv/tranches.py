@@ -2,7 +2,9 @@
 # Level: 7
 # Section: Case Study: Asset Backed Security Modeling
 # Exercise: 1
-# Description: This contains the base Tranche class
+# Description: This contains the derived classes from Tranche class
+# Derived classes:
+#   - StandardTranche
 #   Create an abstract base class called Tranche. It should be initialized with notional and rate. Additionally,
 #       it should have a subordination flag. This flag can either be letters of the alphabet or numbers.
 
@@ -20,15 +22,15 @@ from utils.memoize import Memoize
 # Standard Tranche class
 # Standard tranches receive both interest and principal payments from the pool of loans.
 class StandardTranche(Tranche):
-    def __init__(self, notional, rate, timePeriod, subordinationFlag):
+    def __init__(self, notional, rate, subordinationFlag):
         # Invoke base class init
-        super(StandardTranche, self).__init__(notional, rate, timePeriod, subordinationFlag)
-        self._timePeriod = timePeriod
+        super(StandardTranche, self).__init__(notional, rate, subordinationFlag)
         self._principalPaid = {0: 0}  # Record principal payment
         self._interestPaid = {0: 0}  # Record interest payment
         self._interestShortFall = {0: 0}  # Record interest shortfall
         self._interestDue = {0: 0}  # Record interest due for each period
         self._notionalBalance = {0: notional}  # Record notional balance owed to the tranche
+        self._timePeriod = 0
 
     ##########################################################
     # Decorators to define and set values for instance variables
