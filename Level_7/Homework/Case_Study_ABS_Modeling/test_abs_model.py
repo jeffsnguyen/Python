@@ -1,19 +1,8 @@
 # Type: Homework
-# Level: 6
-# Section: 6.2: Concurrency
+# Level: 7
+# Section: Case Study: Asset Backed Security Modeling
 # Exercise: 1
-# Description: Contains the code to simulate the Monte Hall problem, using multiprocessing
-#   In this exercise, we will look to make the Monty Hall simulation achieve true multi-processing. This is
-#       a good segue to financial Monte Carlo as the concepts and approaches are the same.
-#
-#   a) Create and initialize five processes. Note that starting processes takes some time, and is the
-#       upfront cost of using multi-processing.
-#   b) Execute all five processes. Give each process 1/5 of the total simulations (2,000,000 each).
-#   c) Combine the five returned results lists and take the average, to get the overall result.
-#   d) Time all of the above (starting from b). Does total runtime improve from the previous level?
-#   e) Try decreasing/increasing the number of processes to determine the optimal runtime.
-#
-#   BONUS: Try the above using multithreading and compare/contrast the performance vs. multiprocessing.
+# Description: Contains the code to test the ABS Model
 
 #######################
 # Importing necessary packages
@@ -146,7 +135,6 @@ def main():
     print(f'{loans.totalPayments(9)}')
     print()
 
-
     wA = 0.8
     wB = 0.2
     rateA = 0.05
@@ -181,7 +169,7 @@ def main():
     print(trancheA._principalPaid)
 
     print(f'Tranche A interest shortfall of period t=1 = {trancheA._interestShortFall[1]}')
-    #print(f'Tranche A interest due of period t=2 = {trancheA.interestDue(2)}')
+    # print(f'Tranche A interest due of period t=2 = {trancheA.interestDue(2)}')
 
     print()
 
