@@ -20,7 +20,7 @@ import logging
 
 # LoanPool Class
 class LoanPool(object):
-    def __init__(self, loans=None):
+    def __init__(self, loans):
         self._loans = loans
         self._loan = [loan for loan in self._loans]
         self._notional = [loan.notional for loan in self._loans]
@@ -73,21 +73,21 @@ class LoanPool(object):
 
     # Instance method
     # Get the aggregate payment due for a given period
-    def paymentDue(self, t=0):
+    def paymentDue(self, t):
         # Capture step/job done to debug
         logging.debug('Step: Calculate paymentDue(t).')
         return sum([loan.monthlyPayment(t) for loan in self._loans])
 
     # Instance method
     # Get the aggregate interest due for a given period
-    def totalInterest(self, t=0):
+    def totalInterest(self, t):
         # Capture step/job done to debug
         logging.debug('Step: Calculate totalInterest(t).')
         return sum([loan.interestDue(t) for loan in self._loans])
 
     # Instance method
     # Get the aggregate principal due for a given period
-    def principalDue(self, t=0):
+    def principalDue(self, t):
         # Capture step/job done to debug
         logging.debug('Step: Calculate principalDue.')
         return self.paymentDue(t) - self.totalInterest(t)
