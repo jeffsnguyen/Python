@@ -123,17 +123,22 @@ class Loan(object):
     # Now modified to delegate to calcMonthlyPmt() which is a class method
     # Add dummy period argument to handle exceptions where some loan type
     # can have monthly payment dependent on the period
-    def monthlyPayment(self, period=None):
+    def monthlyPayment(self, t):
         # Calculate payment using the formula pmt  = (r * P * (1 + r)**N) / ((1 + r)**N - 1)
         # r = monthly rate, P = notional value, N = term in months
         # DIV/0 exception handling: print and warning message and return value of None
         try:
             # Capture step/job done to debug
             logging.debug('Step: Trying to calculate monthlyPayment')
-            res = self.calcMonthlyPmt(self._notional, self.getRate(period), self.term())
+            res = self.calcMonthlyPmt(self._notional, self.getRate(t), self.term())
         except ZeroDivisionError:
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
-        return res if period <= self.term() else 0
+        if t == 0:
+            return 0
+        elif t > self.term():
+            return 0
+        else:
+            return res
 
     # Instance method to calculate total payments
     def totalPayments(self):
@@ -167,7 +172,12 @@ class Loan(object):
         # Capture step/job done to debug
         logging.debug('Step: Trying to calculate totalInterest using totalPayments and notional')
         res = self.monthlyRate(self.getRate(t)) * self.balance(t - 1)
-        return res if t <= self.term() else 0
+        if t == 0:
+            return 0
+        elif t > self.term():
+            return 0
+        else:
+            return res
 
     # Instance method to calculate principal due at time t
     # This method use the given formula
@@ -194,7 +204,7 @@ class Loan(object):
         # Capture step/job done to debug
         logging.debug('Step: Trying to calculate balance using calcBalance')
         res = self.calcBalance(self._notional, self.getRate(t), self.term(), t)
-        return res
+        return res if res>=0 else 0
 
     # Instance method to calculate interest due at time t
     # This method use the recursive function
