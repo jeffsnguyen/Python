@@ -61,35 +61,30 @@ class LoanPool(object):
     # Get the aggregate remaining loan balance for a given period
     def totalPayments(self, t=0):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate totalPayments(t).')
         return sum([loan.balance(t) for loan in self._loans])
 
     # Instance method
     # Get the total loan principal
     def totalPrincipal(self):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate totalPrincipals.')
         return sum(self._notional)
 
     # Instance method
     # Get the aggregate payment due for a given period
     def paymentDue(self, t):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate paymentDue(t).')
         return sum([loan.monthlyPayment(t) for loan in self._loans])
 
     # Instance method
     # Get the aggregate interest due for a given period
     def totalInterest(self, t):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate totalInterest(t).')
         return sum([loan.interestDue(t) for loan in self._loans])
 
     # Instance method
     # Get the aggregate principal due for a given period
     def principalDue(self, t):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate principalDue.')
         return self.paymentDue(t) - self.totalInterest(t)
 
     # Instance method
@@ -97,7 +92,6 @@ class LoanPool(object):
     def activeLoanCount(self, t):
         count = 0
         # Capture step/job done to debug
-        logging.debug('Step: Calculate activeLoanCount.')
         for loan in self._loans:
             if loan.balance(t) > 0:
                 count += 1
@@ -107,14 +101,12 @@ class LoanPool(object):
     # Calculate Weighted Average Maturity of loans in the pool
     def WAM(self):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate sum totalPrincipal.')
 
         sum_amount = self.totalPrincipal()   # assign temp variable to hold the total principal
         # Loop to calculate weighted rate of each mortgage and add them together
         WAM_rate = 0  # Initialize WAR rate to be 0
 
         # Capture step/job done to debug
-        logging.debug('Step: Calculate WAM.')
 
         for loan in self._loans:
             WAM_rate += loan.notional * loan.term / sum_amount
@@ -124,13 +116,11 @@ class LoanPool(object):
     # Calculate Weighted Average Rate of loans in the pool
     def WAR(self):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate sum totalPrincipal.')
 
         sum_amount = self.totalPrincipal()  # assign temp variable to hold the total principal
         # Loop to calculate weighted rate of each mortgage and add them together
         WAR_rate = 0  # Initialize WAR rate to be 0
 
-        logging.debug('Step: Calculate WAM.')
 
         for loan in self._loans:
             WAR_rate += loan.notional * loan.rate / sum_amount

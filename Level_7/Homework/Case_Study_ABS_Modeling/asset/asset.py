@@ -50,7 +50,6 @@ class Asset(object):
     # Return a yearly depreciation rate
     # Raise NotImplementedError to make Asset object abstract and prevent direct instantiation
     def annualDeprRate(self, period = None):
-        logging.getLogger().setLevel(logging.ERROR)  # Set logging level
         # Capture step/job done to debug
         logging.error('Something went wrong. This is not implemented.')
         raise NotImplementedError
@@ -60,7 +59,6 @@ class Asset(object):
     def monthlyDeprRate(self, period = None):
         logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
-        logging.debug('Step: Calculate monthlyDeprRate.')
         return self.annualDeprRate(period) / 12
 
     # Calculate and return current value of asset at a given time t
@@ -68,7 +66,6 @@ class Asset(object):
     def value(self, t):
         logging.getLogger().setLevel(logging.DEBUG)  # Set logging level
         # Capture step/job done to debug
-        logging.debug('Step: Calculate value(t).')
         return self._initialValue * ((1 - self.monthlyDeprRate(t))**t)
 
     ##########################################################
