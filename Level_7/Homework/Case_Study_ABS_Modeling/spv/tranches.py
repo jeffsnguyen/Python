@@ -103,6 +103,10 @@ class StandardTranche(Tranche):
         self._interestDue = {0: 0}  # Record interest due for each period
         self._notionalBalance = {0: self._notional}  # Record notional balance owed to the tranche
         self._timePeriod = 1
+
+    # Method to get the tranch notional value
+    def getNotional(self):
+        return self._notional
     ##########################################################
     # Add class methods
 

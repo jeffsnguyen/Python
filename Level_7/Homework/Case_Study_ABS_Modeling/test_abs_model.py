@@ -204,8 +204,10 @@ def main():
         print(f'TrancheB interest paid at t={i} = {trancheB._interestPaid[i]}')
         print(f'TrancheB interest short fall at t={i} = {trancheB._interestShortFall[i]}')
         print(f'Available Funds after paying interest t={i} = {availableFunds}')
-        # Test makeSeqPrinPayments()
-        availableFunds = structuredSecurities1.makeSeqPrinPayments(availableFunds)
+
+        print(f'#########################Testing ProRata##############################')
+        # Test makeProRataPrinPayments()
+        availableFunds = structuredSecurities1.makeProRataPrinPayments(availableFunds)
         print(f'TrancheA principal due at t={i} = {trancheA._principalDue[i]}')
         print(f'TrancheA principal paid at t={i} = {trancheA._principalPaid[i]}')
         print(f'TrancheA principal short fall at t={i} = {trancheA._principalShortFall[i]}')
@@ -239,19 +241,50 @@ def main():
     print(f'TrancheA total principal paid = {sum(trancheA._principalPaid.values())}')
     print(f'TrancheB total principal paid = {sum(trancheB._principalPaid.values())}')
     print(f'SS total collections: {sumcollections}')
-    '''
-    # Test increaseTrancheTimePeriod()
-    print(structuredSecurities1._tranches[0]._timePeriod)
-    print(structuredSecurities1._tranches[1]._timePeriod)
-    #print(structuredSecurities1._tranches[2]._timePeriod)
-    structuredSecurities1.increaseTrancheTimePeriod()
-    print(structuredSecurities1._tranches[0]._timePeriod)
-    print(structuredSecurities1._tranches[1]._timePeriod)
-    #print(structuredSecurities1._tranches[2]._timePeriod)
-    print()
-    '''
+
+    print(f'#########################Test Pro RataCompleted##############################')
+
+    '''        
+            # Test makeSeqPrinPayments()
+            print(f'#########################Testing Sequential##############################')
+            availableFunds = structuredSecurities1.makeSeqPrinPayments(availableFunds)
+            print(f'TrancheA principal due at t={i} = {trancheA._principalDue[i]}')
+            print(f'TrancheA principal paid at t={i} = {trancheA._principalPaid[i]}')
+            print(f'TrancheA principal short fall at t={i} = {trancheA._principalShortFall[i]}')
+            print(f'TrancheB principal due at t={i} = {trancheB._principalDue[i]}')
+            print(f'TrancheB principal paid at t={i} = {trancheB._principalPaid[i]}')
+            print(f'TrancheB principal short fall at t={i} = {trancheB._principalShortFall[i]}')
+            print(f'Available Funds after paying principal t={i} = {availableFunds}')
+            structuredSecurities1.increaseTranchesTimePeriod()
+            logging.debug(f'################################################################')
+            print()
 
 
+        print(f'TrancheA principal paid = {trancheA._principalPaid}')
+        print(f'TrancheA principal short fall = {trancheA._principalShortFall}')
+        print(f'TrancheA principal due = {trancheA._principalDue}')
+        print(f'TrancheA interest paid = {trancheA._interestPaid}')
+        print(f'TrancheA interest short fall = {trancheA._interestShortFall}')
+        print(f'TrancheA interest due = {trancheA._interestDue}')
+        print()
+        print(f'TrancheB principal paid = {trancheB._principalPaid}')
+        print(f'TrancheB principal short fall = {trancheB._principalShortFall}')
+        print(f'TrancheB principal due = {trancheB._principalDue}')
+        print(f'TrancheB interest paid = {trancheB._interestPaid}')
+        print(f'TrancheB interest short fall = {trancheB._interestShortFall}')
+        print(f'TrancheB interest due = {trancheB._interestDue}')
+        print(f'SS cash reserve is {structuredSecurities1._reserve}')
+        print()
+
+        print(f'TrancheA total interest paid = {sum(trancheA._interestPaid.values())}')
+        print(f'TrancheB total interest paid = {sum(trancheB._interestPaid.values())}')
+        print(f'TrancheA total principal paid = {sum(trancheA._principalPaid.values())}')
+        print(f'TrancheB total principal paid = {sum(trancheB._principalPaid.values())}')
+        print(f'SS total collections: {sumcollections}')
+
+        print(f'#########################Test Sequential Completed##############################')
+        print()
+    '''
     ###############################################
 
 ###############################################

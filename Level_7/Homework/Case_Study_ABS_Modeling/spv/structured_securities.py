@@ -21,7 +21,7 @@ import operator
 class StructuredSecurities(object):
     def __init__(self, tranches):
         self._tranches = sorted(tranches, key=operator.attrgetter("_subordinationFlag"))  # Sort based on subordination
-        self._notional = [tranche._notional for tranche in tranches]
+        self._notional = [tranche.getNotional() for tranche in tranches]
         self._mode = None
         self._timePeriod = 1
         self._principalCollected = {0: 0}
@@ -46,7 +46,7 @@ class StructuredSecurities(object):
     # Assume all inputs are type 'str'
     def addTranche(self, nameClass, notionalPct, rate, subordinationLvl):
         try:  # Handle instantiation of tranche object
-            trancheObject = eval(nameClass)((float(notionalPct) * sum(self._notional)), float(rate), int(subordinationLvl))
+            trancheObject = eval(nameClass)((float(notionalPct) * sum(self.getNotional())), float(rate), int(subordinationLvl))
         except NameError as nameEx:
             logging.error(f'Failed to add. {nameEx}')
             print(f'Failed to add. {nameEx}')
@@ -176,12 +176,46 @@ class StructuredSecurities(object):
 
     # Instance method to make payments to tranches in 'Pro Rata' mode StructuredSecurity object
     def makeProRataPrinPayments(self, cash_amount):
-        pass
+        logging.debug(f'SS recorded cash available to be paid to principal is {cash_amount}')
+
+        # Cycle through the tranches:
+        #   1. Call notionalBalance(t) method for each tranche to get their principal balance at time t. Compare this
+        #       with the principal collected from the LoanPool collection (passed in).
+        #       The lesser amount is the principalDue for the tranche.
+        #   2. Determine the paidAmount: the lesser value between the available cash and principalDue is what to
+        #       be paid out.
+        #   3. Call the tranche's makePrincipalPayment() method to record the payment in the tranches' dicts
+        #   4. Return the available fund post-payment
+        for tranche in self._tranches:
+
+            # Calculate principalDue = min(principal received + prior principal shortfalls, available cash, balance)
+            principalDue = min((self._principalCollected[self._timePeriod] * tranche.getNotional() / sum(self._notional)) + tranche._principalShortFall[self._timePeriod -1], cash_amount, tranche.notionalBalance(self._timePeriod)) if not cash_amount ==0 else 0
+            logging.debug(f'SS shows the principal due for {tranche} at t={self._timePeriod} is {principalDue}')
+
+            # Calculate principal amount to be paid as well as short fall
+            principalPaid = min(cash_amount, principalDue)
+            prinShortFall = principalDue - principalPaid
+            logging.debug(f'SS shows the paid amount for {tranche} at t={self._timePeriod} is {principalPaid}')
+
+            # Handle exception when recording principal payment in tranches
+            #   e.g: tranche's principal is fully paid (notional balance = 0)
+            try:
+                tranche.makePrincipalPayment(self._timePeriod, principalDue, principalPaid, prinShortFall)
+            except Exception as Ex:
+                logging.info(f'{Ex}')
+
+            cash_amount -= principalPaid  # Deduct principal payment from cash available
+            logging.debug(f'SS shows the available fund after principal payment of {tranche} is {cash_amount}')
+
+        self._reserve[self._timePeriod] +=  cash_amount
+
+        return self._reserve[self._timePeriod]
 
     # Pass on the principalDue amount from LoanPool collection
     def get_principalCollected(self, t, prinCollections):
         self._principalCollected[t] = prinCollections
         return self._principalCollected[t]
+
     ##########################################################
     # Add class methods
 
