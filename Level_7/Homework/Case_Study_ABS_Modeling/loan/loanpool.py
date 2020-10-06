@@ -83,12 +83,7 @@ class LoanPool(object):
     # Instance method
     # Get the count of loan with positive balance for a given period
     def activeLoanCount(self, t):
-        count = 0
-        # Capture step/job done to debug
-        for loan in self._loans:
-            if loan.balance(t) > 0:
-                count += 1
-        return count
+        return sum([loan.balance(t) > 0 for loan in self._loans])
 
     # Instance method
     # Calculate Weighted Average Maturity of loans in the pool

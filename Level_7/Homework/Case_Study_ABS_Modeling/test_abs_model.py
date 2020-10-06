@@ -37,26 +37,26 @@ def doWaterfall(loans, tranches):
 
     ledger = {}
     reserve = {}
-    for i in range(1,maxTerm+1):
-    #while not tranches.get_totalPrinCollected() == loans.sumPayments(maxTerm):
+    t = 0
+    while loans.activeLoanCount(t) > 0:
         # Increase the time period on the StructuredSecurities object (which will, in turn, increase for all
         # the tranches).
         tranches.increaseTranchesTimePeriod()
-        #i += 1
+        t += 1
         # Ask the LoanPool for its total payment for the current time period.
-        collections = loans.paymentDue(i)
+        collections = loans.paymentDue(t)
 
         # Ask the LoanPool for its total principal due for the current time period.
-        principalCollected = loans.principalDue(i)
-        tranches.get_principalCollected(i, principalCollected)  # Save the principal due
+        principalCollected = loans.principalDue(t)
+        tranches.get_principalCollected(t, principalCollected)  # Save the principal due
 
         # Pay the StructuredSecurities with the amount provided by the LoanPool.
         tranches.makePayments(collections)
 
         # Call getWaterfall on both the LoanPool and StructuredSecurities objects and save the info into
         # two variables.
-        ledger[i] = tranches.getWaterfall(i)
-        reserve[i] = tranches.get_reserve(i)
+        ledger[t] = tranches.getWaterfall(t)
+        reserve[t] = tranches.get_reserve(t)
 
 
 
