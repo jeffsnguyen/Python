@@ -26,14 +26,7 @@ class StandardTranche(Tranche):
         # Invoke base class init
         super(StandardTranche, self).__init__(notional, rate, subordinationFlag)
         self.reset()
-        '''
-        self._principalPaid = {0: 0}  # Record principal payment
-        self._interestPaid = {0: 0}  # Record interest payment
-        self._interestShortFall = {0: 0}  # Record interest shortfall
-        self._interestDue = {0: 0}  # Record interest due for each period
-        self._notionalBalance = {0: notional}  # Record notional balance owed to the tranche
-        self._timePeriod = 1
-        '''
+
     ##########################################################
     # Decorators to define and set values for instance variables
     # Decorator to create a property function to define the attribute car
@@ -50,12 +43,9 @@ class StandardTranche(Tranche):
     # Can only be called once, otherwise raised an error
     @calledOnce  # Decorator to make sure the method only called once
     def makePrincipalPayment(self, t, prinDue, prinPaid, prinShortFall):
-        self._principalDue[t] = prinDue  # Record principal due for the tranche
-        logging.debug(f'{self} recorded principal due at t={t} = {self._principalDue[t]}')
-        self._principalShortFall[t] = prinShortFall
-        logging.debug(f'{self} recorded principal shortfall at t={t} = {self._principalShortFall[t]}')
-        self._principalPaid[t] = prinPaid
-        logging.debug(f'{self} recorded principalPaid at t={t} = {self._principalPaid[t]}')
+        self._principalDue[t] = prinDue  # Record principal due for the period
+        self._principalPaid[t] = prinPaid  # Record principal paid for the period
+        self._principalShortFall[t] = prinShortFall  # Record principal short fall for the period
 
         if self.notionalBalance(t) == 0:
             raise Exception('Zero balance. All paid.')
@@ -66,12 +56,9 @@ class StandardTranche(Tranche):
     #   In this case, the missing amount needs to be recorded separately as an interest shortfall.
     @calledOnce  # Decorator to make sure the method only called once
     def makeInterestPayment(self, t, paidAmount):
-        self._interestDue[t] = self.interestDue(t)
-        logging.debug(f'Tranche {self} recorded interest due at t={t} = {self._interestDue[t]}')
-        self._interestShortFall[t] = self._interestDue[t] - paidAmount
-        logging.debug(f'Tranche {self} recorded interest short fall at t={t} = {self._interestShortFall[t]}')
-        self._interestPaid[t] = paidAmount
-        logging.debug(f'Tranche {self} recorded interest paid at t={t} = {self._interestPaid[t]}')
+        self._interestDue[t] = self.interestDue(t)  # Record interest due for the period
+        self._interestPaid[t] = paidAmount  # Record interest paid for the period
+        self._interestShortFall[t] = self._interestDue[t] - paidAmount  # Record interest short fall for the period
 
         if self._interestDue[t] == 0:
             raise Exception('Zero Balance. All Paid.')
@@ -82,7 +69,6 @@ class StandardTranche(Tranche):
     def notionalBalance(self, t):
         if not t == 0:
             self._notionalBalance[t] = self._notional - sum([val for val in self._principalPaid.values()])
-            logging.debug(f'{self} shows notionalBalance[{t}] = {self._notional} - {sum([val for val in self._principalPaid.values()])} = {self._notionalBalance[t]}')
         return self._notionalBalance[t]
 
     # Return the amount of interest due for the current time period.
@@ -90,7 +76,6 @@ class StandardTranche(Tranche):
         if not t == 0:
             self._interestDue[t] = self.notionalBalance(t-1) * self.monthlyRate(self._rate) + \
                                    self._interestShortFall[t-1]
-            logging.debug(f'{self} shows interestDue formula = {self.notionalBalance(t-1)} * {self.monthlyRate(self._rate)} + {self._interestShortFall[t-1]} = {self._interestDue[t]}')
         return self._interestDue[t]
 
     # Reset the tranche to time t=0
@@ -104,9 +89,40 @@ class StandardTranche(Tranche):
         self._notionalBalance = {0: self._notional}  # Record notional balance owed to the tranche
         self._timePeriod = 1
 
-    # Method to get the tranch notional value
-    def getNotional(self):
+    # Method to access the tranche notional
+    def get_notional(self):
         return self._notional
+
+    # Method to access the tranche rate
+    def get_rate(self):
+        return self._rate
+
+    # Method to access the tranche subordinationFlag
+    def get_subordinationFlag(self):
+        return self._subordinationFlag
+
+    # Method to access interestDue
+    def get_interestDue(self, t):
+        return self._interestDue[t]
+
+    # Method to access interestShortFall
+    def get_interestShortFall(self, t):
+        return self._interestShortFall[t]
+
+    # Method to access principalPaid
+    def get_principalPaid(self, t):
+        return self._principalPaid[t]
+
+    # Method to access principalShortFall
+    def get_principalShortFall(self, t):
+        return self._principalShortFall[t]
+
+    # Method to access notionalBalance
+    def get_notionalBalance(self, t):
+        return self._notionalBalance[t]
+
+    ###################################
+
     ##########################################################
     # Add class methods
 

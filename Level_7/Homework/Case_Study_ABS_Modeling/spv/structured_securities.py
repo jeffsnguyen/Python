@@ -21,18 +21,15 @@ import operator
 class StructuredSecurities(object):
     def __init__(self, tranches):
         self._tranches = sorted(tranches, key=operator.attrgetter("_subordinationFlag"))  # Sort based on subordination
-        self._notional = [tranche.getNotional() for tranche in tranches]
+        self._notional = [tranche.get_notional() for tranche in tranches]
         self._mode = None
         self._timePeriod = 1
         self._principalCollected = {0: 0}
         self._reserve = {0: 0}
-        '''
-        self._rate = [tranche._rate for tranche in tranches]
-        self._term = [tranche._term for tranche in tranches]
-        self._subordinationFlag = [tranche._subordinationFlag for tranche in tranches]
-        '''
+
     def __repr__(self):
-        return [f'{tranche.__class__.__name__}({tranche._notional}, {tranche._rate}, {tranche._subordinationFlag})'
+        return [f'{tranche.__class__.__name__}' \
+                f'({tranche.get_notional()}, {tranche.get_rate()}, {tranche.get_subordinationFlag()})'
                 for tranche in self._tranches]
 
     ##########################################################
@@ -46,7 +43,8 @@ class StructuredSecurities(object):
     # Assume all inputs are type 'str'
     def addTranche(self, nameClass, notionalPct, rate, subordinationLvl):
         try:  # Handle instantiation of tranche object
-            trancheObject = eval(nameClass)((float(notionalPct) * sum(self.getNotional())), float(rate), int(subordinationLvl))
+            trancheObject = \
+                eval(nameClass)((float(notionalPct) * sum(self._notional)), float(rate), int(subordinationLvl))
         except NameError as nameEx:
             logging.error(f'Failed to add. {nameEx}')
             print(f'Failed to add. {nameEx}')
@@ -85,17 +83,15 @@ class StructuredSecurities(object):
         else:
             self.makeProRataPrinPayments(cash_amount)
 
+        # Increase its tranches and its own timePeriod after payments have been made
+        self.increaseTranchesTimePeriod()
+
     # Instance method to make interest payments to tranches in the StructuredSecurity object
     def makeInterestPayments(self, cash_amount):
-        logging.debug(f'SS shows current cash reserve at time {self._timePeriod-1} = {self._reserve[self._timePeriod -1]}')
-        logging.debug(f'SS shows CF in amount at t= {self._timePeriod} of {cash_amount}')
-
         # Add reserve from previous period to passed-in cash amount (collections from assets)
         cash_amount += self._reserve[self._timePeriod-1]
-        logging.debug(f'SS shows available Funds to be used at t={self._timePeriod} = {cash_amount}')
 
         self._reserve[self._timePeriod] = 0  # Set reserve account for current period to be 0
-        logging.debug(f'Reset reserve account to 0.')
 
         # Cycle through the tranches:
         #   1. Call each tranche's interestDue() method to get interest due amount, this is the amount to be paid.
@@ -106,11 +102,9 @@ class StructuredSecurities(object):
         for tranche in self._tranches:
             # Ask the tranche about the interest due in the current period
             interestDue = tranche.interestDue(self._timePeriod)
-            logging.debug(f'SS shows Interest due of {tranche} at t={self._timePeriod} is {interestDue}')
 
             # The amount to be paid is the lesser amount between interest due amount and cash available
             cash_paid = min(cash_amount, interestDue)
-            logging.debug(f'SS shows Interest amount to be paid for {tranche} at t={self._timePeriod} is {cash_paid}')
 
             # Catch any exception when calling tranche to record interest payment
             #   (e.g. if interest balance is fully paid)
@@ -119,13 +113,12 @@ class StructuredSecurities(object):
             except Exception as Ex:
                 logging.info(f'{Ex}')
 
-            cash_amount -= cash_paid # Deduct interest payment from cash amount
+            cash_amount -= cash_paid  # Deduct interest payment from cash amount
 
         return cash_amount
 
     # Instance method to make payments to tranches in 'Sequential' mode StructuredSecurity object
     def makeSeqPrinPayments(self, cash_amount):
-        logging.debug(f'SS recorded cash available to be paid to principal is {cash_amount}')
         # Cycle through the tranches:
         #   1. Call notionalBalance(t) method for each tranche to get their principal balance at time t. Compare this
         #       with the principal collected from the LoanPool collection (passed in).
@@ -137,13 +130,13 @@ class StructuredSecurities(object):
         for tranche in self._tranches:
 
             # Calculate principalDue = min(principal received + prior principal shortfalls, available cash, balance)
-            principalDue = min(self._principalCollected[self._timePeriod] + tranche._principalShortFall[self._timePeriod -1], cash_amount, tranche.notionalBalance(self._timePeriod)) if not cash_amount == 0 else 0
-            logging.debug(f'SS shows the principal due for {tranche} at t={self._timePeriod} is {principalDue}')
+            principalDue = \
+                min(self._principalCollected[self._timePeriod] + tranche.get_principalShortFall(self._timePeriod - 1),
+                    cash_amount, tranche.notionalBalance(self._timePeriod)) if not cash_amount == 0 else 0
 
             # Calculate principal amount to be paid as well as short fall
             principalPaid = min(cash_amount, principalDue)
             prinShortFall = principalDue - principalPaid
-            logging.debug(f'SS shows the paid amount for {tranche} at t={self._timePeriod} is {principalPaid}')
 
             # Handle exception when recording principal payment in tranches
             #   e.g: tranche's principal is fully paid (notional balance = 0)
@@ -153,16 +146,13 @@ class StructuredSecurities(object):
                 logging.info(f'{Ex}')
 
             cash_amount -= principalPaid  # Deduct principal payment from cash available
-            logging.debug(f'SS shows the available fund after principal payment of {tranche} is {cash_amount}')
 
             # If the tranche's notional balance is not fully paid:
             #   1. Record reserve amount to be remaining cash.
             #   2. Set available cash_amount to be 0 to record payment of 0 to other tranches
             if not tranche.notionalBalance(self._timePeriod) == 0:
                 self._reserve[self._timePeriod] += cash_amount
-                logging.debug(f'Added {cash_amount} to cash reserve totalling = {self._reserve[self._timePeriod]} for next iteration.')
                 cash_amount = 0
-                logging.debug(f'{tranche} still have a notional balance. Set availableFunds to be 0.')
 
         # Check if cash reserve has been recorded
         #   1. If it's not 0: no tranches were fully paid in the period.
@@ -176,8 +166,6 @@ class StructuredSecurities(object):
 
     # Instance method to make payments to tranches in 'Pro Rata' mode StructuredSecurity object
     def makeProRataPrinPayments(self, cash_amount):
-        logging.debug(f'SS recorded cash available to be paid to principal is {cash_amount}')
-
         # Cycle through the tranches:
         #   1. Call notionalBalance(t) method for each tranche to get their principal balance at time t. Compare this
         #       with the principal collected from the LoanPool collection (passed in).
@@ -187,15 +175,15 @@ class StructuredSecurities(object):
         #   3. Call the tranche's makePrincipalPayment() method to record the payment in the tranches' dicts
         #   4. Return the available fund post-payment
         for tranche in self._tranches:
-
             # Calculate principalDue = min(principal received + prior principal shortfalls, available cash, balance)
-            principalDue = min((self._principalCollected[self._timePeriod] * tranche.getNotional() / sum(self._notional)) + tranche._principalShortFall[self._timePeriod -1], cash_amount, tranche.notionalBalance(self._timePeriod)) if not cash_amount ==0 else 0
-            logging.debug(f'SS shows the principal due for {tranche} at t={self._timePeriod} is {principalDue}')
+            principalDue = \
+                min((self._principalCollected[self._timePeriod] * tranche.get_notional() / sum(self._notional))
+                    + tranche.get_principalShortFall(self._timePeriod - 1),
+                    cash_amount, tranche.notionalBalance(self._timePeriod)) if not cash_amount == 0 else 0
 
             # Calculate principal amount to be paid as well as short fall
             principalPaid = min(cash_amount, principalDue)
             prinShortFall = principalDue - principalPaid
-            logging.debug(f'SS shows the paid amount for {tranche} at t={self._timePeriod} is {principalPaid}')
 
             # Handle exception when recording principal payment in tranches
             #   e.g: tranche's principal is fully paid (notional balance = 0)
@@ -205,9 +193,8 @@ class StructuredSecurities(object):
                 logging.info(f'{Ex}')
 
             cash_amount -= principalPaid  # Deduct principal payment from cash available
-            logging.debug(f'SS shows the available fund after principal payment of {tranche} is {cash_amount}')
 
-        self._reserve[self._timePeriod] +=  cash_amount
+        self._reserve[self._timePeriod] += cash_amount  # Increment reserve account with leftover cash
 
         return self._reserve[self._timePeriod]
 
@@ -215,6 +202,20 @@ class StructuredSecurities(object):
     def get_principalCollected(self, t, prinCollections):
         self._principalCollected[t] = prinCollections
         return self._principalCollected[t]
+
+    # Get the following values from each tranches for each time period t
+    #   interestDue, interestPaid, interestShortFall, principalPaid, notionalBalance
+    def getWaterfall(self, t):
+        master = []
+        for tranche in self._tranches:
+            slave = [tranche.get_interestDue(t), tranche.get_interestPaid(t), tranche.get_interestShortFall(t),
+                     tranche.get_principalPaid(t), tranche.get_notionalBalance(t)]
+            master.append(slave)
+        return master
+
+    # Access the reserve account
+    def get_reserve(self, t):
+        return self._reserve[t]
 
     ##########################################################
     # Add class methods

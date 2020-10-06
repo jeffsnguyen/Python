@@ -110,6 +110,12 @@ class LoanPool(object):
         for loan in self._loans:
             WAR_rate += loan.notional * loan.rate / sum_amount
         return WAR_rate
+
+    # Instance method
+    # Method to access term
+    def get_term(self):
+        return self._term
+
     ##########################################################
     # Add class methods
 
