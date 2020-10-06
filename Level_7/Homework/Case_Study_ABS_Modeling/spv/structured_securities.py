@@ -19,11 +19,11 @@ import operator
 # StructuredSecurities Base class
 # Consists of Tranche objects (composition)
 class StructuredSecurities(object):
-    def __init__(self, tranches):
-        self._tranches = sorted(tranches, key=operator.attrgetter("_subordinationFlag"))  # Sort based on subordination
-        self._notional = [tranche.get_notional() for tranche in tranches]
+    def __init__(self, notional):
+        self._tranches = []
+        self._notional = notional
         self._mode = None
-        self._timePeriod = 1
+        self._timePeriod = 0
         self._principalCollected = {0: 0}
         self._reserve = {0: 0}
 
@@ -44,7 +44,7 @@ class StructuredSecurities(object):
     def addTranche(self, nameClass, notionalPct, rate, subordinationLvl):
         try:  # Handle instantiation of tranche object
             trancheObject = \
-                eval(nameClass)((float(notionalPct) * sum(self._notional)), float(rate), int(subordinationLvl))
+                eval(nameClass)((float(notionalPct) * self._notional), float(rate), int(subordinationLvl))
         except NameError as nameEx:
             logging.error(f'Failed to add. {nameEx}')
             print(f'Failed to add. {nameEx}')
@@ -55,9 +55,10 @@ class StructuredSecurities(object):
             logging.error(f'Failed to add. {Ex}')
             print(f'Failed to add. {Ex}')
         else:
-            self._tranches.append(trancheObject)  # Add new object to list of StructuredSecurities
+            self._tranches.append(trancheObject)  # Add new tranche object to the StructuredSecurities object
+            self._tranches = sorted(self._tranches, key=operator.attrgetter("_subordinationFlag"))  # Sort
 
-    # Instance method to flag 'Sequential' or 'ProRata' mode on the StructuredSecurity object
+    # Instance method to flag 'Sequential' or 'Pro Rata' mode on the StructuredSecurity object
     def mode(self, mode):
         modeList = ['Sequential', 'Pro Rata']
         if mode not in modeList:
@@ -82,9 +83,6 @@ class StructuredSecurities(object):
             self.makeSeqPrinPayments(cash_amount)
         else:
             self.makeProRataPrinPayments(cash_amount)
-
-        # Increase its tranches and its own timePeriod after payments have been made
-        self.increaseTranchesTimePeriod()
 
     # Instance method to make interest payments to tranches in the StructuredSecurity object
     def makeInterestPayments(self, cash_amount):
@@ -177,7 +175,7 @@ class StructuredSecurities(object):
         for tranche in self._tranches:
             # Calculate principalDue = min(principal received + prior principal shortfalls, available cash, balance)
             principalDue = \
-                min((self._principalCollected[self._timePeriod] * tranche.get_notional() / sum(self._notional))
+                min((self._principalCollected[self._timePeriod] * tranche.get_notional() / self._notional)
                     + tranche.get_principalShortFall(self._timePeriod - 1),
                     cash_amount, tranche.notionalBalance(self._timePeriod)) if not cash_amount == 0 else 0
 
@@ -217,6 +215,9 @@ class StructuredSecurities(object):
     def get_reserve(self, t):
         return self._reserve[t]
 
+    # Access the total principal collected
+    def get_totalPrinCollected(self):
+        return sum(self._principalCollected.values())
     ##########################################################
     # Add class methods
 

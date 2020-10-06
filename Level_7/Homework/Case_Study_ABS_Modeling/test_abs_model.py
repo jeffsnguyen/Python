@@ -27,33 +27,43 @@ logging.basicConfig(filename='log.txt', filemode='a', datefmt='%Y-%m-%d %H:%M:%S
 ###############################################
 
 
-def runWaterfall(loans, tranches):
-    structuredSecurities = StructuredSecurities(tranches)
-    print(f'Doing work on {structuredSecurities.__repr__()}')
+def doWaterfall(loans, tranches):
+    print(f'Doing work on {tranches.__repr__()}')
 
     maxTerm = max(loans.get_term())
 
     # Set mode Pro Rata or Sequential
-    structuredSecurities.mode('Sequential')
+    tranches.mode('Sequential')
 
-    for i in range(1, maxTerm+1):
+    ledger = {}
+    reserve = {}
+    for i in range(1,maxTerm+1):
+    #while not tranches.get_totalPrinCollected() == loans.sumPayments(maxTerm):
+        # Increase the time period on the StructuredSecurities object (which will, in turn, increase for all
+        # the tranches).
+        tranches.increaseTranchesTimePeriod()
+        #i += 1
+        # Ask the LoanPool for its total payment for the current time period.
         collections = loans.paymentDue(i)
+
+        # Ask the LoanPool for its total principal due for the current time period.
         principalCollected = loans.principalDue(i)
-        structuredSecurities.get_principalCollected(i, principalCollected)
-        structuredSecurities.makePayments(collections)
+        tranches.get_principalCollected(i, principalCollected)  # Save the principal due
 
-    # Result
-    for tranche in tranches:
-        print(f'{tranche} interest due = {tranche.getDict_interestDue()}')
-        print(f'{tranche} interest paid = {tranche.getDict_interestPaid()}')
-        print(f'{tranche} interest short fall = {tranche.getDict_interestShortFall()}')
-        print(f'{tranche} principal due = {tranche.getDict_principalDue()}')
-        print(f'{tranche} principal paid = {tranche.getDict_principalPaid()}')
-        print(f'{tranche} principal short fall = {tranche.getDict_principalShortFall()}')
-        print()
+        # Pay the StructuredSecurities with the amount provided by the LoanPool.
+        tranches.makePayments(collections)
 
-    print(f'Cash reserve account: {structuredSecurities.getDict_reserve()}')
+        # Call getWaterfall on both the LoanPool and StructuredSecurities objects and save the info into
+        # two variables.
+        ledger[i] = tranches.getWaterfall(i)
+        reserve[i] = tranches.get_reserve(i)
 
+
+
+    print(f'My ledger is:\n {ledger}')
+    print(f'My cash reserve account:\n {reserve}')
+
+    return ledger, reserve
 
 ###############################################
 def main():
@@ -65,11 +75,13 @@ def main():
     loan1 = AutoLoan(notional=100000, rate=0.08, term=10, car=Car(100000))
     loan2 = AutoLoan(notional=75000, rate=0.06, term=8, car=Car(75000))
     loans = LoanPool([loan1, loan2])
-    trancheA = StandardTranche(loans.totalPrincipal() * 0.8, 0.05, 1)
-    trancheB = StandardTranche(loans.totalPrincipal() * 0.2, 0.08, 2)
-    tranches = [trancheB, trancheA]
 
-    runWaterfall(loans, tranches)
+    structuredSecurities = StructuredSecurities(loans.totalPrincipal())
+    structuredSecurities.addTranche('StandardTranche', '0.8', '0.05', '1')
+    structuredSecurities.addTranche('StandardTranche', '0.2', '0.08', '2')
+
+    doWaterfall(loans, structuredSecurities)
+
     ###############################################
 
 ###############################################

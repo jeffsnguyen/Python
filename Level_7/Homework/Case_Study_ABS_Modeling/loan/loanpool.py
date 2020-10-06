@@ -43,6 +43,14 @@ class LoanPool(object):
     # Add instance methods
 
     # Instance method
+    # Get the total payment for all loans
+    def sumPayments(self, t):
+        sum = 0
+        for i in range(1, t+1):
+            sum += self.totalPayments(i)
+        return sum
+
+    # Instance method
     # Get the aggregate remaining loan balance for a given period
     def totalPayments(self, t=0):
         # Capture step/job done to debug

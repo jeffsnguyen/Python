@@ -105,6 +105,10 @@ class StandardTranche(Tranche):
     def get_interestDue(self, t):
         return self._interestDue[t]
 
+    # Method to access interestPaid
+    def get_interestPaid(self, t):
+        return self._interestPaid[t]
+
     # Method to access interestShortFall
     def get_interestShortFall(self, t):
         return self._interestShortFall[t]
