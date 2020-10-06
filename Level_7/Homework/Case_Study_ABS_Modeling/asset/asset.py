@@ -16,6 +16,7 @@
 # Importing packages
 import logging
 
+
 # Asset class
 # This class object takes on the value of the asset
 class Asset(object):
@@ -78,6 +79,7 @@ class Asset(object):
 
     ##########################################################
 
+
 # Derived classes from Asset:
 ##########################################################
 # Car
@@ -88,6 +90,7 @@ class Car(Asset):
     def annualDeprRate(self, period=None):
         return .05
 
+
 # Derived classes from Car
 # Lambourghini
 # Derived from Car
@@ -97,6 +100,7 @@ class Lambourghini(Car):
     def annualDeprRate(self, period=None):
         return .20
 
+
 # Lexus
 # Derived from CarMixin and FixedRateLoan
 class Lexus(Car):
@@ -104,6 +108,7 @@ class Lexus(Car):
     # Return a constant
     def annualDeprRate(self, period=None):
         return .08
+
 
 # Civic
 # Derived from CarMixin and FixedRateLoan
@@ -123,6 +128,7 @@ class HouseBase(Asset):
     def annualDeprRate(self, period=None):
         return .005
 
+
 # Derived classes from HouseBase
 # PrimaryHome
 # Derived from HouseBase
@@ -131,6 +137,7 @@ class PrimaryHome(HouseBase):
     # Return a constant
     def annualDeprRate(self, period=None):
         return .007
+
 
 # VacationHome
 # Derived from HouseBase

@@ -20,6 +20,7 @@ import logging
 
 #######################
 
+
 #######################
 
 # Derived classes from Loan:
@@ -29,11 +30,12 @@ class FixedRateLoan(Loan):
         # Overrides the base class
         return self._rate
 
+
 class VariableRateLoan(Loan):
-    def __init__(self, notional, rateDict, maturity_start, maturity_end):  # overide the init function in the base class
+    def __init__(self, notional, rateDict, term):  # overide the init function in the base class
         self._rateDict = rateDict if isinstance(rateDict, dict) else print('Rate is not a dictionary')
         # invoke initialization the base class
-        super(VariableRateLoan, self).__init__(notional, None, maturity_start, maturity_end)
+        super(VariableRateLoan, self).__init__(notional, None, term)
 
     # Derived instance method to find the rate of a given period
     # rateDict contains startPeriod as key and rate as value for each rate
@@ -49,7 +51,7 @@ class VariableRateLoan(Loan):
     #       rate we are looking for.
     def getRate(self, startPeriod = None):
         # Capture step/job done to debug
-        self.sorted_key = dict(sorted(self._rateDict.items(), key = lambda k:k[1], reverse = False))
+        self.sorted_key = dict(sorted(self._rateDict.items(), key=lambda k: k[1], reverse=False))
 
         # Step: Sort and grab the closest key based on the delta value of the key and the startPeriod')
         self.closest_key = min(self.sorted_key.keys(), key = lambda k: abs(k - startPeriod))
@@ -63,13 +65,14 @@ class VariableRateLoan(Loan):
         return self._rateDict[self.closest_key]
 
     def __repr__(self):
-        return f'VariableRateLoan({self._notional}, {self._rateDict}, {self._maturity_start}, {self._maturity_end})'
+        return f'VariableRateLoan({self._notional}, {self._rateDict}, {self._term})'
     # Interest rate stored in a dict {0: .025, 15: .045, 20: 015}
     # 0 is the original rate and is required
 
+
 # AutoLoan: derived from FixedRateLoan
 class AutoLoan(FixedRateLoan):
-    def __init__(self, notional, rate, maturity_start, maturity_end, car):
+    def __init__(self, notional, rate, term, car):
         # Check if passed-in car attribute is of the Car family (base or derived)
         # Init the attribute if True, else raise value error
         if not isinstance(car, Car):
@@ -78,7 +81,7 @@ class AutoLoan(FixedRateLoan):
         else:
             # invoke init function if there is a base class
             try:
-                super(AutoLoan, self).__init__(notional, rate, maturity_start, maturity_end, car)
+                super(AutoLoan, self).__init__(notional, rate, term, car)
             except AttributeError as aEx:
                 logging.error(f'Failed to instantiate object. {aEx}')
             except Exception as Ex:

@@ -43,21 +43,6 @@ class LoanPool(object):
     # Add instance methods
 
     # Instance method
-    # Get all the notional values from the loans list using list comprehension
-    def unpackNotionals(self):
-        return [loan.notional for loan in self._loans]
-
-    # Instance method
-    # Get all the notional values from the loans list using list comprehension
-    def unpackRates(self):
-        return [loan.rate for loan in self._loans]
-
-    # Instance method
-    # Get all the notional values from the loans list using list comprehension
-    def unpackTerms(self):
-        return [loan.term for loan in self._loans]
-
-    # Instance method
     # Get the aggregate remaining loan balance for a given period
     def totalPayments(self, t=0):
         # Capture step/job done to debug

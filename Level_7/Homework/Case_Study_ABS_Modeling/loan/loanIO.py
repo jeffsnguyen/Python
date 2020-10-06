@@ -53,7 +53,6 @@ def loanDataEntry():
                 print(f'Failed. {loanName[loanType].__name__} is not valid. Try again.')
                 flag = False
 
-
     # Handle asset type input
     logging.debug('Starting a loop to handle value error.')
     flag = False
@@ -111,7 +110,6 @@ def loanDataEntry():
                     logging.debug(f'{assetName[assetType].__name__} is not valid.')
                     print(f'Failed. {assetName[assetType].__name__} is not valid. Try again.')
                     flag = False
-
 
     # Handle asset value
     logging.debug('Starting a loop to handle value error.')
@@ -198,6 +196,7 @@ def loanDataEntry():
         logging.exception(f'Failed to instantiate object. {Ex}')
         raise Exception
 #######################
+
 
 #######################
 # Function to handle reading CSV and instantiates objects

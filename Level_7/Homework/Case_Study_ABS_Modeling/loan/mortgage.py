@@ -18,6 +18,8 @@
 from loan.loans import FixedRateLoan, VariableRateLoan
 from asset.asset import Asset, Car, HouseBase, Lambourghini, Lexus, Civic, PrimaryHome, VacationHome
 import logging
+
+
 # Derived classes from Loan:
 # MortgageMixin
 # Does not derive from loan, only define certain things related to the mortgage
@@ -72,6 +74,8 @@ class MortgageMixin(object):
 # Derived from MortgageMixin and FixedRateLoan
 class FixedMortgage(MortgageMixin, FixedRateLoan):
     pass
+
+
 # VariableMortgage
 # Derived from MortgageMixin and VariableRateLoan
 class VariableMortgage(MortgageMixin, VariableRateLoan):

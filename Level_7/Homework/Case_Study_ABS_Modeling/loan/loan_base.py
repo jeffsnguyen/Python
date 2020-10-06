@@ -1,11 +1,8 @@
 # Type: Homework
-# Level: 5
-# Section: 5.1: Date/Time
-# Exercise: 6
+# Level: 7
+# Section: Case Study: Asset Backed Security Modeling
+# Exercise: 1
 # Description: This contains Loan class methods, modified to handle exception
-#   Modify your Loan classes to take a loan start date and loan end (maturity) date instead of a term
-#       parameter. Create a term method that calculates and returns the loan term (in months) from the
-#       two dates. Assume that a month is 30 days and that you round the fractional month to the nearest integer.
 
 # Importing packages
 from asset.asset import Asset
@@ -20,15 +17,14 @@ import logging
 # This class object takes on the arguments asset, face, rate, term
 class Loan(object):
 
-    # Initialization function with asset, face, rate, maturity start and end date
+    # Initialization function with asset, face, rate, term and asset
     # Also included in this function is ability to set the arguments to 0 if they don't already exists
-    def __init__(self, notional, rate, maturity_start, maturity_end, asset):
+    def __init__(self, notional, rate, term, asset):
 
         # Main attributes
         self._notional = notional
         self._rate = rate
-        self._maturity_start = maturity_start
-        self._maturity_end = maturity_end
+        self._term = term
 
         if not isinstance(asset, Asset):
             logging.error('Something wrong with parameters type.')   # Log the error prior to raising it
@@ -38,8 +34,7 @@ class Loan(object):
 
     # Wrapper to display
     def __repr__(self):
-        return f'{self.__class__.__name__}({self._notional}, {self._rate}, ' \
-               f'{self._maturity_start}, {self._maturity_end}, {self._asset})'
+        return f'{self.__class__.__name__}({self._notional}, {self._rate}, {self._term}, {self._asset})'
 
     ##########################################################
 
@@ -64,6 +59,16 @@ class Loan(object):
     def rate(self, irate):
         self._rate = irate  # Set instance variable rate from input
 
+    # Decorator to create a property function to define the attribute term
+    @property
+    def term(self):
+        return self._term
+
+    # Decorator to set term
+    @term.setter
+    def term(self, iterm):
+        self._term = iterm  # Set instance variable rate from input
+
     # Decorator to create a property function to define the attribute asset
     @property
     def asset(self):
@@ -74,48 +79,10 @@ class Loan(object):
     def asset(self, iasset):
         self._asset = iasset  # Set instance variable asset from input
 
-    # Decorator to create a property function to define the attribute maturity_start
-    @property
-    def maturity_start(self):
-        return self._maturity_start
-
-    # Decorator to set loan maturity start datetime value
-    @maturity_start.setter
-    def maturity_start(self, imaturity_start):
-        self._maturity_start = imaturity_start  # Set instance variable maturity_start from input
-
-    # Decorator to create a property function to define the attribute maturity_end
-    @property
-    def maturity_end(self):
-        return self._maturity_end
-
-    # Decorator to set loan maturity end datetime value
-    @maturity_end.setter
-    def maturity_end(self, imaturity_end):
-        self._maturity_end = imaturity_end  # Set instance variable maturity_end from input
     ##########################################################
 
     ##########################################################
     # Add instance method functionalities to loan class
-
-    # Instance method to return timedelta of start date and end datetime parameters
-    def term(self):
-        time_delta = abs(self._maturity_start - self._maturity_end)
-
-        # Lookup dict in terms of microseconds
-        dT_dictMS = {'months': 2592000000000,
-                     'days': 86400000000,
-                     'hours': 3600000000,
-                     'minutes': 60000000,
-                     'seconds': 1000000,
-                     'microseconds': 1}
-
-        # Calculate total microseconds as the base
-        total_microseconds = time_delta.days * dT_dictMS['days'] + time_delta.seconds * dT_dictMS['seconds'] + time_delta.microseconds
-
-        return round(total_microseconds / dT_dictMS['months'])
-
-        # Instance method to return timedelta of start date and end datetime parameters
 
     # Instance method to calculate monthly payments
     # Now modified to delegate to calcMonthlyPmt() which is a class method
@@ -127,12 +94,12 @@ class Loan(object):
         # DIV/0 exception handling: print and warning message and return value of None
         try:
             # Capture step/job done to debug
-            res = self.calcMonthlyPmt(self._notional, self.getRate(t), self.term())
+            res = self.calcMonthlyPmt(self._notional, self.getRate(t), self._term)
         except ZeroDivisionError:
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
         if t == 0:
             return 0
-        elif t > self.term():
+        elif t > self._term:
             return 0
         else:
             return res
@@ -143,7 +110,7 @@ class Loan(object):
         # r = monthly rate, P = notional value, N = term in months
         try:
             # Capture step/job done to debug
-            return sum([self.monthlyPayment(t) for t in range(1, self.term()+1)])
+            return sum([self.monthlyPayment(t) for t in range(1, self._term+1)])
         except ZeroDivisionError:
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
 
@@ -159,7 +126,7 @@ class Loan(object):
     # Instance method to calculate interest due at time t
     # This method use the given formula
     def interestDue(self, t):
-        if t > self.term():
+        if t > self._term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using the formula interestDue = r * loan balance bal
@@ -168,7 +135,7 @@ class Loan(object):
         res = self.monthlyRate(self.getRate(t)) * self.balance(t - 1)
         if t == 0:
             return 0
-        elif t > self.term():
+        elif t > self._term:
             return 0
         else:
             return res
@@ -176,7 +143,7 @@ class Loan(object):
     # Instance method to calculate principal due at time t
     # This method use the given formula
     def principalDue(self, t):
-        if t > self.term():
+        if t > self._term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using the formula principalDue = monthlyPayment - interestDue
@@ -189,13 +156,13 @@ class Loan(object):
     # Modified to delegate to calcBalance(face, rate, term, period)
     # Notional is equivalent to face
     def balance(self, t):
-        if t > self.term():
+        if t > self._term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
         # r = monthly rate, P = notional value, N = term in months
         # Capture step/job done to debug
-        res = self.calcBalance(self._notional, self.getRate(t), self.term(), t)
+        res = self.calcBalance(self._notional, self.getRate(t), self._term, t)
         return res if res>=0 else 0
 
     # Instance method to calculate interest due at time t
@@ -206,7 +173,7 @@ class Loan(object):
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
 
-        if t > self.term():
+        if t > self._term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using recursive functions
@@ -225,7 +192,7 @@ class Loan(object):
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
 
-        if t > self.term():
+        if t > self._term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using recursive functions
@@ -240,7 +207,7 @@ class Loan(object):
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
 
-        if t > self.term():
+        if t > self._term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using recursive functions
@@ -260,7 +227,7 @@ class Loan(object):
     def recoveryValue(self, t, pct):
         # Capture step/job done to debug
 
-        if t > self.term():
+        if t > self._term:
             logging.warning('t value is greater than term')
 
         return self._asset.value(t) * pct
@@ -269,7 +236,7 @@ class Loan(object):
     def equity(self, t):
         # Capture step/job done to debug
 
-        if t > self.term():
+        if t > self._term:
             logging.warning('t value is greater than term')
 
         return self._asset.value(t) - self.balance(t)

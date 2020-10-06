@@ -34,24 +34,19 @@ def main():
     logging.getLogger().setLevel(logging.DEBUG)
 
     ###############################################
-    dT_start1 = '2018-08-21 12:5:30:123456'
-    dT_start1 = datetime.datetime.strptime(dT_start1, '%Y-%m-%d %H:%M:%S:%f')
-    dT_end1 = dT_start1 + datetime.timedelta(days=300)
-
-    dT_start2 = '2018-08-21 12:5:30:123456'
-    dT_start2 = datetime.datetime.strptime(dT_start2, '%Y-%m-%d %H:%M:%S:%f')
-    dT_end2 = dT_start2 + datetime.timedelta(days=240)
+    term1 = 10
+    term2 = 8
 
     rate1 = 0.08
     rate2 = 0.06
 
-    loan1 = AutoLoan(notional=100000, rate=rate1, maturity_start=dT_start1, maturity_end=dT_end1, car=Car(100000))
-    loan2 = AutoLoan(notional=75000, rate=rate2, maturity_start=dT_start2, maturity_end=dT_end2, car=Car(75000))
+    loan1 = AutoLoan(notional=100000, rate=rate1, term=term1, car=Car(100000))
+    loan2 = AutoLoan(notional=75000, rate=rate2, term=term2, car=Car(75000))
     loans = LoanPool([loan1, loan2])
 
     sum_principal = loans.totalPrincipal()
-    print(f'Term of {loan1.__repr__()} = {loan1.term()} months')
-    print(f'Term of {loan2.__repr__()} = {loan2.term()} months')
+    print(f'Term of {loan1.__repr__()} = {loan1.term} months')
+    print(f'Term of {loan2.__repr__()} = {loan2.term} months')
     print()
 
     print(f'Monthly payment of {loan1.__repr__()} at t=0 = {loan1.monthlyPayment(0)}')
