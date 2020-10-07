@@ -212,17 +212,17 @@ def loanReadCSV(lineItem):
 
     # Grab loan class and save to loanName
     for key in lookup_dict['loanName']:  # Look up and match the list value with the dict key
-        if lineItem[0] == lookup_dict["loanName"].get(key).__name__:
+        if lineItem[1] == lookup_dict["loanName"].get(key).__name__:
             loanName = lookup_dict["loanName"].get(key)
 
     # Grab asset class and save to assetName
     for key in lookup_dict['assetName']:  # Look up and match the list value with the dict key
-        if lineItem[1] == lookup_dict['assetName'].get(key).__name__:
+        if lineItem[5] == lookup_dict['assetName'].get(key).__name__:
             assetName = lookup_dict['assetName'].get(key)
 
     # Grab asset value and save to assetVal
     try:
-        assetVal = float(lineItem[2])
+        assetVal = float(lineItem[6])
     except ValueError as valEx:
         logging.error(f'Invalid value. Expect number. {valEx}')
         raise ValueError('Invalid value. Expect a number.')
@@ -230,7 +230,7 @@ def loanReadCSV(lineItem):
 
     # Grab loan notional value and save to notionalVal
     try:
-        notionalVal = float(lineItem[3])
+        notionalVal = float(lineItem[2])
     except ValueError as valEx:
         logging.error(f'Invalid value. Expect number. {valEx}')
         raise ValueError('Invalid value. Expect a number.')
@@ -238,7 +238,7 @@ def loanReadCSV(lineItem):
 
     # Grab loan rate value and save to rateVal
     try:
-        rateVal = float(lineItem[4])
+        rateVal = float(lineItem[3])
     except ValueError as valEx:
         logging.error(f'Invalid value. Expect number. {valEx}')
         raise ValueError('Invalid value. Expect a number.')
@@ -246,7 +246,7 @@ def loanReadCSV(lineItem):
 
     # Grab loan term value and save to termVal
     try:
-        termVal = float(lineItem[5])
+        termVal = float(lineItem[4])
     except ValueError as valEx:
         logging.error(f'Invalid value. Expect number. {valEx}')
         raise ValueError('Invalid value. Expect a number.')
