@@ -135,7 +135,6 @@ class LoanPool(object):
                         print(f'Failed to process a line, see log.')
                         logging.error(f'Failed to process line. {Ex}')
                     else:
-                        logging.info(f'Successfully imported line.')
                         count += 1
         except FileNotFoundError as fnfEx:
             logging.error(f'Failed. {fnfEx}')
