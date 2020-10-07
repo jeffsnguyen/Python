@@ -34,7 +34,27 @@ class MortgageMixin(object):
             super(MortgageMixin, self).__init__(notional, rate, term, home)
 
     ##########################################################
+    # Decorators to define and set values for instance variables
 
+    # Decorator to create a property function to define the attribute notional
+    @property
+    def notional(self):
+        return self._notional
+
+    # Decorator to set notional value
+    @notional.setter
+    def notional(self, inotional):
+        self._notional = inotional  # Set instance variable notional from input
+
+    # Decorator to create a property function to define the attribute asset
+    @property
+    def asset(self):
+        return self._asset
+
+    # Decorator to set loan asset value
+    @asset.setter
+    def asset(self, iasset):
+        self._asset = iasset  # Set instance variable asset from input
     ##########################################################
     # Add instance method functionalities to MortgageMixin class
 
@@ -48,15 +68,13 @@ class MortgageMixin(object):
     # This function returns .000075 of the loan notional value if LTV > .8
     def PMI(self, period = None):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate PMI')
-        return .000075 * self._asset.value(period) if (self._notional / self._asset.value(period)) > .8 else 0
+        return .000075 * self.asset.value(period) if (self.notional / self.asset.value(period)) > .8 else 0
 
     # Instance method to calculate monthly payment.
     # This add PMI on top of the monthly payment value in Loan.monthlyPayment()
     # NOTE: This overrides Loan.monthlyPayment
     def monthlyPayment(self, period=None):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate monthlyPayment')
         return super(MortgageMixin, self).monthlyPayment(period) + self.PMI(period)
 
     # Instance method to calculate principal due.
@@ -64,7 +82,6 @@ class MortgageMixin(object):
     # NOTE: This overrides Loan.monthlyPayment
     def principalDue(self, period):
         # Capture step/job done to debug
-        logging.debug('Step: Calculate principalDue')
         return self.monthlyPayment(period) - super(MortgageMixin, self).interestDue(period)
     ##########################################################
 
