@@ -35,6 +35,7 @@ def doWaterfall(loans, tranches):
     tranches.mode('Sequential')
 
     ledger = []
+    ledger.append(tranches.getWaterfall(0))
     reserve = []
     t = 0
     while loans.activeLoanCount(t) > 0:
@@ -42,6 +43,7 @@ def doWaterfall(loans, tranches):
         # the tranches).
         tranches.increaseTranchesTimePeriod()
         t += 1
+
         # Ask the LoanPool for its total payment for the current time period.
         collections = loans.paymentDue(t)
 

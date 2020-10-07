@@ -23,7 +23,7 @@ def loanDataEntry():
     assetName = {1: Car, 2: Lambourghini, 3: Lexus, 4: Civic,
                  5: HouseBase, 6: PrimaryHome, 7: VacationHome}
     car_assetName = {1: Car, 2: Lambourghini, 3: Lexus, 4: Civic}
-    house_assetName= {5: HouseBase, 6: PrimaryHome, 7: VacationHome}
+    house_assetName = {5: HouseBase, 6: PrimaryHome, 7: VacationHome}
 
     # Handle loan type input
     logging.debug('Starting a loop to handle value error.')
@@ -77,7 +77,8 @@ def loanDataEntry():
                 pass
             else:  # If int conversion of key is successful
                 logging.debug('Conversion of key succeed. Checking if key is in dict.')
-                if assetType in car_assetName:  # if dict lookup succeed, set flag = True to end loop, otherwise, continue
+                # if dict lookup succeed, set flag = True to end loop, otherwise, continue
+                if assetType in car_assetName:
                     flag = True
                     logging.debug(f'{assetName[assetType].__name__} is a valid class.')
                 else:
@@ -103,7 +104,8 @@ def loanDataEntry():
                 pass
             else:  # If int conversion of key is successful
                 logging.debug('Conversion of key succeed. Checking if key is in dict.')
-                if assetType in house_assetName:  # if dict lookup succeed, set flag = True to end loop, otherwise, continue
+                # if dict lookup succeed, set flag = True to end loop, otherwise, continue
+                if assetType in house_assetName:
                     flag = True
                     logging.debug(f'{assetName[assetType].__name__} is a valid class.')
                 else:
@@ -188,9 +190,9 @@ def loanDataEntry():
         logging.debug('Attempt to instantiate object.')
         logging.debug(f'{loanName[loanType].__name__}')
         logging.debug(f'{assetName[assetType].__name__}')
-        object = loanName[loanType](notionalVal, rateVal, termVal, assetName[assetType](assetVal))
-        print(f'{object}')
-        return object
+        obj = loanName[loanType](notionalVal, rateVal, termVal, assetName[assetType](assetVal))
+        print(f'{obj}')
+        return obj
     except Exception as Ex:
         print(f'Failed to create loan object. {Ex}')
         logging.exception(f'Failed to instantiate object. {Ex}')
@@ -255,8 +257,8 @@ def loanReadCSV(lineItem):
     # Attempt to instantiate the object
     try:
         logging.debug('Attempt to instantiate object.')
-        object = loanName(notionalVal, rateVal, termVal, assetName(assetVal))
-        return object
+        obj = loanName(notionalVal, rateVal, termVal, assetName(assetVal))
+        return obj
     except Exception as Ex:
         print(f'Failed to create loan object. {Ex}')
         logging.exception(f'Failed to instantiate object. {Ex}')
@@ -295,6 +297,42 @@ def loansImportCSV(import_loanFile):
 
     return loans_readCSV
 
+
 # Function to write to CSV
-def spvWriteCSV(lineItem):
-    pass
+def spvExportCSV(ledger, f):
+    # Strip each list inside the ledger list and append only float value to write as a line to CSV
+    transactions = []
+    for i, item in enumerate(ledger):
+        transactionsPerPeriod = [i]
+        for childItem in item:
+            if isinstance(childItem, float) or isinstance(childItem, int):
+                transactionsPerPeriod.append(childItem)
+            else:
+                for grandchildItem in childItem:
+                    transactionsPerPeriod.append(grandchildItem)
+        transactions.append(transactionsPerPeriod)
+
+    try:  # block to catch if file doesn't exist
+        fileExport = open(f, 'w')
+    except FileNotFoundError as fnfEx:
+        logging.error(f'Failed. {fnfEx}')
+    else:
+        logging.info(f'File founded {fileExport}.')
+
+        # Write the header
+        fileExport.write(f'Period, Collections,	A Interest Due,	A Interest Paid, A Interest Shortfall, A Principal Due,'
+                         f'A Principal Paid, A Principal Shortfall, A Balance, B Interest Due, B Interest Paid, '
+                         f'B Interest Shortfall, B Principal Due, B Principal Paid, B Principal Shortfall, B Balance, '
+                         f'Reserve\n')
+
+        # Write the transactional data
+        countPeriod = 0
+        for transaction in transactions:  # loop through the list to write to csv
+            for item in transaction:
+                # Write to CSV
+                fileExport.write(f'{item},')
+            fileExport.write(f'\n')
+            countPeriod += 1
+        print(f'Successfully exported transaction in {countPeriod} periods to {f}. See log for details.')
+        print()
+        logging.info(f'Successfully exported transactions in {countPeriod} periods to {f}.')

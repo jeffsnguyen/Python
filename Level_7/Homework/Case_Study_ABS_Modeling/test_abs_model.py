@@ -15,10 +15,11 @@ from loan.loanpool import LoanPool
 from loan.loans import FixedRateLoan, VariableRateLoan, AutoLoan
 from loan.mortgage import FixedMortgage, VariableMortgage
 from loan.loan_base import Loan
-from loan.loanIO import loanReadCSV, importCSV
+from utils.import_export import loansImportCSV, spvExportCSV
 from asset.asset import Car
 from spv.structured_securities import StructuredSecurities
 from spv.waterfall import doWaterfall
+import pprint
 #######################
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -37,7 +38,8 @@ def main():
     #   2. Test the Waterfall using loan data from 'Loans.csv'
     #       i. Instantiate the Loans object from the CSV
     #       ii. Instantiate the StructuredSecurity object
-    #       iii. Run doWaterfall and save the result in the CSV file.
+    #       iii. Run doWaterfall and display on screen the ledger of transactions and the cash reserve account
+    #   3. Write the result in 2.iii) to CSV
     ###############################################
     # Set logging level
     logging.getLogger().setLevel(logging.DEBUG)
@@ -62,13 +64,29 @@ def main():
     testNum = 2
     print(f'Test {testNum}: Manual small sample run of the Waterfall')
 
-    loans = LoanPool(importCSV('Loans.csv'))
+    loans = LoanPool(loansImportCSV('Loans.csv'))
     structuredSecurities = StructuredSecurities(loans.totalPrincipal())
     structuredSecurities.addTranche('StandardTranche', '0.8', '0.05', '1')
     structuredSecurities.addTranche('StandardTranche', '0.2', '0.08', '2')
 
-    doWaterfall(loans, structuredSecurities)
+    tranchesLedger, tranchesReserve = doWaterfall(loans, structuredSecurities)
+    print(f'My ledger is:\n')
+    pprint.pprint(tranchesLedger)
+    print(f'My cash reserve account:\n')
+    pprint.pprint(tranchesReserve)
     ###############################################
+
+    ###############################################
+    print()
+    testNum = 3
+    print(f'Test {testNum}: Save result to CSV')
+    spvExportCSV(tranchesLedger, 'liabilities.csv')
+
+
+
+
+    ###############################################
+
 ###############################################
 
 
