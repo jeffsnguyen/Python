@@ -43,14 +43,6 @@ class LoanPool(object):
     # Add instance methods
 
     # Instance method
-    # Get the total payment for all loans
-    def sumPayments(self, t):
-        sum = 0
-        for i in range(1, t+1):
-            sum += self.totalPayments(i)
-        return sum
-
-    # Instance method
     # Get the aggregate remaining loan balance for a given period
     def totalPayments(self, t=0):
         # Capture step/job done to debug
@@ -109,15 +101,9 @@ class LoanPool(object):
         # Loop to calculate weighted rate of each mortgage and add them together
         WAR_rate = 0  # Initialize WAR rate to be 0
 
-
         for loan in self._loans:
             WAR_rate += loan.notional * loan.rate / sum_amount
         return WAR_rate
-
-    # Instance method
-    # Method to access term
-    def get_term(self):
-        return self._term
 
     ##########################################################
     # Add class methods

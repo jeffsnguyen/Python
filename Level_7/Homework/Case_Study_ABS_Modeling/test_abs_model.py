@@ -30,8 +30,6 @@ logging.basicConfig(filename='log.txt', filemode='a', datefmt='%Y-%m-%d %H:%M:%S
 def doWaterfall(loans, tranches):
     print(f'Doing work on {tranches.__repr__()}')
 
-    maxTerm = max(loans.get_term())
-
     # Set mode Pro Rata or Sequential
     tranches.mode('Sequential')
 
@@ -48,7 +46,7 @@ def doWaterfall(loans, tranches):
 
         # Ask the LoanPool for its total principal due for the current time period.
         principalCollected = loans.principalDue(t)
-        tranches.get_principalCollected(t, principalCollected)  # Save the principal due
+        tranches.save_principalCollected(t, principalCollected)  # Save the principal due
 
         # Pay the StructuredSecurities with the amount provided by the LoanPool.
         tranches.makePayments(collections)
@@ -56,9 +54,7 @@ def doWaterfall(loans, tranches):
         # Call getWaterfall on both the LoanPool and StructuredSecurities objects and save the info into
         # two variables.
         ledger[t] = tranches.getWaterfall(t)
-        reserve[t] = tranches.get_reserve(t)
-
-
+        reserve[t] = tranches.reserve[t]
 
     print(f'My ledger is:\n {ledger}')
     print(f'My cash reserve account:\n {reserve}')
