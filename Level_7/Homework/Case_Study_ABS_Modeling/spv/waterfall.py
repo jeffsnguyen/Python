@@ -34,8 +34,8 @@ def doWaterfall(loans, tranches):
     # Set mode Pro Rata or Sequential
     tranches.mode('Sequential')
 
-    ledger = {}
-    reserve = {}
+    ledger = []
+    reserve = []
     t = 0
     while loans.activeLoanCount(t) > 0:
         # Increase the time period on the StructuredSecurities object (which will, in turn, increase for all
@@ -54,10 +54,7 @@ def doWaterfall(loans, tranches):
 
         # Call getWaterfall on both the LoanPool and StructuredSecurities objects and save the info into
         # two variables.
-        ledger[t] = tranches.getWaterfall(t)
-        reserve[t] = tranches.reserve[t]
-
-    print(f'My ledger is:\n {ledger}')
-    print(f'My cash reserve account:\n {reserve}')
+        ledger.append(tranches.getWaterfall(t))
+        reserve.append(tranches.reserve[t])
 
     return ledger, reserve
