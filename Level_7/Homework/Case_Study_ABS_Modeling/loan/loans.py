@@ -37,6 +37,58 @@ class VariableRateLoan(Loan):
         # invoke initialization the base class
         super(VariableRateLoan, self).__init__(notional, None, term)
 
+    def __repr__(self):
+        return f'VariableRateLoan({self._notional}, {self._rateDict}, {self._term})'
+    # Interest rate stored in a dict {0: .025, 15: .045, 20: 015}
+    # 0 is the original rate and is required
+
+    ##########################################################
+    # Decorators to define and set values for instance variables
+
+    # Decorator to create a property function to define the attribute loans
+    @property
+    def loans(self):
+        return self._loans
+
+    # Decorator to set loans value
+    @loans.setter
+    def loans(self, iloans):
+        self._loans = iloans  # Set instance variable loans from input
+
+    # Decorator to create a property function to define the attribute notional
+    @property
+    def notional(self):
+        return self._notional
+
+    # Decorator to set notional value
+    @notional.setter
+    def notional(self, inotional):
+        self._notional = inotional  # Set instance variable notional from input
+
+    # Decorator to create a property function to define the attribute rateDict
+    @property
+    def rateDict(self):
+        return self._rateDict
+
+    # Decorator to set interest rateDict
+    @rateDict.setter
+    def rate(self, irateDict):
+        self._rateDict = irateDict  # Set instance variable rate from input
+
+    # Decorator to create a property function to define the attribute term
+    @property
+    def term(self):
+        return self._term
+
+    # Decorator to set term
+    @term.setter
+    def term(self, iterm):
+        self._term = iterm  # Set instance variable rate from input
+    ##########################################################
+
+    ##########################################################
+    # Add instance method functionalities to loan class
+
     # Derived instance method to find the rate of a given period
     # rateDict contains startPeriod as key and rate as value for each rate
     # Methodology:
@@ -51,10 +103,10 @@ class VariableRateLoan(Loan):
     #       rate we are looking for.
     def getRate(self, startPeriod = None):
         # Capture step/job done to debug
-        self.sorted_key = dict(sorted(self._rateDict.items(), key=lambda k: k[1], reverse=False))
+        self.sorted_key = dict(sorted(self.rateDict.items(), key=lambda k: k[1], reverse=False))
 
         # Step: Sort and grab the closest key based on the delta value of the key and the startPeriod')
-        self.closest_key = min(self.sorted_key.keys(), key = lambda k: abs(k - startPeriod))
+        self.closest_key = min(self.sorted_key.keys(), key=lambda k: abs(k - startPeriod))
 
         # Step: Repeat the process until the closest key is less than the startPeriod')
         while self.closest_key > startPeriod:
@@ -62,12 +114,9 @@ class VariableRateLoan(Loan):
             self.closest_key = min(self.sorted_key.keys(), key=lambda k: abs(k - startPeriod))
 
         # Step: Return the rate value corresponded to the closest term to the startPeriod')
-        return self._rateDict[self.closest_key]
+        return self.rateDict[self.closest_key]
 
-    def __repr__(self):
-        return f'VariableRateLoan({self._notional}, {self._rateDict}, {self._term})'
-    # Interest rate stored in a dict {0: .025, 15: .045, 20: 015}
-    # 0 is the original rate and is required
+    ##########################################################
 
 
 # AutoLoan: derived from FixedRateLoan
@@ -86,11 +135,10 @@ class AutoLoan(FixedRateLoan):
                 logging.error(f'Failed to instantiate object. {aEx}')
             except Exception as Ex:
                 logging.exception(f'Failed. Unknown error. {Ex}')
-            else:
-                logging.debug('AutoLoan instantiated successfully.')
 
-            ##########################################################
+    ##########################################################
     # Decorators to define and set values for instance variables
+
     # Decorator to create a property function to define the attribute car
     @property
     def car(self):

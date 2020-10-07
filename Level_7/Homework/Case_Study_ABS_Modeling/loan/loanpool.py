@@ -29,8 +29,8 @@ class LoanPool(object):
         self._term = [loan.term for loan in self._loans]
     ##########################################################
     # Decorators to define and set values for instance variables
-    # Decorator to create a property function to define the attribute loans
 
+    # Decorator to create a property function to define the attribute loans
     @property
     def loans(self):
         return self._loans
@@ -40,6 +40,35 @@ class LoanPool(object):
     def loans(self, iloans):
         self._loans = iloans  # Set instance variable loans from input
 
+    # Decorator to create a property function to define the attribute notional
+    @property
+    def notional(self):
+        return self._notional
+
+    # Decorator to set notional value
+    @notional.setter
+    def notional(self, inotional):
+        self._notional = inotional  # Set instance variable notional from input
+
+    # Decorator to create a property function to define the attribute rate
+    @property
+    def rate(self):
+        return self._rate
+
+    # Decorator to set interest rate
+    @rate.setter
+    def rate(self, irate):
+        self._rate = irate  # Set instance variable rate from input
+
+    # Decorator to create a property function to define the attribute term
+    @property
+    def term(self):
+        return self._term
+
+    # Decorator to set term
+    @term.setter
+    def term(self, iterm):
+        self._term = iterm  # Set instance variable rate from input
     ##########################################################
     # Add instance methods
 
@@ -47,25 +76,25 @@ class LoanPool(object):
     # Get the aggregate remaining loan balance for a given period
     def totalPayments(self, t=0):
         # Capture step/job done to debug
-        return sum([loan.balance(t) for loan in self._loans])
+        return sum([loan.balance(t) for loan in self.loans])
 
     # Instance method
     # Get the total loan principal
     def totalPrincipal(self):
         # Capture step/job done to debug
-        return sum(self._notional)
+        return sum(self.notional)
 
     # Instance method
     # Get the aggregate payment due for a given period
     def paymentDue(self, t):
         # Capture step/job done to debug
-        return sum([loan.monthlyPayment(t) for loan in self._loans])
+        return sum([loan.monthlyPayment(t) for loan in self.loans])
 
     # Instance method
     # Get the aggregate interest due for a given period
     def totalInterest(self, t):
         # Capture step/job done to debug
-        return sum([loan.interestDue(t) for loan in self._loans])
+        return sum([loan.interestDue(t) for loan in self.loans])
 
     # Instance method
     # Get the aggregate principal due for a given period
@@ -76,7 +105,7 @@ class LoanPool(object):
     # Instance method
     # Get the count of loan with positive balance for a given period
     def activeLoanCount(self, t):
-        return sum([loan.balance(t) > 0 for loan in self._loans])
+        return sum([loan.balance(t) > 0 for loan in self.loans])
 
     # Instance method
     # Calculate Weighted Average Maturity of loans in the pool
@@ -102,7 +131,7 @@ class LoanPool(object):
         # Loop to calculate weighted rate of each mortgage and add them together
         WAR_rate = 0  # Initialize WAR rate to be 0
 
-        for loan in self._loans:
+        for loan in self.loans:
             WAR_rate += loan.notional * loan.rate / sum_amount
         return WAR_rate
 
@@ -111,6 +140,5 @@ class LoanPool(object):
 
     ##########################################################
     # Add static methods
-
 
     ##########################################################

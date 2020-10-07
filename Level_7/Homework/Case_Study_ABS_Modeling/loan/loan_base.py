@@ -34,11 +34,11 @@ class Loan(object):
 
     # Wrapper to display
     def __repr__(self):
-        return f'{self.__class__.__name__}({self._notional}, {self._rate}, {self._term}, {self._asset})'
+        return f'{self.__class__.__name__}({self.notional}, {self.rate}, {self.term}, {self.asset})'
 
     ##########################################################
-
     # Decorators to define and set values for instance variables
+
     # Decorator to create a property function to define the attribute notional
     @property
     def notional(self):
@@ -94,12 +94,12 @@ class Loan(object):
         # DIV/0 exception handling: print and warning message and return value of None
         try:
             # Capture step/job done to debug
-            res = self.calcMonthlyPmt(self._notional, self.getRate(t), self._term)
+            res = self.calcMonthlyPmt(self.notional, self.getRate(t), self.term)
         except ZeroDivisionError:
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
         if t == 0:
             return 0
-        elif t > self._term:
+        elif t > self.term:
             return 0
         else:
             return res
@@ -110,7 +110,7 @@ class Loan(object):
         # r = monthly rate, P = notional value, N = term in months
         try:
             # Capture step/job done to debug
-            return sum([self.monthlyPayment(t) for t in range(1, self._term+1)])
+            return sum([self.monthlyPayment(t) for t in range(1, self.term+1)])
         except ZeroDivisionError:
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
 
@@ -119,23 +119,20 @@ class Loan(object):
         # Calculate payment using the formula total_interest = totalpayment = notional value
         try:
             # Capture step/job done to debug
-            return self.totalPayments() - self._notional
+            return self.totalPayments() - self.notional
         except ZeroDivisionError:
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
 
     # Instance method to calculate interest due at time t
     # This method use the given formula
     def interestDue(self, t):
-        if t > self._term:
-            logging.warning('t value is greater than term')
-
         # Calculate payment using the formula interestDue = r * loan balance bal
         # r = monthly rate, P = notional value, N = term in months
         # Capture step/job done to debug
         res = self.monthlyRate(self.getRate(t)) * self.balance(t - 1)
         if t == 0:
             return 0
-        elif t > self._term:
+        elif t > self.term:
             return 0
         else:
             return res
@@ -143,7 +140,7 @@ class Loan(object):
     # Instance method to calculate principal due at time t
     # This method use the given formula
     def principalDue(self, t):
-        if t > self._term:
+        if t > self.term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using the formula principalDue = monthlyPayment - interestDue
@@ -156,14 +153,11 @@ class Loan(object):
     # Modified to delegate to calcBalance(face, rate, term, period)
     # Notional is equivalent to face
     def balance(self, t):
-        if t > self._term:
-            logging.warning('t value is greater than term')
-
         # Calculate payment using the formula bal = P(1+r)**n - pmt*[((1+r)**n -1)/r]
         # r = monthly rate, P = notional value, N = term in months
         # Capture step/job done to debug
-        res = self.calcBalance(self._notional, self.getRate(t), self._term, t)
-        return res if res>=0 else 0
+        res = self.calcBalance(self.notional, self.getRate(t), self.term, t)
+        return res if res >= 0 else 0
 
     # Instance method to calculate interest due at time t
     # This method use the recursive function
@@ -173,13 +167,13 @@ class Loan(object):
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
 
-        if t > self._term:
+        if t > self.term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using recursive functions
         if t == 1:
             # Capture step/job done to debug
-            return self._notional * self.monthlyRate(self.getRate(t))
+            return self.notional * self.monthlyRate(self.getRate(t))
         else:
             # Capture step/job done to debug
             return self.balanceRecursive(t - 1) * self.monthlyRate(self.getRate(t))
@@ -192,7 +186,7 @@ class Loan(object):
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
 
-        if t > self._term:
+        if t > self.term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using recursive functions
@@ -207,13 +201,13 @@ class Loan(object):
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
 
-        if t > self._term:
+        if t > self.term:
             logging.warning('t value is greater than term')
 
         # Calculate payment using recursive functions
         if t == 1:
             # Capture step/job done to debug
-            return self._notional - self.principalDueRecursive(t)
+            return self.notional - self.principalDueRecursive(t)
         else:
             # Capture step/job done to debug
             return self.balanceRecursive(t - 1) - self.principalDueRecursive(t)
@@ -221,25 +215,25 @@ class Loan(object):
     # Instance method to get interest rate from Loan object.
     def getRate(self, period=None):
         # Capture step/job done to debug
-        return self._rate
+        return self.rate
 
     # Instance method to return the current asset value for the given period times a recovery multiplier of .6
     def recoveryValue(self, t, pct):
         # Capture step/job done to debug
 
-        if t > self._term:
+        if t > self.term:
             logging.warning('t value is greater than term')
 
-        return self._asset.value(t) * pct
+        return self.asset.value(t) * pct
 
     # Instance method to return the available equity (current asset value less current loan balance)
     def equity(self, t):
         # Capture step/job done to debug
 
-        if t > self._term:
+        if t > self.term:
             logging.warning('t value is greater than term')
 
-        return self._asset.value(t) - self.balance(t)
+        return self.asset.value(t) - self.balance(t)
     ##########################################################
 
     ##########################################################
