@@ -261,3 +261,7 @@ def loanReadCSV(lineItem):
         print(f'Failed to create loan object. {Ex}')
         logging.exception(f'Failed to instantiate object. {Ex}')
         raise Exception
+
+# Function to write to CSV
+def spvWriteCSV(lineItem):
+    pass
