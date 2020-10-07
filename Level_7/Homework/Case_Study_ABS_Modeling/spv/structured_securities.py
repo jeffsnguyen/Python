@@ -25,6 +25,7 @@ class StructuredSecurities(object):
         self._mode = None
         self._timePeriod = 0
         self._principalCollected = {0: 0}
+        self._totalCollected = {0: 0}
         self._reserve = {0: 0}
 
     def __repr__(self):
@@ -74,6 +75,16 @@ class StructuredSecurities(object):
     @timePeriod.setter
     def timePeriod(self, itimePeriod):
         self._timePeriod = itimePeriod  # Set instance variable timePeriod from input
+
+    # Decorator to create a property function to define the attribute totalCollected
+    @property
+    def totalCollected(self):
+        return self._totalCollected
+
+    # Decorator to set totalCollected value
+    @totalCollected.setter
+    def totalCollected(self, itotalCollected, t):
+        self._totalCollected[t] = itotalCollected  # Set instance variable totalCollected from input
 
     # Decorator to create a property function to define the attribute principalCollected
     @property
@@ -133,6 +144,8 @@ class StructuredSecurities(object):
 
     # Instance factory method to make payments to tranches in the StructuredSecurity object
     def makePayments(self, cash_amount):
+        self.totalCollected[self.timePeriod] = cash_amount  # Save the total collected cash for each period
+
         # Making interest payments
         cash_amount = self.makeInterestPayments(cash_amount)
 
@@ -263,11 +276,13 @@ class StructuredSecurities(object):
     # Get the following values from each tranches for each time period t
     #   interestDue, interestPaid, interestShortFall, principalPaid, notionalBalance
     def getWaterfall(self, t):
-        master = []
+        master = [self.totalCollected[t]]
         for tranche in self.tranches:
             slave = [tranche.interestDue[t], tranche.interestPaid[t], tranche.interestShortFall[t],
-                     tranche.principalPaid[t], tranche.notionalBalance[t]]
+                     tranche.principalDue[t], tranche.principalPaid[t], tranche.principalShortFall[t],
+                     tranche.notionalBalance[t]]
             master.append(slave)
+        master.append(self.reserve[t])
         return master
 
     ##########################################################
