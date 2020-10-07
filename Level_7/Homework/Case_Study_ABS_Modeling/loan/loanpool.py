@@ -17,7 +17,6 @@
 # Importing packages
 from loan.loan_base import Loan
 import logging
-from loan.loanIO import loanReadCSV
 
 
 # LoanPool Class

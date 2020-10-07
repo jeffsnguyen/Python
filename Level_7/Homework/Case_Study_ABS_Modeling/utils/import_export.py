@@ -2,7 +2,7 @@
 # Level: 4
 # Section: 4.3: File I/O
 # Exercise: 8
-# Description: This contains various file input/output operations for Loan/Asset/Mortgage
+# Description: This contains various file input/output operations for Loan/Asset/Mortgage/StructuredSecurities
 #   As a follow-up, create a third option: (3) Read loan .csv file. This option should:
 #       a. Ask the user to enter a file path of the loan .csv file.
 #       b. Load the .csv file into Loan objects.
@@ -264,7 +264,7 @@ def loanReadCSV(lineItem):
 
 
 # Instantiate Loans from CSV
-def importCSV(import_loanFile):
+def loansImportCSV(import_loanFile):
     loans_readCSV = []
     try:  # block to catch if file doesn't exist
         with open(import_loanFile, 'r') as fileImport:
