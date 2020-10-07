@@ -17,6 +17,8 @@
 # Importing packages
 from loan.loan_base import Loan
 import logging
+from loan.loanIO import loanReadCSV
+
 
 # LoanPool Class
 class LoanPool(object):
@@ -111,4 +113,37 @@ class LoanPool(object):
     ##########################################################
     # Add static methods
 
+    # Instantiate Loans from CSV
+    @staticmethod
+    def importCSV(import_loanFile):
+        loans_readCSV = []
+        try:  # block to catch if file doesn't exist
+            with open(import_loanFile, 'r') as fileImport:
+                count = 0
+                next(fileImport)
+                for line in fileImport:
+                    # For each line in the file:
+                    # 1. Strip special characters, replace space with '' and split them to a list
+                    # 2. Dissect the list by calling loanReadCSV(list), which:
+                    # 3. Append the result to a list and/or raise any error.
+                    try:
+                        loans_readCSV.append(loanReadCSV(line.strip().replace(' ', '').split(',')))
+                    except ValueError as valEx:
+                        print(f'Failed to process a line, see log.')
+                        logging.error(f'Failed to process line. {valEx}')
+                    except Exception as Ex:
+                        print(f'Failed to process a line, see log.')
+                        logging.error(f'Failed to process line. {Ex}')
+                    else:
+                        logging.info(f'Successfully imported line.')
+                        count += 1
+        except FileNotFoundError as fnfEx:
+            logging.error(f'Failed. {fnfEx}')
+        else:
+            print(f'Successfully imported {count} lines from {import_loanFile}. See log for details.')
+            print()
+            logging.info(f'Successfully imported {count} lines from {import_loanFile}.')
+            logging.info(f'Imported values are: {loans_readCSV}')
+
+        return loans_readCSV
     ##########################################################
