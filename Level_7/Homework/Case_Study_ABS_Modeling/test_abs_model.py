@@ -15,7 +15,7 @@ from loan.loanpool import LoanPool
 from loan.loans import FixedRateLoan, VariableRateLoan, AutoLoan
 from loan.mortgage import FixedMortgage, VariableMortgage
 from loan.loan_base import Loan
-from loan.loanIO import loanReadCSV
+from loan.loanIO import loanReadCSV, importCSV
 from asset.asset import Car
 from spv.structured_securities import StructuredSecurities
 from spv.waterfall import doWaterfall
@@ -62,7 +62,7 @@ def main():
     testNum = 2
     print(f'Test {testNum}: Manual small sample run of the Waterfall')
 
-    loans = LoanPool(LoanPool.importCSV('Loans.csv'))
+    loans = LoanPool(importCSV('Loans.csv'))
     structuredSecurities = StructuredSecurities(loans.totalPrincipal())
     structuredSecurities.addTranche('StandardTranche', '0.8', '0.05', '1')
     structuredSecurities.addTranche('StandardTranche', '0.2', '0.08', '2')
