@@ -256,7 +256,6 @@ def loanReadCSV(lineItem):
 
     # Attempt to instantiate the object
     try:
-        logging.debug('Attempt to instantiate object.')
         obj = loanName(notionalVal, rateVal, termVal, assetName(assetVal))
         return obj
     except Exception as Ex:
@@ -293,7 +292,6 @@ def loansImportCSV(import_loanFile):
         print(f'Successfully imported {count} lines from {import_loanFile}. See log for details.')
         print()
         logging.info(f'Successfully imported {count} lines from {import_loanFile}.')
-        logging.info(f'Imported values are: {loans_readCSV}')
 
     return loans_readCSV
 

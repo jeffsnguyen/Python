@@ -43,10 +43,10 @@ def main():
     ###############################################
     # Set logging level
     logging.getLogger().setLevel(logging.DEBUG)
-
+    testNum = 0
     ###############################################
     print()
-    testNum = 1
+    testNum += 1
     print(f'Test {testNum}: Manual small sample run of the Waterfall')
     loan1 = AutoLoan(notional=100000, rate=0.08, term=10, car=Car(100000))
     loan2 = AutoLoan(notional=75000, rate=0.06, term=8, car=Car(75000))
@@ -61,7 +61,7 @@ def main():
 
     ###############################################
     print()
-    testNum = 2
+    testNum += 1
     print(f'Test {testNum}: Manual small sample run of the Waterfall')
 
     loans = LoanPool(loansImportCSV('Loans.csv'))
@@ -70,20 +70,15 @@ def main():
     structuredSecurities.addTranche('StandardTranche', '0.2', '0.08', '2')
 
     tranchesLedger, tranchesReserve = doWaterfall(loans, structuredSecurities)
-    print(f'My ledger is:\n')
-    pprint.pprint(tranchesLedger)
-    print(f'My cash reserve account:\n')
-    pprint.pprint(tranchesReserve)
+    print(f'My ledger is:\n {tranchesLedger}')
+    print(f'My cash reserve account:\n {tranchesReserve}')
     ###############################################
 
     ###############################################
     print()
-    testNum = 3
+    testNum += 1
     print(f'Test {testNum}: Save result to CSV')
     spvExportCSV(tranchesLedger, 'liabilities.csv')
-
-
-
 
     ###############################################
 
