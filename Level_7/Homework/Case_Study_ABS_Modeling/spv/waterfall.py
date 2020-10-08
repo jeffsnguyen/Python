@@ -21,7 +21,7 @@
 # Importing packages
 import logging
 from utils.timer import Timer
-import pprint
+from spv.tranche_base import Tranche
 #######################
 
 #######################
@@ -55,5 +55,12 @@ def doWaterfall(loans, tranches):
         # two variables.
         ledger.append(tranches.getWaterfall(t))
         reserve.append(tranches.reserve[t])
+
+    for tranche in tranches.tranches:
+        r = tranche.IRR()
+        dirr = tranche.getRating(tranche.DIRR())
+        al = tranche.AL()
+        print(f'{tranche}\nIRR = {r}\nDIRR = {dirr}\nAL = {al}')
+
 
     return ledger, reserve
