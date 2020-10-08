@@ -1,7 +1,7 @@
 # numerical packages  lecture
 
+import numpy_financial
 import numpy
-
 
 def main():
     # Similar to base package but can specify how many numbers to generate by 3rd parameter
@@ -17,12 +17,12 @@ def main():
     print()
 
     # Internal Rate of Return
-    l = [100, 150, 200, 250]  # List of CF
+    l = [-175, 100, 150, 200, 250]  # List of CF
     p = -175  # Initial CF out to buy teh bond
-    r = numpy.irr([-175, 100, 150, 200, 250])
+    r = numpy_financial.irr(l)
     print(r)
 
-    r = numpy.irr([p] + l)
+    r = numpy_financial.irr([p] + l)
     print(r)
     print()
 
