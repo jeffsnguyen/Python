@@ -29,10 +29,9 @@ class calledOnce:
             self._called_dict[(str(args) + str(kwargs))] = True
             return self._func(*args, **kwargs)
         else:
-            raise Exception(f'Payment already made for this period')
+            raise Exception(f'Payment already made for this period.')
 
     # Get method to get the other class instance object
     def __get__(self, obj, objtype):
         return partial(self.__call__, obj)
-
 #######################
