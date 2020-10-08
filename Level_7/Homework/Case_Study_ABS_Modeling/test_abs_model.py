@@ -50,6 +50,7 @@ def runProRataSim(loans):
     tranches.setMode('Pro Rata')
     return doWaterfall(loans, tranches)
 
+
 ###############################################
 def main():
 
