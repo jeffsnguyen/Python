@@ -11,7 +11,7 @@
 # Importing packages
 import logging
 from spv.tranche_base import Tranche
-
+import math
 #######################
 
 #######################
@@ -221,6 +221,24 @@ class StandardTranche(Tranche):
             self.interestDue[t] = self.calc_notionalBalance(t-1) * self.monthlyRate(self.rate) + \
                                    self.interestShortFall[t-1]
         return self.interestDue[t]
+
+    # Return total payment made for each period t
+    def paymentPerPeriod(self, t):
+        return self.interestPaid[t] + self.principalPaid[t]
+
+    # Return total payment period:
+    def totalPaymentPeriod(self):
+        return max(len(self.interestPaid), len(self.principalPaid))
+
+    # Calculate Average Life (AL)
+    # The AL of the security is the average time that each dollar of its unpaid principal remains unpaid.
+    # This is the inner product of the time period numbers (0, 1, 2, 3, etc.) and the principal payments,
+    #   divided by the initial principal. For example, if you have the principal payment list as follows: [10000,
+    #   90000, 35000, 0], the AL would be (0*0 + 1*10000 + 2*90000+2*35000+3*35000+4*0)/100000. If the
+    #   loan was not paid down (balance != 0), then AL is infinite – in this case, return None.
+    def AL(self):
+        al = sum(t * principalPayment / self.notional for t, principalPayment in self.principalPaid.items())
+        return al if not math.isinf(al) else None
 
     # Reset the tranche to time t=0
     def reset(self):
