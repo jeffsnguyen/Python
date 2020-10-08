@@ -11,7 +11,6 @@
 # Importing packages
 import logging
 from spv.tranche_base import Tranche
-from utils.called_once import calledOnce
 
 #######################
 
@@ -32,6 +31,8 @@ class StandardTranche(Tranche):
         self._interestDue = {0: 0}  # Record interest due for each period
         self._notionalBalance = {0: notional}  # Record notional balance owed to the tranche
         self._timePeriod = 1
+        self._interestHasBeenPaid = False
+        self._principalHasBeenPaid = False
 
     ##########################################################
     # Decorators to define and set values for instance variables
@@ -96,6 +97,16 @@ class StandardTranche(Tranche):
     def interestShortFall(self, iinterestShortFall, t):
         self._interestShortFall[t] = iinterestShortFall  # Set instance variable interestShortFall from input
 
+    # Decorator to create a property function to define the attribute interestHasBeenPaid
+    @property
+    def interestHasBeenPaid(self):
+        return self._interestHasBeenPaid
+
+    # Decorator to set interestHasBeenPaid value
+    @interestHasBeenPaid.setter
+    def interestHasBeenPaid(self, iinterestHasBeenPaid):
+        self._interestHasBeenPaid = iinterestHasBeenPaid  # Set instance variable interestHasBeenPaid from input
+
     # Decorator to create a property function to define the attribute principalDue
     @property
     def principalDue(self):
@@ -126,6 +137,16 @@ class StandardTranche(Tranche):
     def principalShortFall(self, iprincipalShortFall, t):
         self._principalShortFall[t] = iprincipalShortFall  # Set instance variable principalShortFall from input
 
+    # Decorator to create a property function to define the attribute principalHasBeenPaid
+    @property
+    def principalHasBeenPaid(self):
+        return self._principalHasBeenPaid
+
+    # Decorator to set principalHasBeenPaid value
+    @principalHasBeenPaid.setter
+    def principalHasBeenPaid(self, iprincipalHasBeenPaid):
+        self._principalHasBeenPaid = iprincipalHasBeenPaid  # Set instance variable principalHasBeenPaid from input
+
     # Decorator to create a property function to define the attribute notionalBalance
     @property
     def notionalBalance(self):
@@ -151,28 +172,37 @@ class StandardTranche(Tranche):
     # Increase the current time period of the object
     def increaseTimePeriod(self):
         self.timePeriod += 1
+        self.interestHasBeenPaid = False
+        self.principalHasBeenPaid = False
         return self.timePeriod
 
     # Record principal due, payment and shortfall for the current tranche time period
     # Can only be called once, otherwise raised an error
-    @calledOnce  # Decorator to make sure the method only called once
     def makePrincipalPayment(self, t, prinDue, prinPaid, prinShortFall):
-        self.principalDue[t] = prinDue  # Record principal due for the period
-        self.principalPaid[t] = prinPaid  # Record principal paid for the period
-        self.principalShortFall[t] = prinShortFall  # Record principal short fall for the period
+        if self._principalHasBeenPaid:
+            raise Exception(f'Payment already made for this period.')
+        else:
+            self.principalDue[t] = prinDue  # Record principal due for the period
+            self.principalPaid[t] = prinPaid  # Record principal paid for the period
+            self.principalShortFall[t] = prinShortFall  # Record principal short fall for the period
+            self.principalHasBeenPaid = True
 
         if self.calc_notionalBalance(t) == 0:
             raise Exception('Zero balance. All paid.')
 
     # Record interest payment for the current tranche time period
+    # Record interest payment for the current tranche time period
     # Can only be called once, otherwise raised an error
     # If the interest amount is less than the current interest due:
     #   In this case, the missing amount needs to be recorded separately as an interest shortfall.
-    @calledOnce  # Decorator to make sure the method only called once
     def makeInterestPayment(self, t, paidAmount):
-        self.interestDue[t] = self.calc_interestDue(t)  # Record interest due for the period
-        self.interestPaid[t] = paidAmount  # Record interest paid for the period
-        self.interestShortFall[t] = self.interestDue[t] - paidAmount  # Record interest short fall for the period
+        if self._interestHasBeenPaid:
+            raise Exception(f'Payment already made for this period.')
+        else:
+            self.interestDue[t] = self.calc_interestDue(t)  # Record interest due for the period
+            self.interestPaid[t] = paidAmount  # Record interest paid for the period
+            self.interestShortFall[t] = self.interestDue[t] - paidAmount  # Record interest short fall for the period
+            self.interestHasBeenPaid = True
 
         if self.interestDue[t] == 0:
             raise Exception('Zero Balance. All Paid.')
