@@ -128,7 +128,7 @@ class StructuredSecurities(object):
             self.tranches = sorted(self.tranches, key=operator.attrgetter("subordinationFlag"))  # Sort
 
     # Instance method to flag 'Sequential' or 'Pro Rata' mode on the StructuredSecurity object
-    def mode(self, mode):
+    def setMode(self, mode):
         modeList = ['Sequential', 'Pro Rata']
         if mode not in modeList:
             raise TypeError('Incorrect Structured Security Mode')
@@ -152,7 +152,7 @@ class StructuredSecurities(object):
         # Making principal payments based on mode
         if self.mode == 'Sequential':
             self.makeSeqPrinPayments(cash_amount)
-        else:
+        elif self.mode == 'Pro Rata':
             self.makeProRataPrinPayments(cash_amount)
 
     # Instance method to make interest payments to tranches in the StructuredSecurity object
@@ -248,7 +248,7 @@ class StructuredSecurities(object):
             # Calculate principalDue = min(principal received + prior principal shortfalls, available cash, balance)
             principalDue = \
                 min((self.principalCollected[self.timePeriod] * tranche.notional / self.notional)
-                    + tranche.principalShortFall(self.timePeriod - 1),
+                    + tranche.principalShortFall[self.timePeriod - 1],
                     cash_amount, tranche.calc_notionalBalance(self.timePeriod)) if not cash_amount == 0 else 0
 
             # Calculate principal amount to be paid as well as short fall

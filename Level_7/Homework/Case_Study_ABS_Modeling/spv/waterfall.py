@@ -30,12 +30,9 @@ import pprint
 @Timer
 def doWaterfall(loans, tranches):
     print(f'Doing work on {tranches.__repr__()}')
+    logging.debug(f'Doing work on {tranches.__repr__()}')
 
-    # Set mode Pro Rata or Sequential
-    tranches.mode('Sequential')
-
-    ledger = []
-    ledger.append(tranches.getWaterfall(0))
+    ledger = [tranches.getWaterfall(0)]
     reserve = []
     t = 0
     while loans.activeLoanCount(t) > 0:
