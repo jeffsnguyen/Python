@@ -42,14 +42,16 @@ def doWaterfall(loans, tranches):
         t += 1
 
         # Ask the LoanPool for its total payment for the current time period.
+        # This is the paymentDue amount plus asset recovery value from defaults
         collections = loans.paymentDue(t)
+        recoveries = loans.checkDefaults(t)
 
         # Ask the LoanPool for its total principal due for the current time period.
         principalCollected = loans.principalDue(t)
         tranches.save_principalCollected(t, principalCollected)  # Save the principal due
 
         # Pay the StructuredSecurities with the amount provided by the LoanPool.
-        tranches.makePayments(collections)
+        tranches.makePayments(collections + recoveries)
 
         # Call getWaterfall on both the LoanPool and StructuredSecurities objects and save the info into
         # two variables.
