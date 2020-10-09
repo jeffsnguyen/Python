@@ -234,6 +234,20 @@ class Loan(object):
             logging.warning('t value is greater than term')
 
         return self.asset.value(t) - self.balance(t)
+
+    # Instance method to determine whether or not the loan defaults.
+    # Method: sort the lookup dict by key value, find the closest key value to t where t > k
+    def checkDefault(self, t):
+        # To update this dict, key = top range of time period (for 1-10, use 10 as key), value = default probability
+        defaultLookup = {10: 0.0005,
+                         59: 0.001,
+                         120: 0.002,
+                         180: 0.004,
+                         210: 0.002,
+                         360: 0.001}
+        sorted_key = dict(sorted(defaultLookup.items(), key=lambda k: k[0], reverse=False))  # Sort dict
+        closest_value = min(sorted_key.keys(), key=lambda k: t > k)  # Smallest key at which t > k
+        return defaultLookup[closest_value] if not t == 0 else 1
     ##########################################################
 
     ##########################################################
