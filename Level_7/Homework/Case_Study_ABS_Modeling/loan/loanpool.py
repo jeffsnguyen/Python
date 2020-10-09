@@ -17,7 +17,7 @@
 # Importing packages
 from loan.loan_base import Loan
 import logging
-
+import random
 
 # LoanPool Class
 class LoanPool(object):
@@ -106,6 +106,15 @@ class LoanPool(object):
     # Get the count of loan with positive balance for a given period
     def activeLoanCount(self, t):
         return sum([loan.balance(t) > 0 for loan in self.loans])
+
+    # Instance method to run a Monte Carlo on default scenario for its loan
+    # The result is the total recovery value of the asset
+    # t is the current time period
+    # The integer range should be so that the odds of a given number occurring is the same
+    #   odds as the default probability for the time period (always start the range from zero)
+    def checkDefaults(self, t):
+        return \
+            sum([loan.checkDefault(t, random.randint(0, int(1 / loan.getDefaultProbability(t)))) for loan in self.loans])
 
     # Instance method
     # Calculate Weighted Average Maturity of loans in the pool
