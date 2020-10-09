@@ -22,9 +22,32 @@
 import logging
 from utils.timer import Timer
 from spv.tranche_base import Tranche
+from spv.structured_securities import StructuredSecurities
 #######################
 
 #######################
+
+
+# Initialize StructuredSecurities tranches
+def tranchesInit(loans):
+    tranches = StructuredSecurities(loans.totalPrincipal())
+    tranches.addTranche('StandardTranche', '0.8', '0.05', '1')
+    tranches.addTranche('StandardTranche', '0.2', '0.08', '2')
+    return tranches
+
+
+# Run the sequential mode Waterfall one time
+def runSequentialSim(loans):
+    tranches = tranchesInit(loans)
+    tranches.setMode('Sequential')
+    return doWaterfall(loans, tranches)
+
+
+# Run the Pro Rata mode Waterfall one time
+def runProRataSim(loans):
+    tranches = tranchesInit(loans)
+    tranches.setMode('Pro Rata')
+    return doWaterfall(loans, tranches)
 
 
 @Timer
