@@ -25,6 +25,7 @@ class Loan(object):
         self._notional = notional
         self._rate = rate
         self._term = term
+        self._isDefault = False
 
         if not isinstance(asset, Asset):
             logging.error('Something wrong with parameters type.')   # Log the error prior to raising it
@@ -79,6 +80,15 @@ class Loan(object):
     def asset(self, iasset):
         self._asset = iasset  # Set instance variable asset from input
 
+    # Decorator to create a property function to define the attribute isDefault
+    @property
+    def isDefault(self):
+        return self._isDefault
+
+    # Decorator to set loan isDefault value
+    @isDefault.setter
+    def isDefault(self, iisDefault):
+        self._isDefault = iisDefault  # Set instance variable isDefault from input
     ##########################################################
 
     ##########################################################
@@ -235,9 +245,10 @@ class Loan(object):
 
         return self.asset.value(t) - self.balance(t)
 
-    # Instance method to determine whether or not the loan defaults.
+    # Instance method to get the loan's default probability
+    # t is the time period
     # Method: sort the lookup dict by key value, find the closest key value to t where t > k
-    def checkDefault(self, t):
+    def getDefaultProbability(self, t):
         # To update this dict, key = top range of time period (for 1-10, use 10 as key), value = default probability
         defaultLookup = {10: 0.0005,
                          59: 0.001,
@@ -247,7 +258,20 @@ class Loan(object):
                          360: 0.001}
         sorted_key = dict(sorted(defaultLookup.items(), key=lambda k: k[0], reverse=False))  # Sort dict
         closest_value = min(sorted_key.keys(), key=lambda k: t > k)  # Smallest key at which t > k
-        return defaultLookup[closest_value] if not t == 0 else 1
+        return defaultLookup[closest_value]
+
+    # Instance method to determine whether or not the loan defaults.
+    # Method:
+    #   1. If the passed in random number is 0: set isDefault flag, set notional to be 0 and return the recovery value
+    #       of the asset at this time period t
+    #   2. Else return 0, for the purpose of calculating recovery value in LoanPool
+    def checkDefault(self, t, randomNum):
+        if randomNum == 0:
+            self.isDefault = True
+            self.notional = 0
+            return self.recoveryValue(t, .6)  # Hardcoded pct = .6 based on Level 2 Exercise
+        else:
+            return 0
     ##########################################################
 
     ##########################################################
