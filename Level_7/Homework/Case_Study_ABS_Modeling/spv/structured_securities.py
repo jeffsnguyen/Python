@@ -145,10 +145,8 @@ class StructuredSecurities(object):
     # Instance factory method to make payments to tranches in the StructuredSecurity object
     def makePayments(self, cash_amount):
         self.totalCollected[self.timePeriod] = cash_amount  # Save the total collected cash for each period
-
         # Making interest payments
         cash_amount = self.makeInterestPayments(cash_amount)
-
         # Making principal payments based on mode
         if self.mode == 'Sequential':
             self.makeSeqPrinPayments(cash_amount)
@@ -159,9 +157,7 @@ class StructuredSecurities(object):
     def makeInterestPayments(self, cash_amount):
         # Add reserve from previous period to passed-in cash amount (collections from assets)
         cash_amount += self.reserve[self.timePeriod-1]
-
         self.reserve[self.timePeriod] = 0  # Set reserve account for current period to be 0
-
         # Cycle through the tranches:
         #   1. Call each tranche's calc_interestDue() method to get interest due amount, this is the amount to be paid.
         #   2. Determine the payment amount, it is the lesser amount between the availableFunds and the interest
@@ -180,7 +176,7 @@ class StructuredSecurities(object):
             try:
                 tranche.makeInterestPayment(self.timePeriod, cash_paid)
             except Exception as Ex:
-                logging.info(f'{Ex}')
+                logging.warning(f'{Ex}')
 
             cash_amount -= cash_paid  # Deduct interest payment from cash amount
 
@@ -213,7 +209,7 @@ class StructuredSecurities(object):
             try:
                 tranche.makePrincipalPayment(self.timePeriod, principalDue, principalPaid, prinShortFall)
             except Exception as Ex:
-                logging.info(f'{Ex}')
+                logging.warning(f'{Ex}')
 
             cash_amount -= principalPaid  # Deduct principal payment from cash available
 
@@ -260,7 +256,7 @@ class StructuredSecurities(object):
             try:
                 tranche.makePrincipalPayment(self.timePeriod, principalDue, principalPaid, prinShortFall)
             except Exception as Ex:
-                logging.info(f'{Ex}')
+                logging.warning(f'{Ex}')
 
             cash_amount -= principalPaid  # Deduct principal payment from cash available
 
@@ -285,6 +281,12 @@ class StructuredSecurities(object):
         master.append(self.reserve[t])
         return master
 
+    # Reset structured securities
+    def reset(self):
+        self._timePeriod = 0
+        self._principalCollected = {0: 0}
+        self._totalCollected = {0: 0}
+        self._reserve = {0: 0}
     ##########################################################
     # Add class methods
 
