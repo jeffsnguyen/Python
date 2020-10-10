@@ -23,35 +23,32 @@ import logging
 from utils.timer import Timer
 from spv.tranche_base import Tranche
 from spv.structured_securities import StructuredSecurities
+from utils.called_once import calledOnce
 #######################
 
 #######################
 
 
-# Initialize StructuredSecurities tranches
-def tranchesInit(loans):
-    tranches = StructuredSecurities(loans.totalPrincipal())
-    tranches.addTranche('StandardTranche', '0.8', '0.05', '1')
-    tranches.addTranche('StandardTranche', '0.2', '0.08', '2')
-    return tranches
+# Run Waterfall nsim time
+def simulateWaterfall(loans, tranches, nsim):
+    dirrList = []
+    alList = []
+    for i in range(nsim):
+        ledger, reserve, r, dirr, dirrLetter, al = doWaterfall(loans, tranches)
+        dirrList.append(dirr)
+        if not al == None:
+            alList.append(al)
 
-
-# Run the sequential mode Waterfall one time
-def runSequentialSim(loans):
-    tranches = tranchesInit(loans)
-    tranches.setMode('Sequential')
-    return doWaterfall(loans, tranches)
-
-
-# Run the Pro Rata mode Waterfall one time
-def runProRataSim(loans):
-    tranches = tranchesInit(loans)
-    tranches.setMode('Pro Rata')
-    return doWaterfall(loans, tranches)
+    dirrAvg = sum(dirrList) / len(dirrList)
+    alAvg = sum(alList) / len(alList)
+    return ledger, reserve, r, dirrAvg, dirrLetter, alAvg
 
 
 @Timer
 def doWaterfall(loans, tranches):
+    [tranche.reset() for tranche in tranches.tranches]
+    tranches.reset()
+
     print(f'Doing work on {tranches.__repr__()}')
     logging.debug(f'Doing work on {tranches.__repr__()}')
 
@@ -72,10 +69,8 @@ def doWaterfall(loans, tranches):
         # Ask the LoanPool for its total principal due for the current time period.
         principalCollected = loans.principalDue(t)
         tranches.save_principalCollected(t, principalCollected)  # Save the principal due
-
         # Pay the StructuredSecurities with the amount provided by the LoanPool.
         tranches.makePayments(collections + recoveries)
-
         # Call getWaterfall on both the LoanPool and StructuredSecurities objects and save the info into
         # two variables.
         ledger.append(tranches.getWaterfall(t))
@@ -83,9 +78,8 @@ def doWaterfall(loans, tranches):
 
     for tranche in tranches.tranches:
         r = tranche.IRR()
-        dirr = tranche.getRating(tranche.DIRR())
+        dirr = tranche.DIRR()
+        dirrLetter = tranche.getRating(dirr)
         al = tranche.AL()
-        print(f'{tranche}\nIRR = {r}\nDIRR = {dirr}\nAL = {al}')
 
-
-    return ledger, reserve
+    return ledger, reserve, r, dirr, dirrLetter, al
