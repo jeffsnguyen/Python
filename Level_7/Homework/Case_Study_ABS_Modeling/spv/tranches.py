@@ -12,6 +12,7 @@
 import logging
 from spv.tranche_base import Tranche
 import math
+from utils.called_once import calledOnce
 #######################
 
 #######################
@@ -242,14 +243,16 @@ class StandardTranche(Tranche):
 
     # Reset the tranche to time t=0
     def reset(self):
-        self.principalPaid = {0: 0}  # Record principal payment
-        self.principalShortFall = {0: 0}  # Record principal payment
-        self.principalDue = {0: 0}  # Record principal due for each period
-        self.interestPaid = {0: 0}  # Record interest payment
-        self.interestShortFall = {0: 0}  # Record interest shortfall
-        self.interestDue = {0: 0}  # Record interest due for each period
-        self.notionalBalance = {0: self.notional}  # Record notional balance owed to the tranche
-        self.timePeriod = 1
+        self._principalPaid = {0: 0}  # Record principal payment
+        self._principalShortFall = {0: 0}  # Record principal payment
+        self._principalDue = {0: 0}  # Record principal due for each period
+        self._interestPaid = {0: 0}  # Record interest payment
+        self._interestShortFall = {0: 0}  # Record interest shortfall
+        self._interestDue = {0: 0}  # Record interest due for each period
+        self._notionalBalance = {0: self.notional}  # Record notional balance owed to the tranche
+        self._timePeriod = 1
+        self._interestHasBeenPaid = False
+        self._principalHasBeenPaid = False
 
     ###################################
 
