@@ -150,9 +150,6 @@ class Loan(object):
     # Instance method to calculate principal due at time t
     # This method use the given formula
     def principalDue(self, t):
-        if t > self.term:
-            logging.warning('t value is greater than term')
-
         # Calculate payment using the formula principalDue = monthlyPayment - interestDue
         # r = monthly rate, P = notional value, N = term in months
         # Capture step/job done to debug
@@ -177,9 +174,6 @@ class Loan(object):
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
 
-        if t > self.term:
-            logging.warning('t value is greater than term')
-
         # Calculate payment using recursive functions
         if t == 1:
             # Capture step/job done to debug
@@ -196,9 +190,6 @@ class Loan(object):
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
 
-        if t > self.term:
-            logging.warning('t value is greater than term')
-
         # Calculate payment using recursive functions
         # Capture step/job done to debug
         return self.monthlyPayment() - self.interestDueRecursive(t)
@@ -210,9 +201,6 @@ class Loan(object):
         # Warn user when running a recursive function
         # Capture step/job done to debug
         logging.warning('Step: You are running a recursive function. This will take a long time.')
-
-        if t > self.term:
-            logging.warning('t value is greater than term')
 
         # Calculate payment using recursive functions
         if t == 1:
@@ -229,20 +217,10 @@ class Loan(object):
 
     # Instance method to return the current asset value for the given period times a recovery multiplier of .6
     def recoveryValue(self, t, pct):
-        # Capture step/job done to debug
-
-        if t > self.term:
-            logging.warning('t value is greater than term')
-
         return self.asset.value(t) * pct
 
     # Instance method to return the available equity (current asset value less current loan balance)
     def equity(self, t):
-        # Capture step/job done to debug
-
-        if t > self.term:
-            logging.warning('t value is greater than term')
-
         return self.asset.value(t) - self.balance(t)
 
     # Instance method to get the loan's default probability
