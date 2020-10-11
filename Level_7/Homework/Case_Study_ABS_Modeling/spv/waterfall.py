@@ -63,7 +63,8 @@ def runMonte(loans, tranches, tolerance, nsim):
         # Calculate yield
         # Return a list of yield, each list item represents a yield for a tranche
         yieldVal = [calculateYield(tranche[0], tranche[1]) for tranche in tranchesMetrics]
-        newTrancheRate = [getNewRate(oldTrancheRate[i], coeffList[i], yieldVal[i]) for i, tranche in enumerate(oldTrancheRate)]
+        newTrancheRate = \
+            [getNewRate(oldTrancheRate[i], coeffList[i], yieldVal[i]) for i, tranche in enumerate(oldTrancheRate)]
         trancheNotional = [tranche.notional for tranche in tranches.tranches]
 
         diff = calculateDiff(trancheNotional[0], trancheNotional[1],
@@ -87,6 +88,7 @@ def runMonte(loans, tranches, tolerance, nsim):
               f' DIRR(letter) = {tranche.dirrLetter} \n'
               f' AL = {tranche.al}')
     return ledger
+
 
 # Run Waterfall nsim time
 def simulateWaterfall(loans, tranches, nsim):
