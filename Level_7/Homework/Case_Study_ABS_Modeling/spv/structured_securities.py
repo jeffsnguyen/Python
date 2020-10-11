@@ -270,7 +270,8 @@ class StructuredSecurities(object):
         return self.principalCollected[t]
 
     # Get the following values from each tranches for each time period t
-    #   interestDue, interestPaid, interestShortFall, principalPaid, notionalBalance
+    #   interestDue, interestPaid, interestShortFall,
+    #   principalDue, principalPaid, principalShortFall, notionalBalance
     def getWaterfall(self, t):
         master = [self.totalCollected[t]]
         for tranche in self.tranches:
