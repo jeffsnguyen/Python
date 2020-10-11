@@ -34,7 +34,10 @@ class StandardTranche(Tranche):
         self._timePeriod = 1
         self._interestHasBeenPaid = False
         self._principalHasBeenPaid = False
-
+        self._r = 0  # Record IRR
+        self._dirr = 0  # Record DIRR
+        self._dirrLetter = None  # Record DIRR in letter form
+        self._al = 0  # Record Average Life
     ##########################################################
     # Decorators to define and set values for instance variables
 
@@ -167,6 +170,46 @@ class StandardTranche(Tranche):
     @timePeriod.setter
     def timePeriod(self, itimePeriod):
         self._timePeriod = itimePeriod  # Set instance variable timePeriod from input
+
+    # Decorator to create a property function to define the attribute r (IRR)
+    @property
+    def r(self):
+        return self._r
+
+    # Decorator to set r (IRR) value
+    @r.setter
+    def r(self, ir):
+        self._r = ir  # Set instance variable r (IRR) from input
+
+    # Decorator to create a property function to define the attribute dirr
+    @property
+    def dirr(self):
+        return self._dirr
+
+    # Decorator to set dirr value
+    @dirr.setter
+    def dirr(self, idirr):
+        self._dirr = idirr  # Set instance variable dirr from input
+
+    # Decorator to create a property function to define the attribute dirrLetter
+    @property
+    def dirrLetter(self):
+        return self._dirrLetter
+
+    # Decorator to set dirrLetter value
+    @dirrLetter.setter
+    def dirrLetter(self, idirrLetter):
+        self._dirrLetter = idirrLetter  # Set instance variable dirrLetter from input
+
+    # Decorator to create a property function to define the attribute al
+    @property
+    def al(self):
+        return self._al
+
+    # Decorator to set al value
+    @al.setter
+    def al(self, ial):
+        self._al = ial  # Set instance variable al from input
     ##########################################################
     # Add instance methods
 
@@ -239,7 +282,8 @@ class StandardTranche(Tranche):
     #   loan was not paid down (balance != 0), then AL is infinite – in this case, return None.
     def AL(self):
         al = sum(t * principalPayment / self.notional for t, principalPayment in self.principalPaid.items())
-        return al if not math.isinf(al) else None
+        self.al = al if not math.isinf(al) else None
+        return self.al
 
     # Reset the tranche to time t=0
     def reset(self):
