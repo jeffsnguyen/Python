@@ -19,6 +19,7 @@ from loan.loan_base import Loan
 import logging
 import random
 
+
 # LoanPool Class
 class LoanPool(object):
     def __init__(self, loans):
@@ -114,7 +115,8 @@ class LoanPool(object):
     #   odds as the default probability for the time period (always start the range from zero)
     def checkDefaults(self, t):
         return \
-            sum([loan.checkDefault(t, random.randint(0, int(1 / loan.getDefaultProbability(t)))) for loan in self.loans])
+            sum([loan.checkDefault(t, random.randint(0, int(1 / loan.getDefaultProbability(t))))
+                 for loan in self.loans])
 
     # Instance method
     # Calculate Weighted Average Maturity of loans in the pool
