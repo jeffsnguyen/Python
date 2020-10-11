@@ -21,6 +21,10 @@ class Tranche(object):
         self._notional = notional
         self._rate = rate
         self._subordinationFlag = subordinationFlag
+        self._r = 0  # Record IRR
+        self._dirr = 0  # Record DIRR
+        self._dirrLetter = None  # Record DIRR in letter form
+        self._al = 0  # Record Average Life
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.notional}, {self.rate}, {self.subordinationFlag})'
@@ -58,6 +62,45 @@ class Tranche(object):
     def subordinationFlag(self, isubordinationFlag):
         self._subordinationFlag = isubordinationFlag  # Set instance variable subordinationFlag from input
 
+    # Decorator to create a property function to define the attribute r (IRR)
+    @property
+    def r(self):
+        return self._r
+
+    # Decorator to set r (IRR) value
+    @r.setter
+    def r(self, ir):
+        self._r = ir  # Set instance variable r (IRR) from input
+
+    # Decorator to create a property function to define the attribute dirr
+    @property
+    def dirr(self):
+        return self._dirr
+
+    # Decorator to set dirr value
+    @dirr.setter
+    def dirr(self, idirr):
+        self._dirr = idirr  # Set instance variable dirr from input
+
+    # Decorator to create a property function to define the attribute dirrLetter
+    @property
+    def dirrLetter(self):
+        return self._dirrLetter
+
+    # Decorator to set dirrLetter value
+    @dirrLetter.setter
+    def dirrLetter(self, idirrLetter):
+        self._dirrLetter = idirrLetter  # Set instance variable dirrLetter from input
+
+    # Decorator to create a property function to define the attribute al
+    @property
+    def al(self):
+        return self._al
+
+    # Decorator to set al value
+    @al.setter
+    def al(self, ial):
+        self._al = ial  # Set instance variable al from input
     ##########################################################
     # Add instance methods
 
@@ -79,7 +122,8 @@ class Tranche(object):
         cf = [-self.notional]  # Init cash flow array with notional cash outflow
         for t in range(1, period):
             cf.append(self.paymentPerPeriod(t))  # Override method from StandardTranche to find CF per period
-        return numpy_financial.irr(cf) * 12  # Return annualized IRR
+        self.r = numpy_financial.irr(cf) * 12  # Return annualized IRR
+        return self.r
 
     # Calculate Reduction in Yield (DIRR)
     # This is the tranche rate less the annual IRR. Essentially, the annual tranche
@@ -87,7 +131,13 @@ class Tranche(object):
     #   return. DIRR specifies how much the investor lost out on (hence, its maximum is 100% + the tranche
     #   rate). Additionally, DIRR is used to give a letter rating to the security.
     def DIRR(self):
-        return self.rate - self.IRR()
+        self.dirr = self.rate - self.IRR()
+        return self.dirr
+
+    # Get DIRR in letter form
+    def DIRRLetter(self):
+        self.dirrLetter = self.getRating(self.dirr)
+        return self.dirrLetter
 
     # Calculate Average Life (AL)
     # The AL of the security is the average time that each dollar of its unpaid principal remains unpaid.
