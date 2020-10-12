@@ -21,11 +21,7 @@
 # Importing packages
 import logging
 from utils.timer import Timer
-from spv.tranche_base import Tranche
-from spv.structured_securities import StructuredSecurities
-from utils.called_once import calledOnce
 import math
-from utils.import_export import spvExportCSV
 import numpy
 import multiprocessing
 import functools
@@ -76,47 +72,6 @@ def runMonte(loans, tranches, tolerance, nsim, numProcesses):
     print(f'Monte Carlo simulation for yield converge completed.')
 
     return newTrancheRate
-'''
-# Run the Monte Carlo nsim number of  time
-# Each simulation:
-#   Inner simulation: calculate the average DIR and AL across all Monte Carlo scenarios (in LoanPool checkDefaults())
-#   Outer simulation: calculate yield from specific yield curve (using DIRR and AL from inner sim) to arrive at
-#       a new rate for each tranches.
-# Rinse and repeat until the yield curve converges
-@Timer
-def runMonteSingleProcess(loans, tranches, tolerance, nsim):
-    coeffList = [1.2, 0.8]  # 1.2 for A and 0.8 for B, list is in descending subordination order
-    trancheNotional = [tranche.notional for tranche in tranches.tranches]
-    oldTrancheRate = [tranche.rate for tranche in tranches.tranches]
-    while True:
-        ledger, tranchesMetrics = simulateWaterfall(loans, tranches, nsim)  # Save down result
-        # Calculate yield
-        # Return a list of yield, each list item represents a yield for a tranche
-        yieldVal = [calculateYield(tranche[0], tranche[1]) for tranche in tranchesMetrics]
-        newTrancheRate = \
-            [getNewRate(oldTrancheRate[i], coeffList[i], yieldVal[i]) for i, tranche in enumerate(oldTrancheRate)]
-
-        diff = calculateDiff(trancheNotional[0], trancheNotional[1],
-                             oldTrancheRate[0], oldTrancheRate[1],
-                             newTrancheRate[0], newTrancheRate[1])
-
-        # If diff <= tolerance, finish Monte Carlo and break the loop
-        # If diff > tolerance, reassign tranche rate to newly calculate rate and loop again.
-        if diff < tolerance:
-            break
-        else:
-            if numpy.isnan(newTrancheRate).any():
-                print(f'Optimization not successful.')
-                break
-            else:
-                oldTrancheRate = newTrancheRate
-                for i, tranche in enumerate(tranches.tranches):
-                    tranche.rate = newTrancheRate[i]
-
-    print(f'Monte Carlo simulation for yield curve convergent completed.')
-
-    return newTrancheRate
-'''
 
 
 # Run Waterfall on multiprocessing
@@ -159,10 +114,11 @@ def runSimulationParallel(loans, tranches, nsim, numProcesses):
 
     # Get trancheA data by using list comp on even number index in resultList
     # Remaining data go to trancheB
-    trancheA_data = [resultList[i] for i in range(len(resultList)) if i%2 == 0]
-    trancheB_data = [item for item in resultList if not item in trancheA_data]
+    trancheA_data = [resultList[i] for i in range(len(resultList)) if i % 2 == 0]
+    trancheB_data = [item for item in resultList if item not in trancheA_data]
 
     results = []
+
     # Aggregating results and add to results list
     results.append(functools.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), trancheA_data))
     results.append(functools.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), trancheB_data))
