@@ -23,7 +23,7 @@ for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
 ###############################################
 # Add config of log
-logging.basicConfig(filename='log.txt', filemode='a', datefmt='%Y-%m-%d %H:%M:%S',
+logging.basicConfig(filename='log.txt', filemode='w', datefmt='%Y-%m-%d %H:%M:%S',
                     format="{asctime} {levelname} {processName:<12} {message} ({filename}:{lineno})", style='{')
 ###############################################
 
@@ -42,7 +42,7 @@ def main():
     #   3. Do 2. in Pro Rata mode, exporting to 'liabilities_prorata.csv'
     ###############################################
     # Set logging level
-    logging.getLogger().setLevel(logging.ERROR)
+    logging.getLogger().setLevel(logging.DEBUG)
     testNum = 0
 
     # Init test loans variables
@@ -61,37 +61,44 @@ def main():
 
     print(f'Sequential mode:')
     tranches.setMode('Sequential')
-    ledger, reserve, tranchesMetrics = simulateWaterfall(loans, tranches, 1)
-    print(f'My ledger is:\n{ledger}')
-    print(f'My reserve account is:\n{reserve}')
+    ledger, tranchesMetrics = simulateWaterfall(loans, tranches, 1)
+    spvExportCSV(ledger, 'liabilities_sequential_2loans.csv')
     for tranche in tranches.tranches:
         print(f'{tranche}\n'
-              f' IRR = {tranche.r}\n DIRR = {tranche.dirr}\n DIRR(letter) = {tranche.dirrLetter} \n AL = {tranche.al}')
+              f' IRR = {tranche.r}\n'
+              f' DIRR = {tranche.dirr}\n'
+              f' DIRR(letter) = {tranche.dirrLetter}\n'
+              f' AL = {tranche.al}')
     print()
     print(f'Pro Rata mode:')
     tranches.setMode('Pro Rata')
-    ledger, reserve, tranchesMetrics = simulateWaterfall(loans, tranches, 1)
-    print(f'My ledger is:\n{ledger}')
-    print(f'My reserve account is:\n{reserve}')
+    ledger, tranchesMetrics = simulateWaterfall(loans, tranches, 1)
+    spvExportCSV(ledger, 'liabilities_prorata_2loans.csv')
     for tranche in tranches.tranches:
         print(f'{tranche}\n'
-              f' IRR = {tranche.r}\n DIRR = {tranche.dirr}\n DIRR(letter) = {tranche.dirrLetter} \n AL = {tranche.al}')
+              f' IRR = {tranche.r}\n'
+              f' DIRR = {tranche.dirr}\n'
+              f' DIRR(letter) = {tranche.dirrLetter}\n'
+              f' AL = {tranche.al}')
     ###############################################
 
     # Re-init StructuredSecurities to take on bigger loan pool
     tranches = StructuredSecurities(loans1500.totalPrincipal())
-    tranches.addTranche('StandardTranche', '0.8', '0.05', '1')
-    tranches.addTranche('StandardTranche', '0.2', '0.08', '2')
+    tranches.addTranche('StandardTranche', '0.8', '0.005', '1')
+    tranches.addTranche('StandardTranche', '0.2', '0.008', '2')
     ###############################################
     print()
     testNum += 1
     print(f'Test {testNum}: Manual large sample run of the Waterfall, sequential mode')
     tranches.setMode('Sequential')
-    ledger, reserve, tranchesMetrics = simulateWaterfall(loans1500, tranches, 1)
-    spvExportCSV(ledger, 'liabilities_sequential.csv')
+    ledger, tranchesMetrics = simulateWaterfall(loans1500, tranches, 1)
+    spvExportCSV(ledger, 'liabilities_sequential_1500loans.csv')
     for tranche in tranches.tranches:
         print(f'{tranche}\n'
-              f' IRR = {tranche.r}\n DIRR = {tranche.dirr}\n DIRR(letter) = {tranche.dirrLetter} \n AL = {tranche.al}')
+              f' IRR = {tranche.r}\n'
+              f' DIRR = {tranche.dirr}\n'
+              f' DIRR(letter) = {tranche.dirrLetter}\n'
+              f' AL = {tranche.al}')
     # Answer: Each tranches did get successfully paid down to 0 and there is money left at the end.
     ###############################################
 
@@ -100,11 +107,14 @@ def main():
     testNum += 1
     print(f'Test {testNum}: Manual large sample run of the Waterfall, pro rata mode')
     tranches.setMode('Pro Rata')
-    ledger, reserve, tranchesMetrics = simulateWaterfall(loans1500, tranches, 1)
-    spvExportCSV(ledger, 'liabilities_prorata.csv')
+    ledger, tranchesMetrics = simulateWaterfall(loans1500, tranches, 1)
+    spvExportCSV(ledger, 'liabilities_prorata_1500loans.csv')
     for tranche in tranches.tranches:
         print(f'{tranche}\n'
-              f' IRR = {tranche.r}\n DIRR = {tranche.dirr}\n DIRR(letter) = {tranche.dirrLetter} \n AL = {tranche.al}')
+              f' IRR = {tranche.r}\n'
+              f' DIRR = {tranche.dirr}\n'
+              f' DIRR(letter) = {tranche.dirrLetter}\n'
+              f' AL = {tranche.al}')
     # Answer: Each tranches did get successfully paid down to 0 and there is money left at the end.
     ###############################################
 
@@ -112,20 +122,28 @@ def main():
     print()
     testNum += 1
     print(f'Test {testNum}: Large sample run of Monte Carlo to converge yield on Sequential mode')
+
+    tranches = StructuredSecurities(loans1500.totalPrincipal())
+    tranches.addTranche('StandardTranche', '0.8', '0.05', '1')
+    tranches.addTranche('StandardTranche', '0.2', '0.08', '2')
     tranches.setMode('Sequential')
-    ledger = runMonte(loans1500, tranches, 0.005, 2000)
-    spvExportCSV(ledger, 'liabilities_sequential_montecarlo.csv')
-    ###############################################
+
+    newTrancheRate = runMonte(loans1500, tranches, 0.005, 2000, 20)
+    print(f'My new tranche rate is = {newTrancheRate}')
+    tranches = StructuredSecurities(loans1500.totalPrincipal())
+    tranches.addTranche('StandardTranche', '0.8', newTrancheRate[0], '1')
+    tranches.addTranche('StandardTranche', '0.2', newTrancheRate[1], '2')
+    tranches.setMode('Sequential')
+    ledger, tranchesMetrics = simulateWaterfall(loans1500, tranches, 1)
+    spvExportCSV(ledger, 'liabilities_sequential_montecarlo_1500loans.csv')
+    for tranche in tranches.tranches:
+        print(f'{tranche}\n'
+              f' IRR = {tranche.r}\n'
+              f' DIRR = {tranche.dirr}\n'
+              f' DIRR(letter) = {tranche.dirrLetter}\n'
+              f' AL = {tranche.al}')
 
     ###############################################
-    print()
-    testNum += 1
-    print(f'Test {testNum}: Large sample run of Monte Carlo to converge yield on Sequential mode')
-    tranches.setMode('Pro Rata')
-    ledger = runMonte(loans1500, tranches, 0.005, 10)
-    spvExportCSV(ledger, 'liabilities_prorata_montecarlo.csv')
-    ###############################################
-
 ###############################################
 
 
