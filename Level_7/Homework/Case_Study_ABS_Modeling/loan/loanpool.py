@@ -15,7 +15,6 @@
 
 
 # Importing packages
-from loan.loan_base import Loan
 import logging
 import random
 
@@ -117,6 +116,11 @@ class LoanPool(object):
         return \
             sum([loan.checkDefault(t, random.randint(0, int(1 / loan.getDefaultProbability(t))))
                  for loan in self.loans])
+
+    # Reset default flag on all loans
+    def reset(self):
+        for loan in self.loans:
+            loan.reset()
 
     # Instance method
     # Calculate Weighted Average Maturity of loans in the pool
