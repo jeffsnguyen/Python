@@ -288,6 +288,8 @@ class StructuredSecurities(object):
         self._principalCollected = {0: 0}
         self._totalCollected = {0: 0}
         self._reserve = {0: 0}
+        for tranche in self.tranches:
+            tranche.reset()
     ##########################################################
     # Add class methods
 
