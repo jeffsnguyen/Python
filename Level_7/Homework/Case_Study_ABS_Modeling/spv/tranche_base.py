@@ -148,10 +148,17 @@ class Tranche(object):
     def AL(self):
         raise NotImplementedError('Must override StandardTranche')
 
+    ##########################################################
+    # Add class methods
+
+    ##########################################################
+    # Add static methods
+
     # Look up rating based on DIRR
     # Method: sort the dict, then get the smallest value at which value >= DIIR. Lookup key from the inverted dict.
-    def getRating(self, dirr):
-        dirr = dirr/100
+    @staticmethod
+    def getRating(dirr):
+        dirr = dirr / 100
         ratings = {'Aaa': 0.06,
                    'Aa1': 0.67,
                    'Aa2': 1.3,
@@ -174,10 +181,4 @@ class Tranche(object):
         closest_value = min(sorted_key.values(), key=lambda v: v >= dirr)  # Smallest value at which v>= dict
         ratingsInv = {v: k for k, v in ratings.items()}  # Get the inverted dict to lookup key
         return ratingsInv[closest_value]
-    ##########################################################
-    # Add class methods
-
-    ##########################################################
-    # Add static methods
-
     ##########################################################
