@@ -250,6 +250,10 @@ class Loan(object):
             return self.recoveryValue(t, .6)  # Hardcoded pct = .6 based on Level 2 Exercise
         else:
             return 0
+
+    # Reset default flag
+    def reset(self):
+        self.isDefault = False
     ##########################################################
 
     ##########################################################
