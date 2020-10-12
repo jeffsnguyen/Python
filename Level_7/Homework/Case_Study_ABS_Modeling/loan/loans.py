@@ -26,7 +26,7 @@ import logging
 # Derived classes from Loan:
 # FixedRateLoan
 class FixedRateLoan(Loan):
-    def getRate(self, period = None):
+    def getRate(self, period=None):
         # Overrides the base class
         return self._rate
 
@@ -101,7 +101,7 @@ class VariableRateLoan(Loan):
     #       d. Continue loop until said key is found.
     #   3. Return the corresponded key value (interest rate) of the newly founded closest key. This is the interest
     #       rate we are looking for.
-    def getRate(self, startPeriod = None):
+    def getRate(self, startPeriod=None):
         # Capture step/job done to debug
         self.sorted_key = dict(sorted(self.rateDict.items(), key=lambda k: k[1], reverse=False))
 
