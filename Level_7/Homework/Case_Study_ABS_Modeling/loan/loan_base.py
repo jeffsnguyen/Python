@@ -192,7 +192,7 @@ class Loan(object):
 
         # Calculate payment using recursive functions
         # Capture step/job done to debug
-        return self.monthlyPayment() - self.interestDueRecursive(t)
+        return self.monthlyPayment(t) - self.interestDueRecursive(t)
 
     # Instance method to calculate remaining loan balance due at time t
     # This method use the recursive function
@@ -223,21 +223,6 @@ class Loan(object):
     def equity(self, t):
         return self.asset.value(t) - self.balance(t)
 
-    # Instance method to get the loan's default probability
-    # t is the time period
-    # Method: sort the lookup dict by key value, find the closest key value to t where t > k
-    def getDefaultProbability(self, t):
-        # To update this dict, key = top range of time period (for 1-10, use 10 as key), value = default probability
-        defaultLookup = {10: 0.0005,
-                         59: 0.001,
-                         120: 0.002,
-                         180: 0.004,
-                         210: 0.002,
-                         360: 0.001}
-        sorted_key = dict(sorted(defaultLookup.items(), key=lambda k: k[0], reverse=False))  # Sort dict
-        closest_value = min(sorted_key.keys(), key=lambda k: t > k)  # Smallest key at which t > k
-        return defaultLookup[closest_value]
-
     # Instance method to determine whether or not the loan defaults.
     # Method:
     #   1. If the passed in random number is 0: set isDefault flag, set notional to be 0 and return the recovery value
@@ -267,7 +252,7 @@ class Loan(object):
         try:
             # Capture step/job done to debug
             res = (cls.monthlyRate(rate) * face * (1 + cls.monthlyRate(rate)) **
-                    term) / (((1 + cls.monthlyRate(rate)) ** term) - 1)
+                   term) / (((1 + cls.monthlyRate(rate)) ** term) - 1)
         except ZeroDivisionError:
             logging.error('Something went wrong. Division by 0.')  # Log the error prior to raising it
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
@@ -281,7 +266,7 @@ class Loan(object):
     def calcBalance(cls, face, rate, term, period):
         # Capture step/job done to debug
         res = face * ((1 + cls.monthlyRate(rate)) ** period) - \
-               (cls.calcMonthlyPmt(face, rate, term) *
+              (cls.calcMonthlyPmt(face, rate, term) *
                (((1 + cls.monthlyRate(rate)) ** period - 1) / cls.monthlyRate(rate)))
         return res
 
@@ -299,4 +284,20 @@ class Loan(object):
     def annualRate(monthly_rate):
         # Capture step/job done to debug
         return monthly_rate * 12
+
+    # Static method to get the loan's default probability
+    # t is the time period
+    # Method: sort the lookup dict by key value, find the closest key value to t where t > k
+    @staticmethod
+    def getDefaultProbability(t):
+        # To update this dict, key = top range of time period (for 1-10, use 10 as key), value = default probability
+        defaultLookup = {10: 0.0005,
+                         59: 0.001,
+                         120: 0.002,
+                         180: 0.004,
+                         210: 0.002,
+                         360: 0.001}
+        sorted_key = dict(sorted(defaultLookup.items(), key=lambda k: k[0], reverse=False))  # Sort dict
+        closest_value = min(sorted_key.keys(), key=lambda k: t > k)  # Smallest key at which t > k
+        return defaultLookup[closest_value]
     ##########################################################
