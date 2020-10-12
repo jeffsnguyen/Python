@@ -24,48 +24,37 @@ from utils.timer import Timer
 from spv.tranche_base import Tranche
 from spv.structured_securities import StructuredSecurities
 from utils.called_once import calledOnce
-from math import e, sqrt
+import math
 from utils.import_export import spvExportCSV
+import numpy
+import multiprocessing
+import functools
 
 #######################
 
 #######################
 
 
-def calculateDiff(nA, nB, lastARate, lastBRate, newARate, newBRate):
-    return (nA * abs((lastARate - newARate) / lastARate) + nB * abs((lastBRate - newBRate) / lastBRate)) / (nA + nB)
-
-
-def getNewRate(oldTrancheRate, coeff, yieldVal):
-    return oldTrancheRate + coeff * (yieldVal - oldTrancheRate)
-
-
-def calculateYield(dirrAvg, alAvg):
-    return ((7 / (1 + 0.08 * e**(-0.19 * alAvg / 12))) + (0.019 * sqrt((alAvg / 12) * dirrAvg * 100))) / 100
-
-
-# Run the Monte Carlo nsim number of  time
+# Run the Monte Carlo nsim number of  time, using multiprocessing
 # Each simulation:
 #   Inner simulation: calculate the average DIR and AL across all Monte Carlo scenarios (in LoanPool checkDefaults())
 #   Outer simulation: calculate yield from specific yield curve (using DIRR and AL from inner sim) to arrive at
 #       a new rate for each tranches.
 # Rinse and repeat until the yield curve converges
 @Timer
-def runMonte(loans, tranches, tolerance, nsim):
-    #tranches.addTranche('StandardTranche', '0.8', '0.05', '1')
-    #tranches.addTranche('StandardTranche', '0.2', '0.08', '2')
-
+def runMonte(loans, tranches, tolerance, nsim, numProcesses):
     coeffList = [1.2, 0.8]  # 1.2 for A and 0.8 for B, list is in descending subordination order
-
+    trancheNotional = [tranche.notional for tranche in tranches.tranches]
+    oldTrancheRate = [tranche.rate for tranche in tranches.tranches]
     while True:
-        oldTrancheRate = [tranche.rate for tranche in tranches.tranches]
-        ledger, reserve, tranchesMetrics = simulateWaterfall(loans, tranches, nsim)  # Save down result
+        tranchesMetrics = runSimulationParallel(loans, tranches, nsim, numProcesses)
+        print(f'tranchesMetrics = {tranchesMetrics}')
         # Calculate yield
         # Return a list of yield, each list item represents a yield for a tranche
         yieldVal = [calculateYield(tranche[0], tranche[1]) for tranche in tranchesMetrics]
         newTrancheRate = \
             [getNewRate(oldTrancheRate[i], coeffList[i], yieldVal[i]) for i, tranche in enumerate(oldTrancheRate)]
-        trancheNotional = [tranche.notional for tranche in tranches.tranches]
+        logging.debug(f'newTrancheRate = {newTrancheRate}')
 
         diff = calculateDiff(trancheNotional[0], trancheNotional[1],
                              oldTrancheRate[0], oldTrancheRate[1],
@@ -73,21 +62,128 @@ def runMonte(loans, tranches, tolerance, nsim):
 
         # If diff <= tolerance, finish Monte Carlo and break the loop
         # If diff > tolerance, reassign tranche rate to newly calculate rate and loop again.
-        if diff <= tolerance:
+        if diff < tolerance:
             break
-
-        elif diff > tolerance:
-            for i, tranche in enumerate(tranches.tranches):
-                tranche.rate = newTrancheRate[i]
+        else:
+            if numpy.isnan(newTrancheRate).any():
+                print(f'Optimization not successful.')
+                break
+            else:
+                oldTrancheRate = newTrancheRate
+                for i, tranche in enumerate(tranches.tranches):
+                    tranche.rate = newTrancheRate[i]
 
     print(f'Monte Carlo simulation for yield converge completed.')
-    for tranche in tranches.tranches:
-        print(f'{tranche}\n'
-              f' IRR = {tranche.r}\n'
-              f' DIRR = {tranche.dirr}\n'
-              f' DIRR(letter) = {tranche.dirrLetter} \n'
-              f' AL = {tranche.al}')
-    return ledger
+
+    return newTrancheRate
+'''
+# Run the Monte Carlo nsim number of  time
+# Each simulation:
+#   Inner simulation: calculate the average DIR and AL across all Monte Carlo scenarios (in LoanPool checkDefaults())
+#   Outer simulation: calculate yield from specific yield curve (using DIRR and AL from inner sim) to arrive at
+#       a new rate for each tranches.
+# Rinse and repeat until the yield curve converges
+@Timer
+def runMonteSingleProcess(loans, tranches, tolerance, nsim):
+    coeffList = [1.2, 0.8]  # 1.2 for A and 0.8 for B, list is in descending subordination order
+    trancheNotional = [tranche.notional for tranche in tranches.tranches]
+    oldTrancheRate = [tranche.rate for tranche in tranches.tranches]
+    while True:
+        ledger, tranchesMetrics = simulateWaterfall(loans, tranches, nsim)  # Save down result
+        # Calculate yield
+        # Return a list of yield, each list item represents a yield for a tranche
+        yieldVal = [calculateYield(tranche[0], tranche[1]) for tranche in tranchesMetrics]
+        newTrancheRate = \
+            [getNewRate(oldTrancheRate[i], coeffList[i], yieldVal[i]) for i, tranche in enumerate(oldTrancheRate)]
+
+        diff = calculateDiff(trancheNotional[0], trancheNotional[1],
+                             oldTrancheRate[0], oldTrancheRate[1],
+                             newTrancheRate[0], newTrancheRate[1])
+
+        # If diff <= tolerance, finish Monte Carlo and break the loop
+        # If diff > tolerance, reassign tranche rate to newly calculate rate and loop again.
+        if diff < tolerance:
+            break
+        else:
+            if numpy.isnan(newTrancheRate).any():
+                print(f'Optimization not successful.')
+                break
+            else:
+                oldTrancheRate = newTrancheRate
+                for i, tranche in enumerate(tranches.tranches):
+                    tranche.rate = newTrancheRate[i]
+
+    print(f'Monte Carlo simulation for yield curve convergent completed.')
+
+    return newTrancheRate
+'''
+
+
+# Run Waterfall on multiprocessing
+def runSimulationParallel(loans, tranches, nsim, numProcesses):
+    # Create input/output queue
+    input_queue = multiprocessing.Queue()
+    output_queue = multiprocessing.Queue()
+
+    jobs = []  # Job list for each process
+    ####################
+
+    # Create child processes
+    for i in range(numProcesses):
+        # Each item in the queue to have a tuple of a function simulateWaterfall
+        #   and a list of arguments
+        input_queue.put((simulateWaterfall, (loans, tranches, int(nsim / numProcesses))))
+
+        # target = doWork is the function for the process to call. doWork handling processing of the iterations
+        # args = arguments to get passed to the target = doWork()
+        p = multiprocessing.Process(target=doWork, args=(input_queue, output_queue))
+        p.start()
+        jobs.append(p)  # Add each process to the job list
+    ####################
+
+    # Create an infinite loop and monitor output queue
+    resultList = []
+    while True:
+        if len(resultList) == nsim:
+            break
+        else:
+            r = output_queue.get()  # Take something off the queue, if queue has nothing, it will block (wait)
+            # until the queue has something, while other processes running in the background
+            # when it has something, add it to the list resultList = []
+            resultList.extend(r)  # When done, break the loop
+
+    # Final resultList is a list with nsim * 0.5 pair of tuple
+    # Each pair has the format (avgDIRR_A, avgAL_A), (avgDIRR_B, avgAL_B)
+
+    print(f'resultList = {resultList}')
+
+    # Get trancheA data by using list comp on even number index in resultList
+    # Remaining data go to trancheB
+    trancheA_data = [resultList[i] for i in range(len(resultList)) if i%2 == 0]
+    trancheB_data = [item for item in resultList if not item in trancheA_data]
+
+    results = []
+    # Aggregating results and add to results list
+    results.append(functools.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), trancheA_data))
+    results.append(functools.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), trancheB_data))
+    results = [(results[0][0] / len(trancheA_data), (results[0][1] / len(trancheA_data))),
+               (results[1][0] / len(trancheB_data), (results[1][1] / len(trancheB_data)))]
+
+    print(f'results = {results}')
+
+    # Clean up crew
+    for job in jobs:
+        job.join()
+        job.terminate()
+
+    return results
+
+
+# Function to process the iteration
+def doWork(input, output):  # 2 parameters input queue and output queue
+    f, args = input.get(timeout=1)
+    resLedger, resTranchesMetrics = f(*args)
+    output.put(resTranchesMetrics)
 
 
 # Run Waterfall nsim time
@@ -97,8 +193,7 @@ def simulateWaterfall(loans, tranches, nsim):
     alList = ([], [])
 
     for i in range(nsim):
-        logging.error(f'Currently running simulation # {i}')
-        ledger, reserve, metrics = doWaterfall(loans, tranches)
+        ledger, metrics = doWaterfall(loans, tranches)
 
         # Save the metrics from doWaterfall() result.
         # Metrics is a list of n tuples of 4, each tuple represents a tranche, in descending subordination order
@@ -115,18 +210,16 @@ def simulateWaterfall(loans, tranches, nsim):
     tranchesMetrics = \
         [(sum(tranche[0])/len(tranche[0]), sum(tranche[1])/len(tranche[1])) for tranche in zip(dirrList, alList)]
 
-    return ledger, reserve, tranchesMetrics
+    return ledger, tranchesMetrics
 
 
 def doWaterfall(loans, tranches):
-    [tranche.reset() for tranche in tranches.tranches]
     tranches.reset()
+    loans.reset()
 
-    #print(f'Doing work on {tranches.__repr__()}')
-    #logging.debug(f'Doing work on {tranches.__repr__()}')
+    logging.debug(f'Doing work on {tranches.__repr__()}')
 
     ledger = [tranches.getWaterfall(0)]
-    reserve = []
     t = 0
     while loans.activeLoanCount(t) > 0:
         # Increase the time period on the StructuredSecurities object (which will, in turn, increase for all
@@ -147,7 +240,6 @@ def doWaterfall(loans, tranches):
         # Call getWaterfall on both the LoanPool and StructuredSecurities objects and save the info into
         # two variables.
         ledger.append(tranches.getWaterfall(t))
-        reserve.append(tranches.reserve[t])
 
     # For each tranches, save its metrics as a tuple of 4 values
     # Method is to call these tranche's methods. Calling these methods also save the metric in the tranche's params
@@ -157,4 +249,16 @@ def doWaterfall(loans, tranches):
     for tranche in tranches.tranches:
         metrics.append((tranche.IRR(), tranche.DIRR(), tranche.DIRRLetter(), tranche.AL()))
 
-    return ledger, reserve, metrics
+    return ledger, metrics
+
+
+def calculateDiff(nA, nB, lastARate, lastBRate, newARate, newBRate):
+    return (nA * abs((lastARate - newARate) / lastARate) + nB * abs((lastBRate - newBRate) / lastBRate)) / (nA + nB)
+
+
+def getNewRate(oldTrancheRate, coeff, yieldVal):
+    return oldTrancheRate + coeff * (yieldVal - oldTrancheRate)
+
+
+def calculateYield(dirrAvg, alAvg):
+    return ((7 / (1 + 0.08 * math.e**(-0.19 * alAvg / 12))) + (0.019 * math.sqrt((alAvg / 12) * dirrAvg * 100))) / 100
