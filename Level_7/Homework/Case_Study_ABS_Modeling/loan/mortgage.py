@@ -66,7 +66,7 @@ class MortgageMixin(object):
     #   (LTV) ratio of less than 80% (in other words, the loan covers >= 80% of the value of the asset).
     #   For example, for 100k home, mortgage > 100k -> have to pay PMI
     # This function returns .000075 of the loan notional value if LTV > .8
-    def PMI(self, period = None):
+    def PMI(self, period=None):
         # Capture step/job done to debug
         return .000075 * self.asset.value(period) if (self.notional / self.asset.value(period)) > .8 else 0
 
