@@ -47,7 +47,6 @@ def main():
     tranches = StructuredSecurities(loans.totalPrincipal())
     tranches.addTranche('StandardTranche', '0.8', '0.05', '1')
     tranches.addTranche('StandardTranche', '0.2', '0.08', '2')
-    print(f'Sequential mode:')
     tranches.setMode('Sequential')
 
     ledger, tranchesMetrics = simulateWaterfall(loans, tranches, 1)
