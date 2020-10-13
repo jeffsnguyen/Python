@@ -25,6 +25,8 @@ import math
 import numpy
 import multiprocessing
 import functools
+import time
+from utils.import_export import spvExportCSV
 
 #######################
 
@@ -41,24 +43,29 @@ import functools
 def runMonte(loans, tranches, tolerance, nsim, numProcesses):
     coeffList = [1.2, 0.8]  # 1.2 for A and 0.8 for B, list is in descending subordination order
     trancheNotional = [tranche.notional for tranche in tranches.tranches]
+    print(f'trancheNotional = {trancheNotional}')
     oldTrancheRate = [tranche.rate for tranche in tranches.tranches]
+    print(f'oldTrancheRate = {oldTrancheRate}')
     while True:
         tranchesMetrics = runSimulationParallel(loans, tranches, nsim, numProcesses)
-        print(f'tranchesMetrics = {tranchesMetrics}')
         # Calculate yield
         # Return a list of yield, each list item represents a yield for a tranche
         yieldVal = [calculateYield(tranche[0], tranche[1]) for tranche in tranchesMetrics]
         newTrancheRate = \
             [getNewRate(oldTrancheRate[i], coeffList[i], yieldVal[i]) for i, tranche in enumerate(oldTrancheRate)]
-        logging.debug(f'newTrancheRate = {newTrancheRate}')
 
         diff = calculateDiff(trancheNotional[0], trancheNotional[1],
                              oldTrancheRate[0], oldTrancheRate[1],
                              newTrancheRate[0], newTrancheRate[1])
 
+        print(f'Metrics:\n'
+              f' yieldVal = {yieldVal}\n'
+              f' newTrancheRate = {newTrancheRate}\n'
+              f' diff = {round(diff, 3)}')
+
         # If diff <= tolerance, finish Monte Carlo and break the loop
         # If diff > tolerance, reassign tranche rate to newly calculate rate and loop again.
-        if diff < tolerance:
+        if round(diff, 3) < tolerance:
             break
         else:
             if numpy.isnan(newTrancheRate).any():
@@ -84,6 +91,8 @@ def runSimulationParallel(loans, tranches, nsim, numProcesses):
     ####################
 
     # Create child processes
+    print(f'nsim = {nsim}')
+    print(f'numProcesses = {numProcesses}')
     for i in range(numProcesses):
         # Each item in the queue to have a tuple of a function simulateWaterfall
         #   and a list of arguments
@@ -94,18 +103,17 @@ def runSimulationParallel(loans, tranches, nsim, numProcesses):
         p = multiprocessing.Process(target=doWork, args=(input_queue, output_queue))
         p.start()
         jobs.append(p)  # Add each process to the job list
+    print(f'Job list length = {len(jobs)}')
     ####################
-
     # Create an infinite loop and monitor output queue
     resultList = []
-    while True:
-        if len(resultList) == nsim:
-            break
-        else:
-            r = output_queue.get()  # Take something off the queue, if queue has nothing, it will block (wait)
-            # until the queue has something, while other processes running in the background
-            # when it has something, add it to the list resultList = []
-            resultList.extend(r)  # When done, break the loop
+    while len(resultList) < numProcesses*2:
+        r = output_queue.get()  # Take something off the queue, if queue has nothing, it will block (wait)
+        # until the queue has something, while other processes running in the background
+        # when it has something, add it to the list resultList = []
+        resultList.extend(r)  # When done, break the loop
+        print(f'len(resultList) = {len(resultList)}')
+        print(f'resultList = {resultList}')
 
     # Final resultList is a list with nsim * 0.5 pair of tuple
     # Each pair has the format (avgDIRR_A, avgAL_A), (avgDIRR_B, avgAL_B)
@@ -129,8 +137,8 @@ def runSimulationParallel(loans, tranches, nsim, numProcesses):
 
     # Clean up crew
     for job in jobs:
-        job.join()
         job.terminate()
+        job.join()
 
     return results
 
@@ -145,8 +153,10 @@ def doWork(input, output):  # 2 parameters input queue and output queue
 # Run Waterfall nsim time
 def simulateWaterfall(loans, tranches, nsim):
     # Init 2 tuples of 2 list, each list store a tranche metric, in descending subordination order
-    dirrList = ([], [])
-    alList = ([], [])
+    dirr_trancheA = []
+    dirr_trancheB = []
+    al_trancheA = []
+    al_trancheB = []
 
     for i in range(nsim):
         ledger, metrics = doWaterfall(loans, tranches)
@@ -154,18 +164,27 @@ def simulateWaterfall(loans, tranches, nsim):
         # Save the metrics from doWaterfall() result.
         # Metrics is a list of n tuples of 4, each tuple represents a tranche, in descending subordination order
         # Tuple values: (irr, dirr, dirr letter rating, and al)
-        for j, tranche in enumerate(metrics):
-            dirrList[j].append(tranche[1])
-            if None not in tranche:
-                alList[j].append(tranche[3])
+        dirrA = metrics[0][1]
+        alA = metrics[0][3]
+        dirrB = metrics[1][1]
+        alB = metrics[1][3]
+        if not numpy.isnan(metrics[0][1]):
+            dirr_trancheA.append(dirrA)
+        if not numpy.isnan(metrics[1][1]):
+            dirr_trancheB.append(dirrB)
+        if alA is not None:
+            al_trancheA.append(alA)
+        if alB is not None:
+            al_trancheB.append(alB)
 
-    # Creating a zip element of n tuples,
-    #   Each tuple contains 2 lists: 1 of DIRR values and 1 of AL values, in this order
-    # Create a list of n tuple, each tuple has 2 elements representing: (average DIRR, averageAL) for each tranche
-    #   Data from the zip elements
-    tranchesMetrics = \
-        [(sum(tranche[0])/len(tranche[0]), sum(tranche[1])/len(tranche[1])) for tranche in zip(dirrList, alList)]
+    # Create a list of 2 tuple, each tuple has 2 elements representing: (average DIRR, averageAL) for each tranche
+    tranchesMetrics = [(numpy.mean(dirr_trancheA), numpy.mean(al_trancheA)),
+                       (numpy.mean(dirr_trancheB), numpy.mean(al_trancheB))]
 
+    if numpy.isnan(tranchesMetrics).any():
+        print(f'There is an uncaught NaN value.')
+        spvExportCSV(ledger, 'nan_debug.csv')
+    print(f'tranchesMetrics = {tranchesMetrics}')
     return ledger, tranchesMetrics
 
 
@@ -202,9 +221,18 @@ def doWaterfall(loans, tranches):
     # For a 2 tranches securities, the metrics list will be a list of 2 tuples, each tuples has 4 values
     # The metrics to be saved are: IRR, DIRR, letter DIRR rating, and AL
     metrics = []
+    #debug_metrics = []
     for tranche in tranches.tranches:
         metrics.append((tranche.IRR(), tranche.DIRR(), tranche.DIRRLetter(), tranche.AL()))
+        #debug_metrics.append(tranche.IRR())
+        #debug_metrics.append(tranche.DIRR())
+        #debug_metrics.append(tranche.AL())
 
+    print(f'metrics  = {metrics}')
+    #logging.debug(f'metrics = {metrics}')
+    #if numpy.isnan(metrics).any():
+        #print(f'There is a NaN value.')
+        #spvExportCSV(ledger, 'nan_debug.csv')
     return ledger, metrics
 
 
