@@ -3,6 +3,7 @@
 # Section: Case Study: Asset Backed Security Modeling
 # Exercise: 1
 # Description: Contains the code to test the ABS Model
+# Test case: Test the ABS model with Monte Carlo on 1500 loans, on multiprocessing, sequential mode
 
 #######################
 # Importing necessary packages
@@ -26,7 +27,7 @@ logging.basicConfig(filename='log.txt', filemode='w', datefmt='%Y-%m-%d %H:%M:%S
 ###############################################
 def main():
 
-    # Test case: Test the ABS model with Monte Carlo on 1500 loans
+    # Test case: Test the ABS model with Monte Carlo on 1500 loans, on multiprocessing, sequential mode
     # Assets are from Loans.csv
     # Liabilities: originally start with these below tranches
     #   tranches.addTranche('StandardTranche', '0.8', '0.05', '1')
