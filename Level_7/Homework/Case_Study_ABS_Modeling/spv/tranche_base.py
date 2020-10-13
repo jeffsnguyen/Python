@@ -9,7 +9,7 @@
 # Importing packages
 import logging
 import numpy_financial
-
+import numpy
 #######################
 
 #######################
@@ -131,7 +131,7 @@ class Tranche(object):
     #   return. DIRR specifies how much the investor lost out on (hence, its maximum is 100% + the tranche
     #   rate). Additionally, DIRR is used to give a letter rating to the security.
     def DIRR(self):
-        self.dirr = self.rate - self.IRR()
+        self.dirr = round(self.rate - self.IRR(), 6)
         return self.dirr
 
     # Get DIRR in letter form
@@ -180,5 +180,5 @@ class Tranche(object):
         sorted_key = dict(sorted(ratings.items(), key=lambda k: k[1], reverse=False))  # Sort dict
         closest_value = min(sorted_key.values(), key=lambda v: v >= dirr)  # Smallest value at which v>= dict
         ratingsInv = {v: k for k, v in ratings.items()}  # Get the inverted dict to lookup key
-        return ratingsInv[closest_value]
+        return ratingsInv[closest_value] if not numpy.isnan(dirr) else 'Ca'
     ##########################################################
