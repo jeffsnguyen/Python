@@ -96,8 +96,6 @@ def runParalellSim(game, stayStrat, nsim, nprocess):
             # when it has something, add it to the list resultList = []
             resultList.extend(r)  # When done, break the loop
 
-    results = functools.reduce(lambda x, y: [(x[0][0] + y[0][0], x[0][1] + y[0][1]), (x[1][0] + y[1][0], x[1][1] + y[1][1])], resultList, [(0.0, 0.0), (0.0, 0.0)])
-
     print(f'Final result list has {len(resultList)} items.')
     print(f'The probability of this strategy is {sum(resultList) / len(resultList)}')
 
