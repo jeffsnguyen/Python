@@ -107,9 +107,7 @@ class Loan(object):
             res = self.calcMonthlyPmt(self.notional, self.getRate(t), self.term)
         except ZeroDivisionError:
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
-        if t == 0:
-            return 0
-        elif t > self.term:
+        if (t == 0) or (t > self.term) or self.isDefault:
             return 0
         else:
             return res
@@ -231,7 +229,6 @@ class Loan(object):
     def checkDefault(self, t, randomNum):
         if randomNum == 0:
             self.isDefault = True
-            self.notional = 0
             return self.recoveryValue(t, .6)  # Hardcoded pct = .6 based on Level 2 Exercise
         else:
             return 0
