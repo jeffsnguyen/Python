@@ -41,8 +41,6 @@ def main():
     logging.getLogger().setLevel(logging.DEBUG)
 
     ###############################################
-    print(f'Test: Large sample run of Monte Carlo to converge yield on Sequential mode')
-    # Init test loans variables
     loan1 = AutoLoan(notional=100000, rate=0.08, term=10, car=Car(100000))
     loan2 = AutoLoan(notional=75000, rate=0.06, term=8, car=Car(75000))
     loans = LoanPool([loan1, loan2])
