@@ -103,7 +103,7 @@ def runSimulationParallel(loans, tranches, nsim, numProcesses):
         p = multiprocessing.Process(target=doWork, args=(input_queue, output_queue))
         p.start()
         jobs.append(p)  # Add each process to the job list
-    print(f'Job list length = {len(jobs)}')
+
     ####################
     # Create an infinite loop and monitor output queue
     resultList = []
