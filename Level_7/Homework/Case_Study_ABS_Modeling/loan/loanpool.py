@@ -17,7 +17,7 @@
 # Importing packages
 import logging
 import random
-
+import math
 
 # LoanPool Class
 class LoanPool(object):
@@ -114,7 +114,7 @@ class LoanPool(object):
     #   odds as the default probability for the time period (always start the range from zero)
     def checkDefaults(self, t):
         return \
-            sum([loan.checkDefault(t, random.randint(0, int(1 / loan.getDefaultProbability(t))))
+            sum([loan.checkDefault(t, math.floor(int((1 / loan.getDefaultProbability(t)) + 1) * random.random()))
                  for loan in self.loans])
 
     # Reset default flag on all loans

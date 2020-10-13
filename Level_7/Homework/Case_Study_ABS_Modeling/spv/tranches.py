@@ -255,7 +255,7 @@ class StandardTranche(Tranche):
     # the sum of all the principal payments already made, and any interest shortfalls.
     def calc_notionalBalance(self, t):
         if not t == 0:
-            self.notionalBalance[t] = self.notional - sum([val for val in self.principalPaid.values()])
+            self.notionalBalance[t] = self.notional - sum(val for val in self.principalPaid.values())
         return self.notionalBalance[t]
 
     # Return the amount of interest due for the current time period.

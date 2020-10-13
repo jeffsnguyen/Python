@@ -138,8 +138,7 @@ class StructuredSecurities(object):
 
     # Instance method to increase the current time period for each tranche object
     def increaseTranchesTimePeriod(self):
-        for tranche in self.tranches:
-            tranche.increaseTimePeriod()
+        [tranche.increaseTimePeriod() for tranche in self.tranches]
         self.timePeriod += 1
 
     # Instance factory method to make payments to tranches in the StructuredSecurity object
@@ -273,13 +272,12 @@ class StructuredSecurities(object):
     #   interestDue, interestPaid, interestShortFall,
     #   principalDue, principalPaid, principalShortFall, notionalBalance
     def getWaterfall(self, t):
-        master = [self.totalCollected[t]]
-        for tranche in self.tranches:
-            slave = [tranche.interestDue[t], tranche.interestPaid[t], tranche.interestShortFall[t],
+        master = [[tranche.interestDue[t], tranche.interestPaid[t], tranche.interestShortFall[t],
                      tranche.principalDue[t], tranche.principalPaid[t], tranche.principalShortFall[t],
-                     tranche.notionalBalance[t]]
-            master.append(slave)
-        master.append(self.reserve[t])
+                     tranche.notionalBalance[t]] for tranche in self.tranches]
+        master.insert(0, self.totalCollected[t])  # Insert total collections from the tranche to the first index
+        master.append(self.reserve[t])  # Add reserve account at the end
+
         return master
 
     # Reset structured securities
@@ -288,8 +286,7 @@ class StructuredSecurities(object):
         self._principalCollected = {0: 0}
         self._totalCollected = {0: 0}
         self._reserve = {0: 0}
-        for tranche in self.tranches:
-            tranche.reset()
+        [tranche.reset() for tranche in self.tranches]
     ##########################################################
     # Add class methods
 

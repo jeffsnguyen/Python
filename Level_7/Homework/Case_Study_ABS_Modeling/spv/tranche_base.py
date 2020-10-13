@@ -119,9 +119,9 @@ class Tranche(object):
     #       0 = -C_0 + \sum_{t=1}^{T} \frac{C_t}{(1+r)^t}
     def IRR(self):
         period = self.totalPaymentPeriod()  # Override method from StandardTranche
-        cf = [-self.notional]  # Init cash flow array with notional cash outflow
-        for t in range(1, period):
-            cf.append(self.paymentPerPeriod(t))  # Override method from StandardTranche to find CF per period
+        # Override method from StandardTranche to find CF per period
+        cf = [self.paymentPerPeriod(t) for t in range(1, period)]
+        cf.insert(0, (- self.notional))  # insert original notional value as cash outflow
         self.r = numpy_financial.irr(cf) * 12  # Return annualized IRR
         return self.r
 

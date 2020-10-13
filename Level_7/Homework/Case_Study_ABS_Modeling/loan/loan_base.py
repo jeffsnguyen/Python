@@ -118,7 +118,7 @@ class Loan(object):
         # r = monthly rate, P = notional value, N = term in months
         try:
             # Capture step/job done to debug
-            return sum([self.monthlyPayment(t) for t in range(1, self.term+1)])
+            return sum(self.monthlyPayment(t) for t in range(1, self.term+1))
         except ZeroDivisionError:
             raise ZeroDivisionError('Term value cannot be 0. Division by 0 exception. Not possible to calculate')
 

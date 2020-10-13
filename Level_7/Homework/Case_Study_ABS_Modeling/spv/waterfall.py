@@ -25,8 +25,6 @@ import math
 import numpy
 import multiprocessing
 import functools
-import time
-from utils.import_export import spvExportCSV
 
 #######################
 
@@ -47,6 +45,7 @@ def runMonte(loans, tranches, tolerance, nsim, numProcesses):
     oldTrancheRate = [tranche.rate for tranche in tranches.tranches]
     print(f'oldTrancheRate = {oldTrancheRate}')
     while True:
+        print(f'Optimizing new rate, end when diff < {tolerance}.')
         tranchesMetrics = runSimulationParallel(loans, tranches, nsim, numProcesses)
         # Calculate yield
         # Return a list of yield, each list item represents a yield for a tranche
@@ -61,20 +60,16 @@ def runMonte(loans, tranches, tolerance, nsim, numProcesses):
         print(f'Metrics:\n'
               f' yieldVal = {yieldVal}\n'
               f' newTrancheRate = {newTrancheRate}\n'
-              f' diff = {round(diff, 3)}')
+              f' diff = {round(diff, 3)}\n')
 
         # If diff <= tolerance, finish Monte Carlo and break the loop
         # If diff > tolerance, reassign tranche rate to newly calculate rate and loop again.
         if round(diff, 3) < tolerance:
             break
         else:
-            if numpy.isnan(newTrancheRate).any():
-                print(f'Optimization not successful.')
-                break
-            else:
-                oldTrancheRate = newTrancheRate
-                for i, tranche in enumerate(tranches.tranches):
-                    tranche.rate = newTrancheRate[i]
+            oldTrancheRate = newTrancheRate
+            for i, tranche in enumerate(tranches.tranches):
+                tranche.rate = newTrancheRate[i]
 
     print(f'Monte Carlo simulation for yield converge completed.')
 
@@ -91,8 +86,7 @@ def runSimulationParallel(loans, tranches, nsim, numProcesses):
     ####################
 
     # Create child processes
-    print(f'nsim = {nsim}')
-    print(f'numProcesses = {numProcesses}')
+    print(f'Running {nsim} simulation with {numProcesses} processes...')
     for i in range(numProcesses):
         # Each item in the queue to have a tuple of a function simulateWaterfall
         #   and a list of arguments
@@ -106,41 +100,34 @@ def runSimulationParallel(loans, tranches, nsim, numProcesses):
 
     ####################
     # Create an infinite loop and monitor output queue
+    # Final resultList is a list with nsim * 0.5 pair of tuple
+    #   Each pair has the format (avgDIRR_A, avgAL_A), (avgDIRR_B, avgAL_B)
     resultList = []
     while len(resultList) < numProcesses*2:
         r = output_queue.get()  # Take something off the queue, if queue has nothing, it will block (wait)
         # until the queue has something, while other processes running in the background
         # when it has something, add it to the list resultList = []
         resultList.extend(r)  # When done, break the loop
-        print(f'len(resultList) = {len(resultList)}')
-        print(f'resultList = {resultList}')
-
-    # Final resultList is a list with nsim * 0.5 pair of tuple
-    # Each pair has the format (avgDIRR_A, avgAL_A), (avgDIRR_B, avgAL_B)
-
-    print(f'resultList = {resultList}')
+        print(f'Currently at {len(resultList)} results. Completion at {numProcesses*2} results.')
 
     # Get trancheA data by using list comp on even number index in resultList
     # Remaining data go to trancheB
     trancheA_data = [resultList[i] for i in range(len(resultList)) if i % 2 == 0]
     trancheB_data = [item for item in resultList if item not in trancheA_data]
 
-    results = []
+    results = [functools.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), trancheA_data),
+               functools.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), trancheB_data)]
 
     # Aggregating results and add to results list
-    results.append(functools.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), trancheA_data))
-    results.append(functools.reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), trancheB_data))
-    results = [(results[0][0] / len(trancheA_data), (results[0][1] / len(trancheA_data))),
-               (results[1][0] / len(trancheB_data), (results[1][1] / len(trancheB_data)))]
-
-    print(f'results = {results}')
+    res = [(results[0][0] / len(trancheA_data), (results[0][1] / len(trancheA_data))),
+           (results[1][0] / len(trancheB_data), (results[1][1] / len(trancheB_data)))]
 
     # Clean up crew
     for job in jobs:
         job.terminate()
         job.join()
 
-    return results
+    return res
 
 
 # Function to process the iteration
@@ -181,12 +168,7 @@ def simulateWaterfall(loans, tranches, nsim):
     tranchesMetrics = [(numpy.mean(dirr_trancheA), numpy.mean(al_trancheA)),
                        (numpy.mean(dirr_trancheB), numpy.mean(al_trancheB))]
 
-    if numpy.isnan(tranchesMetrics).any():
-        print(f'There is an uncaught NaN value.')
-        spvExportCSV(ledger, 'nan_debug.csv')
-    print(f'tranchesMetrics = {tranchesMetrics}')
     return ledger, tranchesMetrics
-
 
 def doWaterfall(loans, tranches):
     tranches.reset()
@@ -220,19 +202,8 @@ def doWaterfall(loans, tranches):
     # Method is to call these tranche's methods. Calling these methods also save the metric in the tranche's params
     # For a 2 tranches securities, the metrics list will be a list of 2 tuples, each tuples has 4 values
     # The metrics to be saved are: IRR, DIRR, letter DIRR rating, and AL
-    metrics = []
-    #debug_metrics = []
-    for tranche in tranches.tranches:
-        metrics.append((tranche.IRR(), tranche.DIRR(), tranche.DIRRLetter(), tranche.AL()))
-        #debug_metrics.append(tranche.IRR())
-        #debug_metrics.append(tranche.DIRR())
-        #debug_metrics.append(tranche.AL())
+    metrics = [(tranche.IRR(), tranche.DIRR(), tranche.DIRRLetter(), tranche.AL()) for tranche in tranches.tranches]
 
-    print(f'metrics  = {metrics}')
-    #logging.debug(f'metrics = {metrics}')
-    #if numpy.isnan(metrics).any():
-        #print(f'There is a NaN value.')
-        #spvExportCSV(ledger, 'nan_debug.csv')
     return ledger, metrics
 
 
