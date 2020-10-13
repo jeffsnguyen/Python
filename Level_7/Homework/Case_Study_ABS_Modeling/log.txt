@@ -1,0 +1,5 @@
+2020-10-13 03:07:18 DEBUG Process-30   Doing work on ['StandardTranche(22683499.454199996, 0.07059516283575577, 1)', 'StandardTranche(5670874.863549999, 0.06971364707239648, 2)'] (waterfall.py:197)
+2020-10-13 03:07:32 DEBUG Proc2020-10-13 03:07:52 DEBUG MainProcess  newTrancheRate = [0.06646153609039541, 0.06766359354568452] (waterfall.py:57)
+2020-10-13 03:07:52 DEBUG MainProcess  Doing work on ['StandardTranche(22683499.454199996, 0.06646153609039541, 1)', 'StandardTranche(5670874.863549999, 0.06766359354568452, 2)'] (waterfall.py:197)
+2020-10-13 03:07:55 INFO MainProcess  File founded <_io.TextIOWrapper name='liabilities_prorata_montecarlo_multiprocessing_1500loans.csv' mode='w' encoding='cp1252'>. (import_export.py:318)
+2020-10-13 03:07:55 INFO MainProcess  Successfully exported transactions in 73 periods to liabilities_prorata_montecarlo_multiprocessing_1500loans.csv. (import_export.py:336)
