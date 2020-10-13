@@ -19,6 +19,7 @@ import logging
 import random
 import math
 
+
 # LoanPool Class
 class LoanPool(object):
     def __init__(self, loans):

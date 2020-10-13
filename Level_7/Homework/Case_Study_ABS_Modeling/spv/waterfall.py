@@ -170,6 +170,7 @@ def simulateWaterfall(loans, tranches, nsim):
 
     return ledger, tranchesMetrics
 
+
 def doWaterfall(loans, tranches):
     tranches.reset()
     loans.reset()
