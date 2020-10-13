@@ -14,6 +14,7 @@ from utils.import_export import loansImportCSV, spvExportCSV
 from asset.asset import Car
 from spv.structured_securities import StructuredSecurities
 from spv.waterfall import doWaterfall, simulateWaterfall, runMonte
+import random
 #######################
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -39,6 +40,7 @@ def main():
     # Set logging level
     logging.getLogger().setLevel(logging.DEBUG)
 
+    random.seed(1)
     ###############################################
     loans1500 = LoanPool(loansImportCSV('Loans.csv'))
     tranches = StructuredSecurities(loans1500.totalPrincipal())
@@ -46,7 +48,7 @@ def main():
     tranches.addTranche('StandardTranche', '0.2', '0.08', '2')
     tranches.setMode('Sequential')
 
-    newTrancheRate = runMonte(loans1500, tranches, 0.005, 2000, 20)
+    newTrancheRate = runMonte(loans1500, tranches, 0.01, 100, 20)
     print(f'My new tranche rate is = {newTrancheRate}')
 
     # Run the Waterfall once to generate CSV output of transactions.
