@@ -9,9 +9,7 @@
 # Importing necessary packages
 import logging
 from loan.loanpool import LoanPool
-from loan.loans import FixedRateLoan, VariableRateLoan, AutoLoan
 from utils.import_export import loansImportCSV, spvExportCSV
-from asset.asset import Car
 from spv.structured_securities import StructuredSecurities
 from spv.waterfall import doWaterfall, simulateWaterfall, runMonte
 #######################

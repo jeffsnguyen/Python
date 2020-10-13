@@ -9,11 +9,10 @@
 # Importing necessary packages
 import logging
 from loan.loanpool import LoanPool
-from loan.loans import FixedRateLoan, VariableRateLoan, AutoLoan
 from utils.import_export import loansImportCSV, spvExportCSV
-from asset.asset import Car
 from spv.structured_securities import StructuredSecurities
 from spv.waterfall import doWaterfall, simulateWaterfall, runMonte
+import random
 #######################
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
@@ -39,6 +38,7 @@ def main():
     # Set logging level
     logging.getLogger().setLevel(logging.DEBUG)
 
+    random.seed(1)
     ###############################################
     loans1500 = LoanPool(loansImportCSV('Loans.csv'))
     tranches = StructuredSecurities(loans1500.totalPrincipal())
