@@ -46,7 +46,7 @@ def main():
     tranches.addTranche('StandardTranche', '0.2', '0.08', '2')
     tranches.setMode('Sequential')
 
-    newTrancheRate = runMonte(loans1500, tranches, 0.1, 2000, 20)
+    newTrancheRate = runMonte(loans1500, tranches, 0.005, 2000, 20)
     print(f'My new tranche rate is = {newTrancheRate}')
 
     # Run the Waterfall once to generate CSV output of transactions.
