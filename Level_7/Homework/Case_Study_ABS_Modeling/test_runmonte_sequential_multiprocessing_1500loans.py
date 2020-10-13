@@ -55,7 +55,7 @@ def main():
     tranches.addTranche('StandardTranche', '0.2', newTrancheRate[1], '2')
     tranches.setMode('Sequential')
     ledger, tranchesMetrics = simulateWaterfall(loans1500, tranches, 1)
-    spvExportCSV(ledger, 'liabilities_sequential_montecarlo_1500loans.csv')
+    spvExportCSV(ledger, 'liabilities_sequential_montecarlo_multiprocessing_1500loans.csv')
     for tranche in tranches.tranches:
         print(f'{tranche}\n'
               f' IRR = {tranche.r}\n'
