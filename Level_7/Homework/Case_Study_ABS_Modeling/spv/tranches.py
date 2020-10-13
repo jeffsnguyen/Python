@@ -255,7 +255,7 @@ class StandardTranche(Tranche):
     # the sum of all the principal payments already made, and any interest shortfalls.
     def calc_notionalBalance(self, t):
         if not t == 0:
-            self.notionalBalance[t] = self.notional - sum(val for val in self.principalPaid.values())
+            self.notionalBalance[t] = self.notional - sum([val for val in self.principalPaid.values()])
         return self.notionalBalance[t]
 
     # Return the amount of interest due for the current time period.
@@ -280,7 +280,7 @@ class StandardTranche(Tranche):
     #   90000, 35000, 0], the AL would be (0*0 + 1*10000 + 2*90000+2*35000+3*35000+4*0)/100000. If the
     #   loan was not paid down (balance != 0), then AL is infinite – in this case, return None.
     def AL(self):
-        al = sum(t * principalPayment / self.notional for t, principalPayment in self.principalPaid.items())
+        al = sum([t * principalPayment / self.notional for t, principalPayment in self.principalPaid.items()])
         self.al = al if not math.isinf(al) else None
         return self.al
 
