@@ -1,44 +1,30 @@
 # numerical packages  lecture
 
 import numpy_financial
-import numpy as np
-import time
-from utils.timer import Timer
-import matplotlib.pyplot as plt
-from scipy.ndimage.filters import gaussian_filter
+import numpy
 
 def main():
-    nps = []
-    pyts = []
+    # Similar to base package but can specify how many numbers to generate by 3rd parameter
+    # Output to a numpy array can be easily converted to a list
+    arrayRandint = numpy.random.randint(1, 500, 100)
+    print(arrayRandint)
+    print(list(arrayRandint))
+    print()
 
-    dataNP = np.random.random(1000000)
-    dataPyt = list(dataNP)
+    # Non-integer
+    arrayUniform = numpy.random.uniform(1, 500, 100)
+    print(arrayUniform)
+    print()
 
-    for i in range(1, 1000000, 10000):
-        s = time.time()
-        dataNP[0:i + 1].sum()
-        dataNP
-        e = time.time()
-        timeTaken = e - s
-        nps.append(timeTaken)
+    # Internal Rate of Return
+    l = [-175, 100, 150, 200, 250]  # List of CF
+    p = -175  # Initial CF out to buy teh bond
+    r = numpy_financial.irr(l)
+    print(r)
 
-        s = time.time()
-        sum(dataPyt[0:i + 1])
-        e = time.time()
-        timeTaken = e - s
-        pyts.append(timeTaken)
-
-    nps = gaussian_filter(nps, sigma=5)
-    pyts = gaussian_filter(pyts, sigma=5)
-
-    x = np.arange(1, 1000000, 10000)
-
-    plt.figure(figsize=(20, 10))
-    plt.plot(x, nps, label='NumPy')
-    plt.plot(x, pyts, label='Python')
-    plt.grid()
-    plt.legend()
-    plt.show()
+    r = numpy_financial.irr([p] + l)
+    print(r)
+    print()
 
 
 #######################
